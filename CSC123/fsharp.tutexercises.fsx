@@ -60,6 +60,17 @@ let h x y = x + y
 printfn "%A" (3 |> (4 |> h)) // same as (h 3 4)  
 printfn "%A" ((3,4) ||> h) // also same as (h 3 4), uncurries h internally
 
+//Exercise 4: devise an experiment to verify that F# uses static as opposed to dynamic scoping
+// Static scoping means a function finds its variables based on where the function was defined
+let integer = 1
+let addInt () = integer + 1
+let main ()= 
+    let integer = 2
+    printfn "Exercise 4: %A" (addInt ())
+main()
+//returns 2 b/c takes 1 from scope of where function was created rather than 2 in the main
+
+
 //tuples and lists 
 let a = (1,2,4.1)  // This is a tuple of type int*int*float
 let b = [1;2;4]  // This is a 'int list'
@@ -77,3 +88,81 @@ printfn "b length: %A first b value: %A" lenb first
 let foreach (list: 'a list) action = // : 'a list tells F# this parameter is a list
     forloop 0 list.Length (fun i -> action list[i])
 foreach [1;4;5;3;6;11] (fun x -> printfn "x is %d" x)
+
+// Data Structures 
+
+//discriminated unions 
+type Direction =
+    | North
+    | East
+    | South
+    | West
+// Number can represent numbers in diff ways 
+type Number =
+    | Integer of int
+    | Rational of int*int
+    | Real of float
+    | Complex of float*float;;
+
+// constructs a Number representing 1/3 fraction, pattern matching in a nutshell
+let n = Rational(1, 3)
+// deconstructs the value: a receieves 1 and b receives 3
+match n with
+| Rational(a, b) -> printfn "numerator: %d denominator: %d" a b
+| _ -> printfn "another kind of number"
+
+// Pattern match two Number values at once 
+let equals first second =
+    match (first, second) with
+    | (Integer x, Integer y) -> x = y
+    | _ -> false
+//if called with this,  the pattern assigns x =4 and y =4
+equals (Integer 4) (Integer 4)
+
+// Checks whether two Number values are equal using pattern matching
+let rec equals1 a b =
+    match (a,b) with
+      | (Integer x, Integer y) -> x = y
+      | (Integer x, Rational(a,b)) -> x*b = a
+      | (Integer x, Real a) -> float(x) = a
+      | (Integer x, Complex(a,i)) -> i=0.0 && float(x) = a
+      | (Rational(a,b), Rational(c,d)) -> a*d = b*c
+      | (Rational(a,b), Real c) -> float(a) = float(b)*c
+      | (Rational(a,b), Complex(r,i)) -> i=0.0 && float(a) = float(b)*r
+      | (Real a, Real b) -> a = b
+      | (Real a, Complex(r,i)) -> i=0.0 && a = r
+      | (Complex(a,b), Complex(c,d)) -> a=c && b=d
+      | (x,y) -> equals1 y x
+
+equals1 (Rational (2,4)) (Rational (1,2))  // evaluates to true
+
+//Exercise 6: Write a function that multiplies any two numbers. 
+//You must also keep precision as much as possible. For example, Integer(2) multiplied by Rational(1,3) should not be a Real but a Rational(2,3). 
+//Only when an Integer (or Rational) is multiplied by a Real should the result be a Real
+
+let rec multiply left right =
+    match (left, right) with
+    | (Integer x, Integer y) -> Integer(x * y)
+    | (Integer x, Rational(a,b)) -> Rational(x * a, b)
+    | (Integer x, Real a) -> Real(float(x) * a)
+    | (Integer x, Complex(a,b)) -> Complex(float(x) * a, float(x) * b)
+    | (Rational(a,b), Rational(c,d)) -> Rational(a * c, b * d)
+    | (Rational(a,b), Real c) -> Real((float(a) / float(b)) * c)
+    | (Rational(a,b), Complex(r,i)) ->
+        let fraction = float(a) / float(b)
+        Complex(fraction * r, fraction * i)
+
+    | (Real a, Real b) ->
+        Real(a * b)
+
+    | (Real a, Complex(r,i)) ->
+        Complex(a * r, a * i)
+
+    | (Complex(a,b), Complex(c,d)) ->
+        Complex(a*c - b*d, a*d + b*c)
+
+    // Handle reversed combinations by swapping the arguments.
+    | (x,y) ->
+        multiply y x
+
+printfn "%A" (multiply (Integer 10) (Rational(1,3)))

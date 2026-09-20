@@ -1,8 +1,6 @@
-// F# Tutorial Exercises 1-5
 
-printfn "============================================================"
 printfn "                 F# TUTORIAL EXERCISES 1-5"
-printfn "============================================================"
+
 
 // Exercise 1: Define the S combinator.
 let S x y z = x z (y z)
@@ -27,10 +25,19 @@ printfn "\nExercise 3 - Applying a Function Twice"
 printfn "quadruple 3 = %A" (quadruple 3)
 
 
-// Exercise 4: Not completed yet.
+// Exercise 4: Verify that F# uses static rather than dynamic scoping.
+// addInt uses the integer from the scope where addInt was defined.
+let integer = 1
+let addInt () = integer + 1
+
+let main () =
+    let integer = 2
+    printfn "Value of integer inside main: %d" integer
+    printfn "Result of addInt (): %d" (addInt ())
 
 printfn "\nExercise 4 - Static vs. Dynamic Scoping"
-printfn "Status: Not completed yet."
+main ()
+printfn "Conclusion: addInt uses the outer value 1, so F# uses static scoping."
 
 
 // Exercise 5: Apply an action to every value in a list.
@@ -49,6 +56,3 @@ printfn "Input: %A" exercise5Values
 printfn "Output:"
 foreach exercise5Values (fun x -> printfn "  x is %d" x)
 
-printfn "\n============================================================"
-printfn "                       END OF OUTPUT"
-printfn "============================================================"
