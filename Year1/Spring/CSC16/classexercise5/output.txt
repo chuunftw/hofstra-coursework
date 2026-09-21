@@ -1,0 +1,2 @@
+Please enter student info (First / Last name, age, graduation year, ID)
+Ryan Chen 18 2027 703225011

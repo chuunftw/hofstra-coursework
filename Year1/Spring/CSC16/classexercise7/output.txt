@@ -1,0 +1,8 @@
+Default Constructor called for:mc main
+Inside main function... 
+Default Constructor called for:mc myFunc
+Inside my function... 
+Default Constructor called for:mc2 myFunc
+Destructor called for:mc2 myFunc
+Destructor called for:mc myFunc
+Destructor called for:mc main

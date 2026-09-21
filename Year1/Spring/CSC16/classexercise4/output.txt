@@ -1,0 +1,8 @@
+Please enter student info (First / Last name, age, graduation year, ID)
+Ryan
+Chen
+18
+2028
+703225011
+Ryan Chen 18 2028 703225011
+
