@@ -14,4 +14,5 @@ CSC105 - Fundamental of CyberSec
 TTh 1:00 - 2:25
 
 Seminar - W 5:15 - 6:05PM 
+
 Design - M 4:15-4:35PM
