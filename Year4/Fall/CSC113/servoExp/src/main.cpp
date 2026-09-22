@@ -6,17 +6,14 @@ int servoPin = 9;
 
 void setup() {
   servoMotor.attach(servoPin);
+  servoMotor.write(0);
+  delay(1000);
 }
 
 void loop() {
-  for (int angle = 0; angle <= 180; angle++) {
-    servoMotor.write(angle);
-    delay(200);
-  }
+  servoMotor.write(180);
+  delay(1000);
 
-  for (int angle = 179; angle >= 1; angle--) {
-    servoMotor.write(angle);
-    delay(200);
-  }
+  servoMotor.write(0);
+  delay(1000);
 }
-
