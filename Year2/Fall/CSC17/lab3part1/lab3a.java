@@ -1,5 +1,4 @@
 import java.util.Comparator;
-import javax.naming.Name;
 
 /*   CSC 17 Lab 3: Understanding Interfaces
 
@@ -89,8 +88,8 @@ class team implements Comparable<team>
     @Override
     public int compareTo(team other)
     {
-        int w1 = (int)(this.winning_percentage()*1000000+.5);
-        int w2 = (int)(other.winning_percentage()*1000000+.5);
+        int w1 = (int)(this.winning_percentage()*1000+.5);
+        int w2 = (int)(other.winning_percentage()*1000+.5);
         return Integer.compare(w1,w2);
     }
 }//team
@@ -220,6 +219,7 @@ public class lab3a {
 	// and instantiate the SomeRoutines class, change the comparator
 	// of the SomeRoutines object, etc.
     SomeRoutines<person> new_routine = new SomeRoutines<person>(csc17);
+    System.out.println("Largest person: " + csc17[new_routine.largest()].name);
 	
 	// uncomment following 3 lines to test problem 3
 	SomeRoutines<team> sr = new SomeRoutines<team>(MLB);  
@@ -228,5 +228,6 @@ public class lab3a {
 
 	// uncomment the following line after part 4, but DO NOT CHANGE IT:
 	SomeRoutines<wlt_team> sr2 = new SomeRoutines<wlt_team>(NFL);
+    System.out.println("NFL sorted in increasing order: " + sr2.sorted());
     }//main
 }

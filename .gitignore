@@ -1,0 +1,7 @@
+# Generated compiler output and local environments.
+**/bin/
+**/obj/
+**/__pycache__/
+*.pyc
+*.class
+.venv/

@@ -429,10 +429,11 @@ printfn "mutableNumber is 2: %A" (mutableNumber = 2)
 // Fix the function below by adding one line.
 // Do not use references.
 //
-// let countdown x =
-//     while x > 0 do
-//         printfn "%d" x
-//         x <- x - 1
+let countdown x =
+    let mutable x = x
+    while x > 0 do
+        printfn "%d" x
+        x <- x - 1
 
 
 // Loops

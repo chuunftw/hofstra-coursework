@@ -65,22 +65,21 @@ public class HashedHeap<KT,VT extends Comparable<? super VT>> {
     keymap = new HashMap<KT,Integer>();
     Entries = makearray(16);
     if (maxheap) {
-      cmp = (x, y) -> y.val().compareTo(x.val()); 
-  } else {
       cmp = (x, y) -> x.val().compareTo(y.val()); 
+  } else {
+      cmp = (x, y) -> y.val().compareTo(x.val());
   }
   /* this is just a skeleton. You'll have to fill in the details */
   }
 
   // write a resize function that double capacity when needed.
   public int resize(int percent) {
-    int newcap = (keymap.size() * percent) / 100;
+    int newcap = Math.max(1, (int) ((long) Entries.length * percent / 100));
     if (newcap < size || percent < 1) {
-        return keymap.size();
+        return Entries.length;
     }
     
    
-    @SuppressWarnings("unchecked")
     KVPair<KT, VT>[] newEntries = makearray(newcap);
     System.arraycopy(Entries, 0, newEntries, 0, size);
     Entries = newEntries; 
@@ -172,11 +171,14 @@ public class HashedHeap<KT,VT extends Comparable<? super VT>> {
     */
     if(Entries.length <= 0 || size<=0) return answer;
     answer = Entries[0];
-    Entries[0] = Entries[size-1];
-    keymap.put(Entries[size-1].key(), 0);
     keymap.remove(answer.key());
     size--;
-    swapdown(0);
+    if (size > 0) {
+        Entries[0] = Entries[size];
+        keymap.put(Entries[0].key(), 0);
+        swapdown(0);
+    }
+    Entries[size] = null;
 
   return answer;
   }  // must run in O(log n) time
@@ -209,26 +211,20 @@ public class HashedHeap<KT,VT extends Comparable<? super VT>> {
         VT val = Entries[heapNode].val();
         
         // Move the last element to the position of the removed element
-        Entries[heapNode] = Entries[size - 1];
-        keymap.put(Entries[heapNode].key(), heapNode); // Update keyMap for the moved element
-        keymap.remove(key);  // Remove the deleted key from keyMap
-        
-        size--;  // Decrement size after moving the last element
-    
-        // Restore heap property by swapping up or down as needed
-        if (cmp.compare(Entries[heapNode], Entries[parent(heapNode)]) > 0) 
-        {
-            swapup(heapNode);
-        } 
-        else if ((left(heapNode) < size && cmp.compare(Entries[heapNode], Entries[left(heapNode)]) < 0) || (right(heapNode) < size && cmp.compare(Entries[heapNode], Entries[right(heapNode)]) < 0)) 
-        {
-            swapdown(heapNode);
+        size--;
+        keymap.remove(key);
+        if (heapNode < size) {
+            Entries[heapNode] = Entries[size];
+            keymap.put(Entries[heapNode].key(), heapNode);
+            swapdown(swapup(heapNode));
         }
-    
+        Entries[size] = null;
+
         return val;
     } // must run in O(log n) time
 
   public VT set(KT key, VT val) {
+    if (key == null || val == null) return null;
   /*
     Change the value associated with the key.  Return the
     previous value.  First locate the entry using the

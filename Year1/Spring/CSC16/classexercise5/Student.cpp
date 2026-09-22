@@ -11,7 +11,7 @@ Student :: Student()
 //	lname = "Unknown";
 	age=0;
 	gradYear =0; 
-	int id =0;
+	id =0;
 }
 
 

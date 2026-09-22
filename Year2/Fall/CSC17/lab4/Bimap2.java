@@ -1,8 +1,6 @@
 import java.util.HashMap;
-import java.util.Comparator;
-import java.util.stream.Stream;
 
-public class Bimap2<TA, TB> extends Bimap implements Twowaymap<TA,TB> {
+public class Bimap2<TA, TB> implements Twowaymap<TA,TB> {
 
     private HashMap<TA, TB> keystoval;
     private HashMap<TB,TA> valstokey;
@@ -16,6 +14,8 @@ public class Bimap2<TA, TB> extends Bimap implements Twowaymap<TA,TB> {
     }
     @Override
 public void set(TA x, TB y) {
+    java.util.Objects.requireNonNull(x);
+    java.util.Objects.requireNonNull(y);
     
     if(keystoval.containsKey(x)) {
         TB previous_value = keystoval.get(x);

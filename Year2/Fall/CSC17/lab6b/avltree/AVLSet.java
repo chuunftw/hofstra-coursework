@@ -2,7 +2,6 @@ package avltree;
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.*;
 import java.util.stream.Stream;
 
 public class AVLSet<T extends Comparable<? super T>> extends BstSet<T>
@@ -110,7 +109,7 @@ implements Iterable<T> {
 
         // Removes an item from the tree
         public Tree<T> remove(T value) {
-            int comparison = value.compareTo(item);
+            int comparison = cmp.compare(value, item);
             if (comparison < 0) left = left.remove(value);
             else if (comparison > 0) right = right.remove(value);
             else {
@@ -138,6 +137,10 @@ implements Iterable<T> {
 
         // Adjusts the balance of the tree
         @Override
+        void adjust() {
+            rebalance();
+        }
+
         void rebalance() {
             int balanceFactor = updateHeight();
 
@@ -163,7 +166,9 @@ implements Iterable<T> {
         // Performs a left-left rotation
         void rotateLeft() {
             var leftSubtree = (AVLNode) this.left;
+            T oldItem = this.item;
             this.item = leftSubtree.item;
+            leftSubtree.item = oldItem;
             this.left = leftSubtree.left;
             leftSubtree.left = leftSubtree.right;
             leftSubtree.right = this.right;
@@ -175,7 +180,9 @@ implements Iterable<T> {
         // Performs a right-right rotation
         void rotateRight() {
             var rightSubtree = (AVLNode) this.right;
+            T oldItem = this.item;
             this.item = rightSubtree.item;
+            rightSubtree.item = oldItem;
             this.right = rightSubtree.right;
             rightSubtree.right = rightSubtree.left;
             rightSubtree.left = this.left;
@@ -186,22 +193,3 @@ implements Iterable<T> {
     }
 }
 
-// A helper class for visiting nodes in preorder
-class NodeVisitor<T> implements Consumer<T> {
-    Tree<T> parentTree;
-    final BiConsumer<Tree<T>, T> nodeVisitor;
-
-    public NodeVisitor(Tree<T> parentNode, BiConsumer<Tree<T>, T> visitor) {
-        parentTree = parentNode;
-        this.nodeVisitor = visitor;
-    }
-
-    public NodeVisitor<T> withParent(Tree<T> newParent) {
-        parentTree = newParent;
-        return this;
-    }
-
-    public void accept(T element) {
-        nodeVisitor.accept(parentTree, element);
-    }
-}

@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 record SVPair<V>(String key, V val) {
     @Override
@@ -20,7 +19,7 @@ public abstract class AbstTrie<KT, KCT, VT> {
 
         Node() {}
         Node(VT x) {
-            item = Optional.of(x);
+            item = Optional.ofNullable(x);
         }
     }
 
@@ -53,9 +52,11 @@ public abstract class AbstTrie<KT, KCT, VT> {
         }
 
         Optional<VT> previousValue = current.item;
-        current.item = Optional.of(modifier.apply(current.item));
+        current.item = Optional.ofNullable(modifier.apply(current.item));
         if (previousValue.isEmpty() && current.item.isPresent()) {
             size++;
+        } else if (previousValue.isPresent() && current.item.isEmpty()) {
+            size--;
         }
         return previousValue;
     }

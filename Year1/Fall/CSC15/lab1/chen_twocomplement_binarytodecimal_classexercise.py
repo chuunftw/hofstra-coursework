@@ -33,13 +33,15 @@ def invertComplement(bin):
     else:
       complement.append(0)
 
-    return complement
+  return complement
 
 #-------------------------------------------------------------
 def convertToBinary(integer):
   bin_list =[]
 
-  if integer < MAX:
+  if integer < 0 or integer > MAX:
+    raise ValueError("Enter an integer between 0 and 255")
+  if integer <= MAX:
     q = 99999
     r = 0
     while q != 0:
@@ -53,29 +55,36 @@ def convertToBinary(integer):
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 
 def convertToDecimal(binary):
-#asks user for input
-  number = (input("Enter a binary number: "))
-#converts number from user input to binary and removes last two numbers of binary
+#reads the binary digits supplied by the caller
+  number = ''.join(str(digit) for digit in binary)
+#converts the binary digits to a decimal integer
   x = int(number,2)
 #prints sentence along with binary after conversion
   print('The binary is equal to ',x)
 
 
 
-  return number
+  return x
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 
 def convertToTwosComplement(i):
+  """Return the eight-bit two's complement of the input's magnitude."""
   #Step 0: take absolute value
   i = abs(i)
 
   #Step 1: Convert to binary
+  twosComplement = convertToBinary(i)
+  twosComplement = [0] * (8 - len(twosComplement)) + twosComplement
   twosComplement = invertComplement(twosComplement)
 
-  #Step 2 - use python Slicing to add 0 prefix Add one to the binary number
-  twosComplement = twosComplement + 1
+  #Step 2: Add one, keeping the result eight bits wide
+  carry = 1
+  for index in range(7, -1, -1):
+    total = twosComplement[index] + carry
+    twosComplement[index] = total % 2
+    carry = total // 2
 
-  return result
+  return twosComplement
 # -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 
 def main(n):
@@ -90,4 +99,5 @@ def main(n):
 #decimal = np.random.randint(1,MAX)
 
 decimal = 7
-main(decimal)
+if __name__ == "__main__":
+  main(decimal)

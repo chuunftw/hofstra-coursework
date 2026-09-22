@@ -1,10 +1,8 @@
 import java.util.HashMap;
-import java.util.Comparator;
-import java.util.stream.Stream;
 import java.util.Optional;
 
 
-public class Bimap2<TA, TB> extends Bimap implements BijectiveMap<TA,TB> {
+public class Bimap2<TA, TB> implements BijectiveMap<TA,TB> {
 
     private HashMap<TA, TB> keystoval;
     private HashMap<TB,TA> valstokey;
@@ -18,6 +16,8 @@ public class Bimap2<TA, TB> extends Bimap implements BijectiveMap<TA,TB> {
     }
     @Override
 public void set(TA x, TB y) {
+    java.util.Objects.requireNonNull(x);
+    java.util.Objects.requireNonNull(y);
     
     if(keystoval.containsKey(x)) {
         TB previous_value = keystoval.get(x);

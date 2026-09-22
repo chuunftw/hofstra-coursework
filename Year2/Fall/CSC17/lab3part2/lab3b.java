@@ -26,10 +26,9 @@
 
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.stream.*;
 
-class OrderedCQ<T extends Comparable<? super T>> extends CQ<T> 
-		                                 // implements OrderedQueue<T>
+class OrderedCQ<T extends Comparable<? super T>> extends CQ<T>
+                                         implements OrderedQueue<T>
 {
     protected boolean sorted = true;
     protected Comparator<T> cmp = (x,y) -> x.compareTo(y);
@@ -52,9 +51,6 @@ class OrderedCQ<T extends Comparable<? super T>> extends CQ<T>
     //#1
     public boolean is_sorted()
     {
-      if (lock) {
-        throw new IllegalStateException("Cannot modify the queue during iteration.");
-    }
       return sorted;
     }
 
@@ -81,21 +77,52 @@ class OrderedCQ<T extends Comparable<? super T>> extends CQ<T>
         throw new IllegalStateException("Cannot modify the queue during iteration.");
     }
         if(x==null) return false;
-        super.enqueue(x);
-        if(sorted && size > 1 && cmp.compare(Q[aindex(size-1)],Q[aindex(size-2)])>0)
+        super.add(x);
+        if(sorted && size > 1 && cmp.compare(Q[aindex(size-1)],Q[aindex(size-2)])<0)
         {
             sorted = false;
         }
         return true;
     }
 
+    @Override
+    public boolean add(T x) { return enqueue(x); }
+
+    @Override
+    public T set(int i, T x) {
+        if (lock) throw new IllegalStateException("Cannot modify the queue during iteration.");
+        T previous = super.set(i, x);
+        if (previous != null && sorted) {
+            if ((i > 0 && cmp.compare(get(i - 1), x) > 0)
+                    || (i + 1 < size && cmp.compare(x, get(i + 1)) > 0)) sorted = false;
+        }
+        return previous;
+    }
+
+    @Override
+    public T pop() {
+        if (lock) throw new IllegalStateException("Cannot modify the queue during iteration.");
+        T value = super.pop();
+        if (size < 2) sorted = true;
+        return value;
+    }
+
+    @Override
+    public T dequeue() {
+        if (lock) throw new IllegalStateException("Cannot modify the queue during iteration.");
+        T value = super.dequeue();
+        if (size < 2) sorted = true;
+        return value;
+    }
+
     //#2
     public int search(T x) {
-      if (lock) {
-          throw new IllegalStateException("Cannot modify the queue during iteration.");
-      }
+      if (x == null) return -1;
   
       if (!is_sorted()) {
+          for (int i = 0; i < size; i++) {
+              if (cmp.compare(x, get(i)) == 0) return i;
+          }
           return -1;
       }
   
@@ -125,20 +152,21 @@ class OrderedCQ<T extends Comparable<? super T>> extends CQ<T>
         throw new IllegalStateException("Cannot modify the queue during iteration.");
     }
       int i = 0; 
-      if (!is_sorted()) {
+      if (x == null || !is_sorted()) {
           return -1;
       }  
       if (size() >= capacity()) {
           resize();
       }
       push(x);
-      while(i < size() - 1 && cmp.compare(Q[i], Q[i + 1]) > 0) 
+      while(i < size() - 1 && cmp.compare(Q[aindex(i)], Q[aindex(i + 1)]) > 0)
       {
-          T temp = Q[i];
-          Q[i] = Q[i + 1];
-          Q[i + 1] = temp;
+          T temp = Q[aindex(i)];
+          Q[aindex(i)] = Q[aindex(i + 1)];
+          Q[aindex(i + 1)] = temp;
           i++;
       }
+      sorted = true;
       return i;
   }
   //#4
@@ -151,41 +179,51 @@ class OrderedCQ<T extends Comparable<? super T>> extends CQ<T>
     {
       return null;
     }
-    T val = Q[i];
+    T val = Q[aindex(i)];
     if(order)
     {
-      for(int j =i;j<Q.length-1;j++)
+      for(int j =i;j<size-1;j++)
       {
-        Q[j] = Q[j+1];
+        Q[aindex(j)] = Q[aindex(j+1)];
       }
-      Q[size()-1] = null;
+      Q[aindex(size()-1)] = null;
       size--;
     }
     else
     {
-      Q[i] = Q[size()-1];
-      Q[size()-1] = null;
+      Q[aindex(i)] = Q[aindex(size()-1)];
+      Q[aindex(size()-1)] = null;
       size--;
-      sorted = false;
+      if (i < size - 1) sorted = false;
     }
+    if (size < 2) sorted = true;
     return val;
   }
 
 
   //#5
   private boolean lock = false;
+  private int activeIterators = 0;
   @Override
   public Iterator<T> iterator() {
     lock = true;  // Lock the queue during iteration
+    activeIterators++;
     return new Iterator<T>() {
         private int currentIndex = 0;
+        private boolean finished = false;
         
         public boolean hasNext() {
+            if (finished) return false;
+            if (currentIndex >= size && !finished) {
+                finished = true;
+                activeIterators--;
+                lock = activeIterators > 0;
+            }
             return currentIndex < size;
         }
         
         public T next() {
-      
+            if (!hasNext()) throw new java.util.NoSuchElementException();
             return Q[(front + currentIndex++) % Q.length];
         }
         

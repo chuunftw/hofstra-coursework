@@ -22,7 +22,7 @@ public interface Tree<T>
 
      Optional<T> max(); // uncomment when done
      Tree<T> clone();
-     Tree<T> sucessor(T x, Tree<T> ancestor);
+     Tree<T> successor(T x, Tree<T> ancestor);
      Tree<T> predecessor(T x, Tree<T> ancestor);
-     boolean is_bst(T min, T max);
+     boolean is_bst(Optional<T> min, Optional<T> max);
 }

@@ -8,16 +8,11 @@ Select structures from the java.util package and read their documentation.
 */
 import java.util.Optional;
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.HashMap;
 import java.lang.Math;
-import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Comparator;
 
 
 
@@ -80,7 +75,7 @@ public class lab5 {
         for (int j = 0; j < s; j++) 
         {
             int diff = M - A[j];
-            if (map.containsKey(diff))
+            if (map.containsKey(diff) && map.get(diff) != j)
             {
                 return Optional.of(new pair(j, map.get(diff)));        
             }
@@ -104,7 +99,7 @@ public class lab5 {
 
         //T[] ksizeheap = Arrays.copyOf(A,K);
         PriorityQueue<T> maxHeap = new PriorityQueue<>((a,b)->b.compareTo(a));
-        if(K<0 || K>=A.length)
+        if(K<1 || K>A.length)
         {
             return Optional.empty();
         }

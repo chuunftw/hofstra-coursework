@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.*;
 
-import avltree.BstSet.Nil;
-import avltree.BstSet.Node;
 
 public class BstSet<T extends Comparable<? super T>> {
 
@@ -39,9 +37,14 @@ public class BstSet<T extends Comparable<? super T>> {
     public Optional<T> max() { return root.max(); }
     public BstSet<T> clone() {
         var bst = new BstSet<T>(cmp);
-        bst.root = this.root.clone();
+        bst.root = bst.copyTree(root);
         bst.size = size;
         return bst;
+    }
+    private Tree<T> copyTree(Tree<T> source) {
+        if (source.is_empty()) return Empty;
+        Node node = (Node) source;
+        return new Node(node.item, copyTree(node.left), copyTree(node.right));
     }
     public Tree<T> successor(T x, Tree<T> ancestor){
         if( x == null || root.is_empty()) return Empty;
@@ -54,6 +57,7 @@ public class BstSet<T extends Comparable<? super T>> {
     public boolean is_bst(){
         return root.is_bst(Optional.empty(), Optional.empty());
     }
+    public void map_inorder(Consumer<? super T> cf) {
 	if (cf != null) root.map_inorder(cf);
     }
     public void ifPresent(Consumer<? super T> cf) {
@@ -80,8 +84,8 @@ public class BstSet<T extends Comparable<? super T>> {
     public Optional<T> min() { return Optional.empty(); }
     public Optional<T> max() { return Optional.empty(); }
     public Tree<T> clone() { return Empty; }
-    public Tree<T> successor(T x, Tree<T> ancestor) { return Empty; }
-    public Tree<T> predecessor(T x, Tree<T> ancestor) { return Empty; }
+    public Tree<T> successor(T x, Tree<T> ancestor) { return ancestor; }
+    public Tree<T> predecessor(T x, Tree<T> ancestor) { return ancestor; }
     public boolean is_bst(Optional<T> min, Optional<T> max){ return true; }
     public void map_inorder(Consumer<? super T> cf) {}
     public void ifPresent(Consumer<? super T> cf) {}
@@ -159,7 +163,7 @@ public class BstSet<T extends Comparable<? super T>> {
         }
         else{ // x = item
             if(!this.right.is_empty()){
-                return this.right; // successor is minimum in the right subtree
+                return this.right.successor(x, ancestor); // successor is minimum in the right subtree
             }
             return ancestor; // if theres no successor return an ancestor instead
         }
@@ -181,7 +185,7 @@ public class BstSet<T extends Comparable<? super T>> {
             }
             else{
                 if(!this.left.is_empty()){
-                    return this.right;
+                    return this.left.predecessor(x, ancestor);
                 }
                 return ancestor;
             }
@@ -243,22 +247,26 @@ public class BstSet<T extends Comparable<? super T>> {
 
     void LL(){
         Node y = (Node) this.left;
-        this.left = y.right;       // Update the left child of the current node to y's right child
-        y.right = this;            // Make the current node the right child of y
         T tempItem = this.item;
         this.item = y.item;
         y.item = tempItem;
+        this.left = y.left;
+        y.left = y.right;
+        y.right = this.right;
+        this.right = y;
 
         
     } 
     // implement these as part of the lab (see lab description)
     void RR(){
         Node y = (Node) this.right;
-        this.right = y.left;
-         y.left = this;
         T tempItem = this.item;
         this.item = y.item;
         y.item = tempItem; // changes to left child of current node
+        this.right = y.right;
+        y.right = y.left;
+        y.left = this.left;
+        this.left = y;
     }
   }//Node inner class
 

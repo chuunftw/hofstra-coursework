@@ -1,9 +1,7 @@
 import java.util.HashMap;
 import java.util.Comparator;
-import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 
@@ -72,22 +70,21 @@ public class HashedHeap<KT,VT extends Comparable<? super VT>> implements QuickHe
     keymap = new HashMap<KT,Integer>();
     Entries = makearray(16);
     if (maxheap) {
-      cmp = (x, y) -> y.val().compareTo(x.val()); 
-  } else {
       cmp = (x, y) -> x.val().compareTo(y.val()); 
+  } else {
+      cmp = (x, y) -> y.val().compareTo(x.val()); 
   }
   /* this is just a skeleton. You'll have to fill in the details */
   }
 
   // write a resize function that double capacity when needed.
   public int resize(int percent) {
-    int newcap = (keymap.size() * percent) / 100;
+    int newcap = Math.max(1, (int) ((long) Entries.length * percent / 100));
     if (newcap < size || percent < 1) {
-        return keymap.size();
+        return Entries.length;
     }
     
    
-    @SuppressWarnings("unchecked")
     KVPair<KT, VT>[] newEntries = makearray(newcap);
     System.arraycopy(Entries, 0, newEntries, 0, size);
     Entries = newEntries; 
@@ -174,11 +171,14 @@ public class HashedHeap<KT,VT extends Comparable<? super VT>> implements QuickHe
     public Optional<KVPair<KT, VT>> pop() {
         if (size <= 0) return Optional.empty(); // Return Optional.empty() if the heap is empty
         KVPair<KT, VT> answer = Entries[0];
-        Entries[0] = Entries[size - 1];
-        keymap.put(Entries[size - 1].key(), 0);
         keymap.remove(answer.key());
         size--;
-        swapdown(0);
+        if (size > 0) {
+            Entries[0] = Entries[size];
+            keymap.put(Entries[0].key(), 0);
+            swapdown(0);
+        }
+        Entries[size] = null;
         return Optional.of(answer);
     } // must run in O(log n) time
 
@@ -202,21 +202,20 @@ public Optional<VT> remove(KT key) {
     if (index == null) return Optional.empty();
     
     VT value = Entries[index].val();
-    Entries[index] = Entries[size - 1];
-    keymap.put(Entries[size - 1].key(), index);
-    keymap.remove(key);
     size--;
-    
-    if (cmp.compare(Entries[index], Entries[parent(index)]) > 0) {
-        swapup(index);
-    } else {
-        swapdown(index);
+    keymap.remove(key);
+    if (index < size) {
+        Entries[index] = Entries[size];
+        keymap.put(Entries[index].key(), index);
+        swapdown(swapup(index));
     }
+    Entries[size] = null;
     return Optional.of(value);
 }
  // must run in O(log n) time
 
   public Optional<VT> set(KT key, VT val) {
+    if (key == null || val == null) return Optional.empty();
   /*
     Change the value associated with the key.  Return the
     previous value.  First locate the entry using the
@@ -253,6 +252,7 @@ public Optional<VT> remove(KT key) {
 
 @Override
 public Optional<VT> find_n_modify(KT key, VT default_val, Function<? super VT, ? extends VT> modifier) {
+    if (key == null || modifier == null) return Optional.empty();
     Integer index = keymap.get(key);
     if (index == null) 
     {
@@ -262,7 +262,7 @@ public Optional<VT> find_n_modify(KT key, VT default_val, Function<? super VT, ?
     else 
     {
         VT currentVal = Entries[index].val();
-        VT newVal = modifier.apply(currentVal);
+        VT newVal = java.util.Objects.requireNonNull(modifier.apply(currentVal));
         Entries[index] = new KVPair<>(key, newVal);
         if (cmp.compare(Entries[index], Entries[parent(index)]) > 0) {
             swapup(index);

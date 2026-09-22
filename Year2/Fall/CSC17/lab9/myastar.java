@@ -49,6 +49,15 @@ public class myastar extends astar_base
 
 @Override
 public Optional<coord> search(int sy, int sx, int ty, int tx) {
+    if (sy < 0 || sy >= ROWS || sx < 0 || sx >= COLS
+            || ty < 0 || ty >= ROWS || tx < 0 || tx >= COLS
+            || costof[Map[sy][sx]] < 0 || costof[Map[ty][tx]] < 0) {
+        return Optional.empty();
+    }
+    int minimumCost = Integer.MAX_VALUE;
+    for (int cost : costof) {
+        if (cost >= 0) minimumCost = Math.min(minimumCost, cost);
+    }
     HashedHeap.set_initial_capacity(ROWS * COLS); 
     var Frontier = new HashedHeap<Integer, coord>((x, y) -> y.compareTo(x));
     boolean[][] Interior = new boolean[ROWS][COLS];
@@ -58,8 +67,8 @@ public Optional<coord> search(int sy, int sx, int ty, int tx) {
     
     coord current = new coord(sy,sx);
     //coord first = new coord(sy, sx);
-    current.add_estimated_cost(hexdist(sy, sx, ty, tx));
-    Frontier.push(current.hashCode(), current);
+    current.add_estimated_cost(minimumCost * hexdist(sy, sx, ty, tx));
+    Frontier.push(hash_key(sy, sx), current);
     
 
     while (Frontier.size() > 0) {
@@ -75,12 +84,12 @@ public Optional<coord> search(int sy, int sx, int ty, int tx) {
             int ny = current.y + DY[dir];
             int nx = current.x + DX[current.y % 2][dir];
 
-            if (ny >= 0 && nx >= 0 && ny < ROWS && nx < COLS && costof[Map[ny][nx]] > 0 && Interior[ny][nx] == false) {
+            if (ny >= 0 && nx >= 0 && ny < ROWS && nx < COLS && costof[Map[ny][nx]] >= 0 && Interior[ny][nx] == false) {
 
                 coord neighbor = new coord(ny, nx);
                 neighbor.set_parent(current);
                 neighbor.set_known_cost(current.known_cost() + costof[Map[ny][nx]]);
-                neighbor.add_estimated_cost(hexdist(ny, nx, ty, tx));
+                neighbor.add_estimated_cost(minimumCost * hexdist(ny, nx, ty, tx));
 
                 int key = hash_key(ny, nx); // Get the unique key for the coordinate
                 var exists = Frontier.get(key);

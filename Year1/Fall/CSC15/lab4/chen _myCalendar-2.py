@@ -31,7 +31,7 @@ def printMonthBody(year,month):
 
 def getStartDay(year,month):
     START_DAY_FOR_JAN_1_1800 = 3
-    totalNumberOfDays = getTotalNumberofDays(month, year)
+    totalNumberOfDays = getTotalNumberofDays(year, month)
     day = (totalNumberOfDays + START_DAY_FOR_JAN_1_1800) % 7
     return day
 
@@ -55,19 +55,17 @@ def getNumberOfDaysInMonth(year,month):
     if month in day30months:
         return 30
     if month in day28months:
-        return 28
+        return 29 if isLeapYear(year) else 28
     return 0
 
 def isLeapYear(year):
-    lEap = False
-    if year % 4 == 0:
-        lEap = True
-        print('It is a leap year')
-    print(isLeapYear)
+    return year % 400 == 0 or (year % 4 == 0 and year % 100 != 0)
 
 def readInput():
-    year = eval(input("Enter full year (e.g., 2001): "))
-    month = eval(input("Enter month as number between 1 and 12: "))
+    year = int(input("Enter full year (e.g., 2001): "))
+    month = int(input("Enter month as number between 1 and 12: "))
+    if year < 1800 or not 1 <= month <= 12:
+        raise ValueError("Enter a year of at least 1800 and a month from 1 to 12")
     return year, month
 
 def main():
@@ -75,4 +73,5 @@ def main():
     printMonth(year, month)
  
 
-main()
+if __name__ == "__main__":
+    main()

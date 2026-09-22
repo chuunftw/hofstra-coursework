@@ -1,7 +1,7 @@
 
-import java.util.Stack;
 public class maze extends mazebase
 {
+    private static final long serialVersionUID = 1L;
     // default constructor suffices and is equivalent to
     // public maze() { super(); }
 
