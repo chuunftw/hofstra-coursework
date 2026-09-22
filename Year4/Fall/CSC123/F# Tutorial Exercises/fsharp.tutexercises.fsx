@@ -245,6 +245,8 @@ printfn "double linked: %A" (doubleup linked)
 // map applies function f to every value and returns a new LList
 // stack is an accumulator that stores the results
 // this version produces the values in reverse order
+// Cons adds each new result to the front of stack.
+// Example: if stack is [4], adding 16 makes [16; 4], not [4; 16].
 let map f m =
     let rec inner current stack =
         match current with
@@ -280,7 +282,14 @@ let largestExample =
 
 // Exercise 7b (optional challenge):
 // Write a right-associative version of reduce that is still tail recursive.
-
+let foldRight op id list =
+    let reversed = reverse list
+    let rec inner remaining accumulator =
+        match remaining with 
+        | Nil -> accumulator
+        | Cons(head, tail) ->  inner tail (op head accumulator)
+// ngl didnt really understand but its optional ig 
+    inner reversed id
 
 // predicate is a function that returns bool
 // forall is true only if the predicate is true for every value
@@ -298,25 +307,58 @@ let thereExists predicate m =
 // Write howmany, which takes a predicate and an LList.
 // Return how many values make the predicate true.
 // Example question: how many odd values are in 2, 3, 5, 6, 9?
+let rec howmany predicate ll1 = 
+    match ll1 with 
+    | Nil -> 0 
+    | Cons(head, tail) -> 
+        if predicate head then 
+            1 + howmany predicate tail 
+        else
+            howmany predicate tail 
+let numbers = Cons(2, Cons(3, Cons(5, Cons(6, Cons(9, Nil)))))
 
+printfn "%d" (howmany (fun x -> x % 2 = 1) numbers)
 
 // Exercise 9:
 // Write filter, which takes a predicate and an LList.
 // Return an LList containing only values that make the predicate true.
 // The order of the returned values does not matter for this exercise.
-
+let rec filter predicate list = 
+    match list with 
+    | Nil -> Nil 
+    | Cons(head, tail) -> 
+        if predicate head then 
+            Cons(head, filter predicate tail)
+        else
+            filter predicate tail 
+//recursivily checks if fits the predicate, new head, if fails chops head off and repeats testing new head 
 
 // Exercise 9b:
 // Write until, which takes a predicate and an LList.
 // Return the list up to and including the first value that passes the predicate.
 // Return the entire list when no value passes the predicate.
-
+let rec until predicate list = 
+    match list with 
+    | Nil -> Nil 
+    | Cons(head, tail) -> 
+        if predicate head then 
+            Cons(head, Nil)
+        else
+            Cons(head, until predicate tail) 
 
 // Exercise 10:
 // Write subset to check if every value in the first LList appears in the second.
 // Order and the number of repeated values do not matter.
 // Think: for every x in A, there exists a y in B where x = y.
+let subset firstList secondList =
+    forall
+        (fun x -> thereExists (fun y -> x = y) secondList)
+        firstList
+//example test 
+let first = Cons(2, Cons(4, Nil))
+let second = Cons(4, Cons(2, Cons(3, Cons(4, Nil))))
 
+printfn "subset:%A" (subset first second)
 
 // Native Lists
 // [2;3;4;5] is the same structure as 2::3::4::5::[]
@@ -337,7 +379,11 @@ let toLList m =
 
 // Exercise 11:
 // Write the opposite conversion: convert an LList<'T> into a native F# list.
-
+let rec toNativeList list =
+    match list with
+    | Nil -> []
+    | Cons(head, tail) ->
+        head :: toNativeList tail
 
 // native lists have built-in functions in the List module
 let allEven = List.forall (fun x -> x % 2 = 0) [2;4;6;8]
