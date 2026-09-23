@@ -429,7 +429,7 @@ printfn "mutableNumber is 2: %A" (mutableNumber = 2)
 // Fix the function below by adding one line.
 // Do not use references.
 //
-let countdown x =
+let f x =
     let mutable x = x
     while x > 0 do
         printfn "%d" x
@@ -481,7 +481,12 @@ let firstArrayValue (values: 'T[]) = values[0]
 // Does the function receive a reference to the same array, or a complete copy?
 // Change an array element inside the function, then check the original array afterward.
 // Explain why changing array[0] is different from changing the variable array.
+let changeFirst (values: int[]) =
+    values[0] <- 99
 
+let numbers = [|2; 3; 5|]
+changeFirst numbers
+printfn "%A" numbers
 
 // References
 // a reference cell is a separate mutable location that stores a value
