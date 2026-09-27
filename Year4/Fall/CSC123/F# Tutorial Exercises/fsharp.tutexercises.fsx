@@ -484,9 +484,9 @@ let firstArrayValue (values: 'T[]) = values[0]
 let changeFirst (values: int[]) =
     values[0] <- 99
 
-let numbers = [|2; 3; 5|]
-changeFirst numbers
-printfn "%A" numbers
+let arrayNumbers = [|2; 3; 5|]
+changeFirst arrayNumbers
+printfn "%A" arrayNumbers
 
 // References
 // a reference cell is a separate mutable location that stores a value
@@ -604,3 +604,55 @@ vector[0] <- 5
 // a C# class library is built into a .dll file
 // the F# project can reference that .dll in its .fsproj file
 // after referencing it, F# can open the C# namespace and call its public members
+
+(*------------------------------------------------------------------------------------------------------*)
+
+(* F# Tutorial Exercises Addendum.
+
+   Given the definition of Numbers:
+*)
+
+
+// a. Define a function inverse that returns the inverse of the number as
+// Some(inverse) if the inverse exists, or None if there's no inverse.
+// Integer(0) and Rational(0,1), for example, have no inverse as the
+// denominator cannot be zero. A Rational(a,b) has inverse Rational(b,a)
+// if a is not zero.  A Real(r) has inverse Real(1.0/r) if r is not
+// 0.0.  A complex number a+bi has an inverse if not both a and b are
+// zeros, in which case the inverse is
+// let d = a*a+b*b in Some(Complex(a/d, b/d));
+
+//   I'll get you started:
+
+let inverse num =
+  match num with     // not equal
+    | Integer(x) when (x<>0) -> Some(Rational(1,x))
+    | Rational(a,b) when (a<>0) -> Some(Rational(b,a))
+    | Real(x) when (x<>0.0) -> Some(Real(1.0/x))
+    | Complex(a,b) when (a<>0.0) || (b<>0.0) -> 
+        let d = a*a+b*b 
+        Some(Complex(a/d , -b/d))
+// Use a-bi b/c (a+bi)*(a-bi) = a*a+b*b.
+// So the inverse is Complex(a/d, -b/d), where d = a*a+b*b, hence why its "-b/d"
+    | _ -> None  // default case
+printfn "inverse of 2 = %A" (inverse (Integer 2))
+
+// b. Assuming you've written the multiply function from the previous exercise,
+//    write a function divide that divides a by b by multiplying a with the
+//    inverse of b, if it exists.  This function should also return an
+//    Option<Number>, because the inverse may not exist (no divide by zero).
+
+// Hint: try to write this function using Option.map.  If you can't do
+// that, you can resort to pattern matching.
+
+let simplify number =
+    match number with
+    | Rational(a,b) when b <> 0 && a % b = 0 ->
+        Integer(a / b)
+    | _ -> number
+let divide x y =
+    match inverse y with
+    | Some value -> Some (simplify (multiply x value))
+    | None -> None
+    
+printfn "6 / 2 = %A" (divide (Integer 6) (Integer 2))
