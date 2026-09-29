@@ -16,3 +16,10 @@ TTh 1:00 - 2:25
 Seminar - W 5:15 - 6:05PM 
 
 Design - M 4:15-4:35PM
+
+
+MIDTERMS: 
+
+Cyber: 10/15/2026 (closed notebook, 75mins)
+  - Tuesday 10/13 review day in class 
+  - Topics: Modules 1-6 
