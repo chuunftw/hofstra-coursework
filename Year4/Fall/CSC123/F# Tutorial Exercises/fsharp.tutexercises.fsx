@@ -656,3 +656,24 @@ let divide x y =
     | None -> None
     
 printfn "6 / 2 = %A" (divide (Integer 6) (Integer 2))
+
+// c.
+
+let make_rat(a,b) = if b=0 then None else Some(Rational(a,b))
+
+// This function creates a rational Number but only if b is not zero.
+// 1. Write a function that takes two Option<Number> objects and multiply one
+// by the other, if both exist
+//
+// 2. Write a function that takes two Option<Number> objects and divide one
+// by the other, if both exist
+//
+// Both functions should return Option<Number>.  Try to use map/bind instead
+// of pattern matching (but use pattern matching if you can't do it otherwise).
+
+// test with
+let f1 = make_rat(1,2);
+let f2 = make_rat(2,3);
+let f3 = make_rat(2,0);
+let f4 = make_rat(0,1);
+

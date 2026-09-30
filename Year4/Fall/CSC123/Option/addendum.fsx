@@ -69,3 +69,39 @@ let divide x y =
     | None -> None
     
 printfn "6 / 2 = %A" (divide (Integer 6) (Integer 2))
+
+// c.
+
+let make_rat(a,b) = if b=0 then None else Some(Rational(a,b))
+
+// This function creates a rational Number but only if b is not zero.
+// 1. Write a function that takes two Option<Number> objects and multiply one
+// by the other, if both exist
+
+// bind is like map, but doesnt return it back rewrapped as some 
+
+let optionMultiply (x1: Option<Number>) (y1: Option<Number>) = 
+    x1 |> Option.bind (fun x -> y1 |> Option.map (fun y -> multiply x y))
+
+
+// 2. Write a function that takes two Option<Number> objects and divide one
+// by the other, if both exist
+
+let optionDivide (x2: Option<Number>) (y2: Option<Number>) = 
+    x2 |> Option.bind (fun x -> y2 |> Option.bind (fun y -> divide x y))
+//inner uses bind b/c divide already returns of type option 
+// Both functions should return Option<Number>.  Try to use map/bind instead
+// of pattern matching (but use pattern matching if you can't do it otherwise).
+
+// test with
+let f1 = make_rat(1,2);
+let f2 = make_rat(2,3);
+let f3 = make_rat(2,0);
+let f4 = make_rat(0,1);
+
+printfn "optionMultiply f1 f2 = %A" (optionMultiply f1 f2) // Some(Rational(2,6))
+printfn "optionMultiply f1 f3 = %A" (optionMultiply f1 f3) // None
+printfn "optionDivide f1 f2 = %A" (optionDivide f1 f2)     // Some(Rational(3,4))
+printfn "optionDivide f1 f3 = %A" (optionDivide f1 f3)     // None
+printfn "optionDivide f4 f2 = %A" (optionDivide f4 f2)     // Some(Integer 0)
+printfn "optionDivide f1 f4 = %A" (optionDivide f1 f4)     // None
