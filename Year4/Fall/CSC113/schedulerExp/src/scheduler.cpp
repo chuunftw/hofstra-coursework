@@ -23,12 +23,12 @@ void scheduler_loop(){
     int modcounter = tcounter % modulorange;
     for (int i =0; i<item_in_array; i++){
         if (modcounter == element_list[i].scheduled_time){
-            element_list[i].function_pointer
+            element_list[i].function_pointer();
         }
     }
 }
 
-void int1_scheduler(){
+void init_scheduler(){
     Timer1.initialize(scheduler_Resolution);
     Timer1.attachInterrupt(scheduler_loop);
 }

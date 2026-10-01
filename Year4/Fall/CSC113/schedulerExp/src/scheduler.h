@@ -11,5 +11,6 @@ struct scheduler_element{
 extern scheduler_element element_list[max_element_size];
 
 bool add_task (int scheduled_time, void (*function_pointer) ());
+void init_scheduler();
 
 #endif

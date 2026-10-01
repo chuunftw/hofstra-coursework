@@ -12,7 +12,7 @@ void setup() {
   Serial.begin(9600);
   add_task(100, function_handler_1);
   add_task(200, function_handler_2);
-  inti_scheduler();
+  init_scheduler();
 }
 
 void loop() {
