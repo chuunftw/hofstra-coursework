@@ -39,8 +39,8 @@ class LogisticRegression:
 		"""
 
 		## TODO
-
-		return np.array([])
+		probability = (1/(1+(np.exp(-x))))
+		return probability
 
 
 	def bce_loss(self, y, y_hat, epsilon=1e-16):
@@ -64,7 +64,7 @@ class LogisticRegression:
 
 		## TODO
 
-		bce_loss = 0.0
+		bce_loss = float(-np.mean(y * np.log(y_hat) + (1-y) * np.log(1-y_hat)))
 
 		return bce_loss
 
@@ -86,9 +86,9 @@ class LogisticRegression:
 		"""
 
 		## TODO
-
-		dL_dw = np.array([])
-		dL_db = 0.0
+		N = len(y)
+		dL_dw = (1/N)*(X.T)@(y_hat-y)
+		dL_db = float(np.mean(y_hat-y))
 
 		return dL_dw, dL_db
 
@@ -115,18 +115,28 @@ class LogisticRegression:
 
 		Returns:
 			list: Loss history containing the initial loss and the loss after each epoch.
-
 		"""
-
 		## TODO
-
 		# list to store loss history
 		loss_history = []
-	
+		d = X.shape[1] #columns of X (1 is columns, 0 is rows) 
 		# store w and b
-		self.w = np.array([])
+		self.w = np.zeros(d) 
 		self.b = 0.0
 		
+		for training in range(num_epochs):
+			z = X @ self.w + self.b 
+			y_hat = self.sigmoid(z)
+			loss = self.bce_loss(y,y_hat)
+			loss_history.append(loss) 
+			dL_dw, dL_db = self.bce_gradients(y,y_hat,X)
+			self.w = self.w - learning_rate * dL_dw
+			self.b = self.b - learning_rate * dL_db
+		z = X @ self.w + self.b
+		y_hat = self.sigmoid(z)
+		loss = self.bce_loss(y, y_hat)
+		loss_history.append(loss)
+  
 		return loss_history
 
 
@@ -148,9 +158,9 @@ class LogisticRegression:
 		"""
 
 		## TODO
-
-		y_hat_class = np.array([])
-
+		z = X @ self.w + self.b 
+		y_hat = self.sigmoid(z)
+		y_hat_class = (y_hat >= threshold).astype(int)
 		return y_hat_class
 
 	

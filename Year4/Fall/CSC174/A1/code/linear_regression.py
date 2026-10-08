@@ -41,12 +41,15 @@ class LinearRegression:
 		## TODO
 
 		# store w and b 
-		self.w = np.array([])
-		self.b = 0.0
+		ones = np.ones((X.shape[0],1))
+		Xt = np.hstack((X,ones))
+  
+		w_tilde = np.linalg.inv(Xt.T @ Xt) @ Xt.T @ y
+		self.w = w_tilde[:-1] # :-1 means take everything but last element 
+		self.b = float(w_tilde[-1]) 
 
 
 	def mse_loss(self, y, y_hat):
-
 		"""
 		Compute the mean squared error (MSE) loss.
 
@@ -61,7 +64,7 @@ class LinearRegression:
 
 		## TODO
 
-		mse_loss = 0.0
+		mse_loss = float(np.mean((y-y_hat)**2))
 
 		return mse_loss
 
@@ -83,15 +86,14 @@ class LinearRegression:
 		"""
 
 		## TODO
-
-		dL_dw = np.array([])
-		dL_db = 0.0
+		N = X.shape[0]
+		dL_dw = (2/N)*(X.T)@(y_hat-y)
+		dL_db = float((2)*np.mean(y_hat-y))
 
 		return dL_dw, dL_db
 
 
 	def train_batch_gradient_descent(self, X, y, learning_rate, num_epochs):
-
 		"""
 		Train a linear regression model using MSE loss and batch gradient descent.
 
@@ -114,19 +116,27 @@ class LinearRegression:
 			list: Loss history containing the initial loss and the loss after each epoch.
 
 		"""
-
 		## TODO
 
 		# list to store loss history
 		loss_history = []
 	
 		# store w and b
-		self.w = np.array([])
+		d = X.shape[1]
+		self.w = np.zeros(d) 
 		self.b = 0.0
-		
+  
+		for training in range(num_epochs):
+			y_hat = X @ self.w + self.b
+			loss = self.mse_loss(y,y_hat)
+			loss_history.append(loss)
+			dL_dw, dL_db = self.mse_gradients(y,y_hat,X)
+			self.w = self.w - learning_rate * dL_dw
+			self.b = self.b - learning_rate * dL_db
+		y_hat = X @ self.w + self.b 
+		loss = self.mse_loss(y,y_hat)
+		loss_history.append(loss)
 		return loss_history
-
-		
 
 	def predict(self, X):
 
@@ -143,7 +153,7 @@ class LinearRegression:
 
 		## TODO
 
-		y_hat = np.array([])
+		y_hat = X @ self.w + self.b 
 
 		return y_hat
 

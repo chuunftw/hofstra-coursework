@@ -49,7 +49,15 @@ def part1():
 
 	
 	## TODO
-
+	model_1d_linear = LinearRegression()
+	model_1d_nonlinear = LinearRegression()
+	model_2d_linear = LinearRegression() 
+ 
+	#Training all 3 models 
+	model_1d_linear.train_closed_form(X_lin_reg_1d_linear_dataset,y_lin_reg_1d_linear_dataset)
+	model_1d_nonlinear.train_closed_form(X_lin_reg_1d_nonlinear_dataset, y_lin_reg_1d_nonlinear_dataset)
+	model_2d_linear.train_closed_form(X_lin_reg_2d_dataset, y_lin_reg_2d_dataset)
+ 
 	# save figures
 	fig_1d_linear.savefig(join(plots_directory, 'part1_lin_reg_1d_linear.png'))
 	fig_1d_nonlinear.savefig(join(plots_directory, 'part1_lin_reg_1d_nonlinear.png'))
