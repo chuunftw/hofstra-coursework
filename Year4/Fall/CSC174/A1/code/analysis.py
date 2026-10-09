@@ -58,6 +58,63 @@ def part1():
 	model_1d_nonlinear.train_closed_form(X_lin_reg_1d_nonlinear_dataset, y_lin_reg_1d_nonlinear_dataset)
 	model_2d_linear.train_closed_form(X_lin_reg_2d_dataset, y_lin_reg_2d_dataset)
  
+	#Predict y hat for all models 
+	y_hat_1d_linear = model_1d_linear.predict(X_lin_reg_1d_linear_dataset)
+	y_hat_1d_nonlinear = model_1d_nonlinear.predict(X_lin_reg_1d_nonlinear_dataset)
+	y_hat_2d = model_2d_linear.predict(X_lin_reg_2d_dataset)
+	
+	#plotting 1d linear  
+ 
+	ax = fig_1d_linear.add_subplot(111)
+	x = X_lin_reg_1d_linear_dataset[:,0]
+	order = np.argsort(x)
+	ax.scatter(x, y_lin_reg_1d_linear_dataset, label="Training data")
+	ax.plot(x[order], y_hat_1d_linear[order], color="red", label="Fitted line")
+	ax.set_title("1D linear dataset")
+	ax.set_xlabel("Input x")
+	ax.set_ylabel("Target y")
+	ax.legend()
+ 
+	#plotting 1d non linear 
+	ax = fig_1d_nonlinear.add_subplot(111)
+	x = X_lin_reg_1d_nonlinear_dataset[:, 0]
+	order = np.argsort(x)
+	ax.scatter(x, y_lin_reg_1d_nonlinear_dataset, label="Training data")
+	ax.plot(x[order], y_hat_1d_nonlinear[order], color="red", label="Fitted line")
+	ax.set_title("1D nonlinear dataset")
+	ax.set_xlabel("Input x")
+	ax.set_ylabel("Target y")
+	ax.legend()
+
+	#plotting 2d linear 
+	ax = fig_2d.add_subplot(111, projection="3d")
+	x1 = X_lin_reg_2d_dataset[:, 0]
+	x2 = X_lin_reg_2d_dataset[:, 1]
+	points = ax.scatter(x1, x2, y_lin_reg_2d_dataset, label="Training data")
+	ax.plot_trisurf(x1, x2, y_hat_2d, color="red", alpha=0.3)
+	ax.set_title("2D linear dataset")
+	ax.set_xlabel("Input x1")
+	ax.set_ylabel("Input x2")
+	ax.set_zlabel("Target y")
+	plane_label = plt.Line2D([], [], color="red", marker="s", linestyle="None", label="Fitted plane")
+	ax.legend(handles=[points, plane_label])
+	fig_2d.tight_layout()
+ 
+	#MSE loss 
+	lin_reg_1d_linear_mse_loss = model_1d_linear.mse_loss(y_lin_reg_1d_linear_dataset, y_hat_1d_linear)
+	lin_reg_1d_nonlinear_mse_loss = model_1d_nonlinear.mse_loss(y_lin_reg_1d_nonlinear_dataset, y_hat_1d_nonlinear)
+	lin_reg_2d_mse_loss = model_2d_linear.mse_loss(y_lin_reg_2d_dataset, y_hat_2d)
+ 
+	#model parameters 
+	lin_reg_1d_linear_w = model_1d_linear.w
+	lin_reg_1d_linear_b = model_1d_linear.b
+
+	lin_reg_1d_nonlinear_w = model_1d_nonlinear.w
+	lin_reg_1d_nonlinear_b = model_1d_nonlinear.b
+
+	lin_reg_2d_w = model_2d_linear.w
+	lin_reg_2d_b = model_2d_linear.b
+ 
 	# save figures
 	fig_1d_linear.savefig(join(plots_directory, 'part1_lin_reg_1d_linear.png'))
 	fig_1d_nonlinear.savefig(join(plots_directory, 'part1_lin_reg_1d_nonlinear.png'))
@@ -104,7 +161,36 @@ def part2():
 
 	
 	## TODO
+	# create objects 
+	model_closed_form = LinearRegression()
+	model_gradient_descent = LinearRegression()
 
+	# train models both ways 
+	model_closed_form.train_closed_form(X, y)
+	train_loss = model_gradient_descent.train_batch_gradient_descent(X, y, learning_rate=0.01, num_epochs=1000)
+
+	# predicted y values 
+	y_hat_closed_form = model_closed_form.predict(X)
+	y_hat_gradient_descent = model_gradient_descent.predict(X)
+ 
+	# MSE loss values  
+	mse_closed_form = model_closed_form.mse_loss(y, y_hat_closed_form)
+	mse_gradient_descent = model_gradient_descent.mse_loss(y, y_hat_gradient_descent)
+ 
+	# learned weights + bias 
+	w_closed_form = model_closed_form.w
+	b_closed_form = model_closed_form.b 
+	w_gradient_descent = model_gradient_descent.w
+	b_gradient_descent = model_gradient_descent.b
+	
+	#create plot 
+	ax = fig_loss_curve.add_subplot(111)
+	ax.plot(range(len(train_loss)), train_loss, label="Gradient descent")
+	ax.set_title("California Housing training loss")
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("MSE loss")
+	ax.legend()
+ 
 	# save figure
 	fig_loss_curve.savefig(join(plots_directory, 'part2_lin_reg_gradient_descent_loss_curve.png'))
 
@@ -158,7 +244,7 @@ def part3():
 
 
 	# TODO
-
+	
 
 	# save figures
 	fig_loss_curve_1.savefig(join(plots_directory, 'part3_loss_curve_learning_rate=.00001.png'))
@@ -183,6 +269,5 @@ if __name__ == '__main__':
 	part1()
 	part2()
 	part3()
-
 
 
