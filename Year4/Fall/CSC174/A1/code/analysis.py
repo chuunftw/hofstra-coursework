@@ -245,6 +245,57 @@ def part3():
 
 	# TODO
 	
+	# initalize models 
+	model1 = LogisticRegression()
+	model2 = LogisticRegression()
+	model3 = LogisticRegression()
+
+	# training logistic models 
+	train_loss1 = model1.train_batch_gradient_descent(X, y, .00001, 500)
+	train_loss2 = model2.train_batch_gradient_descent(X, y, .05, 500)
+	train_loss3 = model3.train_batch_gradient_descent(X, y, 2.0, 500)
+
+	# saving loss history as last element in loss arrays 
+	loss1 = train_loss1[len(train_loss1)-1]
+	loss2 = train_loss2[len(train_loss2)-1]
+	loss3 = train_loss3[len(train_loss3)-1]
+
+	# training accurarcy 
+	yhat1 = model1.predict(X)
+	yhat2 = model2.predict(X)
+	yhat3 = model3.predict(X)
+	acc1 = accuracy_score(y, yhat1)
+	acc2 = accuracy_score(y, yhat2)
+	acc3 = accuracy_score(y, yhat3)
+
+	# plot loss curves
+	ax = fig_loss_curve_1.add_subplot(111)
+	ax.plot(range(len(train_loss1)), train_loss1, label="Gradient descent 1")
+	ax.set_title("Logistic regression loss - learning rate = 0.00001")
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("BCE loss")
+	ax.legend()
+
+	ax = fig_loss_curve_2.add_subplot(111)
+	ax.plot(range(len(train_loss2)), train_loss2, label="Gradient descent 2")
+	ax.set_title("Logistic regression loss - learning rate = 0.05")
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("BCE loss")
+	ax.legend()
+
+	ax = fig_loss_curve_3.add_subplot(111)
+	ax.plot(range(len(train_loss3)), train_loss3, label="Gradient descent 3")
+	ax.set_title("Logistic regression loss - learning rate = 2")
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("BCE loss")
+	ax.legend()
+
+	# plot decision boundaries
+	fig_decision_boundary_1 = plot_decision_boundary(X, y, model1, "Learning rate = 0.00001")
+	fig_decision_boundary_2 = plot_decision_boundary(X, y, model2, "Learning rate = .05")
+	fig_decision_boundary_3 = plot_decision_boundary(X, y, model3, "Learning rate = 2")
+
+
 
 	# save figures
 	fig_loss_curve_1.savefig(join(plots_directory, 'part3_loss_curve_learning_rate=.00001.png'))
