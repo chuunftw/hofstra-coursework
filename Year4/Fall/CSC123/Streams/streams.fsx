@@ -13,14 +13,17 @@ type Stream<'T> = unit -> Option<'T>
 (* -----------------------------------------------------------------------
    A stream is a possibly infinite sequence of values.  A stream of
    values of type 'T is represented by a function of type (unit ->
-   Option<'T>).  Each time the function is called, it either returns a
+   Option<'T>). Each time the function is called, it either returns a
    next value (Some value) or None if there are no more values.  For
    example, the function (fun () -> None) represents the empty stream.
-   The following infinte stream generates all even integers starting
+   The following infinte stream generates all EVEN integers starting
    from zero:
 *)
 let mutable n = 0
 let evenints() = fun () -> (n <- n+2; Some(n-2))
+
+// mutable closure: a function that remembers a variable from where it was created 
+// f# variables are immutable by default 
 
 (* Most streams are mutable closures such as evenints.  These closures
    can be modified by a series of operations.
@@ -49,7 +52,7 @@ let limit n stream =
 
 let map mapfun stream =
   fun () -> stream() |> omap mapfun
-
+// "|> passes a value to a function"
 (* For example, evenints |> map (fun x -> x*x) generates the sequence
    0 4 16 36 ...
 
@@ -148,7 +151,7 @@ let bind binder stream = stream |> map binder |> flatten
    bind will be useful when we create streams from options
 *)
 
-// conver option to stream
+// convert option to stream
 let to_stream opt =
   match opt with
     | None -> fun() -> None
@@ -198,7 +201,7 @@ let for_each action stream =
 // foreach
 
 ///// print the first 10 even numbers:
-evenints() |> limit 10 |> foreach (fun x -> printfn "number %d" x)
+// evenints() |> limit 10 |> foreach (fun x -> printfn "number %d" x)
 
 (* Notice that we defined evenints as a function so that each call to
    evenints() re-creates the stream.  Each call to foreach consumes
@@ -304,10 +307,10 @@ let coinduction base_case gen_next =
     Some(previous)
 
 //// Fibonacci sequence, like you've never seen it before:
-coinduction (0,1) (fun (a,b) -> (b,a+b))
-  |> map (fun (x,y) -> y)
-  |> limit 20
-  |> foreach (printfn "FIB: %A")
+// coinduction (0,1) (fun (a,b) -> (b,a+b))
+//   |> map (fun (x,y) -> y)
+//   |> limit 20
+//   |> foreach (printfn "FIB: %A")
   
 //// The coinduction generates an infinite sequence of pairs (a,b)
 //// starting from (0,1).  We apply map to take just the second value
@@ -322,7 +325,7 @@ let factorial(n) =
     |> map (fun (x,y) -> y)
     |> nth n |> Option.get
 
-printfn "%d" (factorial 6)  // prints 720.
+// printfn "%d" (factorial 6)  // prints 720.
 
 // We applied Option.get.  The justification is that n! exists.
 // But we may want coinduction to be limited, for example, when overflow occurs,
@@ -342,8 +345,8 @@ let n_factorial(n) =
   |> map (fun (_,y) -> y)
   |> nth n
 
-printfn "%A" (n_factorial(6))
-printfn "%A" (n_factorial(60));
+// printfn "%A" (n_factorial(6))
+// printfn "%A" (n_factorial(60));
 
 (*
    The next series of definitions will culminate in defining the infinte
@@ -408,13 +411,18 @@ let next_prime (known_primes:Vec<int>) =
 
 let primes() = limited_seeded_coinduction [] next_prime
 
-primes() |> limit 100 |> foreach (printf "%d ")
-printfn ""
+// primes() |> limit 100 |> foreach (printf "%d ")
+// printfn ""
 
 
-(* -------------------------------------------------------------------
-   YOUR ASSIGNMENT:
 
+
+// =====================================================================
+// YOUR IMPLEMENTATIONS
+// =====================================================================
+
+// Mutable-closure exercise: maketoggle
+(*
    1. The first exercise just asks you to practice creating a mutable
       closure.  A "toggle" is a function that alternates between returning
       true and false.  Write a function maketoggle() that has the following
@@ -429,12 +437,26 @@ printfn ""
 
    Follow the example of "makea_ccumulator" in
    https://cs.hofstra.edu/~cscccl/csc123/closures.fsx
+*)
+// TODO: Return a function alternating true, false, true, ... .
+// Each call to maketoggle() must create its own independent toggle.
+// See the makea_ccumulator example referenced in the assignment.
+let maketoggle () : (unit -> bool) =
+    let mutable value = true 
+    fun () -> 
+      let result = value
+      value <- not value 
+      result
 
-   ---------------------------------------------
+let toggle1 = maketoggle()
+let toggle2 = maketoggle()
+printfn "%A" (toggle1())   // prints true
+printfn "%A" (toggle1())   // prints false
+printfn "%A" (toggle1())   // prints true
+printfn "%A" (toggle2())   // prints true
 
-
-   Add the following functions for streams
-
+// Stream exercise 1: until
+(*
    1. until predicate stream   (let until predicate stream = ... )   
 
     This operation is similar to take_while but will INCLUDE the
@@ -446,34 +468,78 @@ printfn ""
     primes() |> take_while (fun p -> p<=10) will stop at 7
 
     So until is not just the inverse of take_while.
+*)
+// TODO: Include values through the FIRST value satisfying predicate.
+// Include that matching value, then stop. Handle an exhausted source too.
+// Example: primes() |> until (fun p -> p > 10) produces 2,3,5,7,11.
+let until (predicate: 'T -> bool) (stream: Stream<'T>) : Stream<'T> =
+    
 
+// Stream exercise 2: skip
+(*
    2. skip n stream
 
       This operation should take a stream and skip the first n values,
       returning the modified stream.  Be sure to call stream() |> ignore
       to ignore values returned by the stream
+*)
+// TODO: Skip the first n values and return the modified stream.
+// The document specifically asks you to use stream() |> ignore.
+let skip (n: int) (stream: Stream<'T>) : Stream<'T> =
+    failwith "TODO: implement skip"
 
+// Stream exercise 3: find_last
+(*
    3. find_last predicate stream
 
       This operation works like find_first but returns the last value
       for which the predicate holds.  This function should return Some(value)
       or None.
+*)
+// TODO: Return Some(last matching value), or None if there is no match.
+// Use a finite stream when checking a function that needs the last value.
+let find_last (predicate: 'T -> bool) (stream: Stream<'T>) : 'T option =
+    failwith "TODO: implement find_last"
 
+// Stream exercise 4: get_last
+(*
    4. get_last stream
       This operation should return the last value generated by a stream.
       This should be easy given find_last.  Think of what predicate to
       pass to find_last.  Note that since the entire stream may be empty,
       this function must still return an option.
+*)
+// TODO: Use find_last with an appropriate predicate to get the last value.
+// An empty stream must produce None.
+let get_last (stream: Stream<'T>) : 'T option =
+    failwith "TODO: implement get_last"
 
+// Stream exercise 5: powers of two
+(*
    5.  Use coinduction to define all powers of two: 1 2 4 8 16 32 64 128 ...
+*)
+// TODO: Use coinduction to generate 1,2,4,8,16,32,64,128,... .
+// This starter uses a function so each call can create a fresh stream.
+// Limit the stream when printing or checking it.
+let powers_of_two () : Stream<int> =
+    failwith "TODO: define powers of two using coinduction"
 
+// Stream exercise 6: prime factors
+(*
    6.  Using the stream of primes, write a procedure that prints all
        prime factors of a number n.  (a prime factor of n is a prime p
        such that n%p==0).  Use a combination of take_while, filter,
        etc...
 
        For example:  primefactors 10001 should print 73 and 137
+*)
+// TODO: Use primes() and stream operations such as take_while and filter
+// to print the prime factors of n. Example: primefactors 10001 prints 73,137.
+let primefactors (n: int) : unit =
+    failwith "TODO: print the prime factors"
 
+// Stream exercise 7: binary factors
+(*
    7. The binary factors of a number, such as 45, can be computed with
       the following sequence of pairs
 
@@ -488,7 +554,16 @@ printfn ""
       Use this sequence to write a function that prints all the binary
       factors of n.  You will need a combination of take_while, filter
       and map.
+*)
+// TODO: Start with the exact sequence supplied in the document:
+//   coinduction (1,n) (fun (f,m) -> (f*2, m/2))
+// Combine take_while, filter and map to print the binary factors.
+// Example: binaryfactors 45 prints 1,4,8,32.
+let binaryfactors (n: int) : unit =
+    failwith "TODO: print the binary factors"
 
+// Stream exercise 8 (challenge): power via coinduction
+(*
   8. (challenge) The following function computes m to the nth power in
      log(n) steps by binary factorization on n:
 
@@ -537,66 +612,6 @@ printfn ""
          | Some(a,_,_,_) when a>0 -> Some(a)
          | _ -> None
 *)
-
-
-// =====================================================================
-// YOUR IMPLEMENTATIONS - no exercise solutions are filled in below.
-// =====================================================================
-
-// Mutable-closure exercise: maketoggle
-// TODO: Return a function alternating true, false, true, ... .
-// Each call to maketoggle() must create its own independent toggle.
-// See the makea_ccumulator example referenced in the assignment.
-let maketoggle () : (unit -> bool) =
-    failwith "TODO: implement maketoggle"
-
-// Stream exercise 1: until
-// TODO: Include values through the FIRST value satisfying predicate.
-// Include that matching value, then stop. Handle an exhausted source too.
-// Example: primes() |> until (fun p -> p > 10) produces 2,3,5,7,11.
-let until (predicate: 'T -> bool) (stream: Stream<'T>) : Stream<'T> =
-    failwith "TODO: implement until"
-
-// Stream exercise 2: skip
-// TODO: Skip the first n values and return the modified stream.
-// The document specifically asks you to use stream() |> ignore.
-let skip (n: int) (stream: Stream<'T>) : Stream<'T> =
-    failwith "TODO: implement skip"
-
-// Stream exercise 3: find_last
-// TODO: Return Some(last matching value), or None if there is no match.
-// Use a finite stream when checking a function that needs the last value.
-let find_last (predicate: 'T -> bool) (stream: Stream<'T>) : 'T option =
-    failwith "TODO: implement find_last"
-
-// Stream exercise 4: get_last
-// TODO: Use find_last with an appropriate predicate to get the last value.
-// An empty stream must produce None.
-let get_last (stream: Stream<'T>) : 'T option =
-    failwith "TODO: implement get_last"
-
-// Stream exercise 5: powers of two
-// TODO: Use coinduction to generate 1,2,4,8,16,32,64,128,... .
-// This starter uses a function so each call can create a fresh stream.
-// Limit the stream when printing or checking it.
-let powers_of_two () : Stream<int> =
-    failwith "TODO: define powers of two using coinduction"
-
-// Stream exercise 6: prime factors
-// TODO: Use primes() and stream operations such as take_while and filter
-// to print the prime factors of n. Example: primefactors 10001 prints 73,137.
-let primefactors (n: int) : unit =
-    failwith "TODO: print the prime factors"
-
-// Stream exercise 7: binary factors
-// TODO: Start with the exact sequence supplied in the document:
-//   coinduction (1,n) (fun (f,m) -> (f*2, m/2))
-// Combine take_while, filter and map to print the binary factors.
-// Example: binaryfactors 45 prints 1,4,8,32.
-let binaryfactors (n: int) : unit =
-    failwith "TODO: print the binary factors"
-
-// Stream exercise 8 (challenge): power via coinduction
 // TODO: Rewrite the document's recursive power function using coinduction,
 // until and get_last. Follow its hint about a local next function on the
 // tuple (ax,factor,n). Keep multiplier and identity generic for matrices.
@@ -657,3 +672,6 @@ let Fib n =
 
 // TODO: Add your own checks for empty streams, missing matches, skip 0,
 // skipping past the end, and until matching the first value.
+
+// let test_stream = finite_stream [2; 4; 7; 8]
+// test_stream |> take_while (fun x -> x < 6) |> foreach (printfn "%d")
