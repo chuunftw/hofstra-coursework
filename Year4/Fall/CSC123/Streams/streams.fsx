@@ -287,6 +287,9 @@ let finite_stream<'T> (m:'T list) =
       index <- index + 1
       Some(m[index-1])
 
+// let test_stream = finite_stream [2; 4; 7; 8]
+// test_stream |> take_while (fun x -> x < 6) |> foreach (printfn "%d")
+
 let empty_stream() = fun () -> None
 
 let input_stream() = fun () ->
@@ -421,19 +424,17 @@ let primes() = limited_seeded_coinduction [] next_prime
 // YOUR IMPLEMENTATIONS
 // =====================================================================
 
+// Optional manual checks: uncomment individually after implementing.
+// Create fresh streams for separate checks; consuming a stream changes it.
+// TODO: Add your own checks for empty streams, missing matches, skip 0,
+// skipping past the end, and until matching the first value.
+
 // Mutable-closure exercise: maketoggle
 (*
    1. The first exercise just asks you to practice creating a mutable
       closure.  A "toggle" is a function that alternates between returning
       true and false.  Write a function maketoggle() that has the following
       behavior:
-
-      let toggle1 = maketoggle()
-      let toggle2 = maketoggle()
-      printfn "%A" (toggle1())   // prints true
-      printfn "%A" (toggle1())   // prints false
-      printfn "%A" (toggle1())   // prints true
-      printfn "%A" (toggle2())   // prints true
 
    Follow the example of "makea_ccumulator" in
    https://cs.hofstra.edu/~cscccl/csc123/closures.fsx
@@ -455,6 +456,13 @@ printfn "%A" (toggle1())   // prints false
 printfn "%A" (toggle1())   // prints true
 printfn "%A" (toggle2())   // prints true
 
+// let toggle1 = maketoggle()
+// let toggle2 = maketoggle()
+// printfn "%A" (toggle1()) // true
+// printfn "%A" (toggle1()) // false
+// printfn "%A" (toggle1()) // true
+// printfn "%A" (toggle2()) // true
+
 // Stream exercise 1: until
 (*
    1. until predicate stream   (let until predicate stream = ... )   
@@ -473,7 +481,23 @@ printfn "%A" (toggle2())   // prints true
 // Include that matching value, then stop. Handle an exhausted source too.
 // Example: primes() |> until (fun p -> p > 10) produces 2,3,5,7,11.
 let until (predicate: 'T -> bool) (stream: Stream<'T>) : Stream<'T> =
-    
+    let mutable finished = false 
+    fun () -> 
+      if finished then 
+        None 
+      else 
+        match stream() with 
+        | None -> 
+          finished <- true 
+          None 
+        | Some(x) -> 
+          if predicate x then 
+            finished <- true 
+          Some(x)
+
+
+primes() |> until (fun p -> p > 10) |> foreach (printfn "%d")
+// Expected: 2,3,5,7,11
 
 // Stream exercise 2: skip
 (*
@@ -486,7 +510,13 @@ let until (predicate: 'T -> bool) (stream: Stream<'T>) : Stream<'T> =
 // TODO: Skip the first n values and return the modified stream.
 // The document specifically asks you to use stream() |> ignore.
 let skip (n: int) (stream: Stream<'T>) : Stream<'T> =
-    failwith "TODO: implement skip"
+    for i in 1 .. n do // 1 through n inclusive 
+      stream() |> ignore
+    stream
+  
+
+finite_stream [10;20;30;40] |> skip 2 |> foreach (printfn "%d")
+// Expected: 30,40
 
 // Stream exercise 3: find_last
 (*
@@ -499,7 +529,22 @@ let skip (n: int) (stream: Stream<'T>) : Stream<'T> =
 // TODO: Return Some(last matching value), or None if there is no match.
 // Use a finite stream when checking a function that needs the last value.
 let find_last (predicate: 'T -> bool) (stream: Stream<'T>) : 'T option =
-    failwith "TODO: implement find_last"
+    let mutable last = None 
+    let mutable next = stream()
+    while is_some next do 
+      match next with 
+      | Some(x) -> 
+        if predicate x then 
+            last <- Some(x)
+      | None -> () 
+
+      next <- stream() 
+    last 
+
+finite_stream [1;2;3;4] |> find_last (fun x -> x % 2 = 0) |> printfn "%A"
+// Expected: Some 4
+finite_stream [1;3] |> find_last (fun x -> x % 2 = 0) |> printfn "%A"
+// Expected: None
 
 // Stream exercise 4: get_last
 (*
@@ -514,6 +559,9 @@ let find_last (predicate: 'T -> bool) (stream: Stream<'T>) : 'T option =
 let get_last (stream: Stream<'T>) : 'T option =
     failwith "TODO: implement get_last"
 
+// finite_stream [10;20;30] |> get_last |> printfn "%A" // Some 30
+// finite_stream ([]: int list) |> get_last |> printfn "%A" // None
+
 // Stream exercise 5: powers of two
 (*
    5.  Use coinduction to define all powers of two: 1 2 4 8 16 32 64 128 ...
@@ -523,6 +571,9 @@ let get_last (stream: Stream<'T>) : 'T option =
 // Limit the stream when printing or checking it.
 let powers_of_two () : Stream<int> =
     failwith "TODO: define powers of two using coinduction"
+
+// powers_of_two() |> limit 8 |> foreach (printfn "%d")
+// Expected: 1,2,4,8,16,32,64,128
 
 // Stream exercise 6: prime factors
 (*
@@ -537,6 +588,8 @@ let powers_of_two () : Stream<int> =
 // to print the prime factors of n. Example: primefactors 10001 prints 73,137.
 let primefactors (n: int) : unit =
     failwith "TODO: print the prime factors"
+
+// primefactors 10001 // 73,137
 
 // Stream exercise 7: binary factors
 (*
@@ -561,6 +614,8 @@ let primefactors (n: int) : unit =
 // Example: binaryfactors 45 prints 1,4,8,32.
 let binaryfactors (n: int) : unit =
     failwith "TODO: print the binary factors"
+
+// binaryfactors 45   // 1,4,8,32
 
 // Stream exercise 8 (challenge): power via coinduction
 (*
@@ -620,6 +675,8 @@ let binaryfactors (n: int) : unit =
 let power (m: 'T) (n: int) (multiplier: 'T -> 'T -> 'T) (identity: 'T) : 'T option =
     failwith "TODO: rewrite power using coinduction"
 
+// printfn "%A" (power 2 8 (*) 1) // Some 256
+
 // Provided challenge support from the document (not an exercise solution).
 type M2x2 = (int64 * int64 * int64 * int64)
 
@@ -636,42 +693,4 @@ let Fib n =
     | Some(a,_,_,_) when a > 0L -> Some(a)
     | _ -> None
 
-// =====================================================================
-// OPTIONAL MANUAL CHECKS - uncomment individually after implementing.
-// Create fresh streams for separate checks; consuming a stream changes it.
-// =====================================================================
-
-// let toggle1 = maketoggle()
-// let toggle2 = maketoggle()
-// printfn "%A" (toggle1()) // true
-// printfn "%A" (toggle1()) // false
-// printfn "%A" (toggle1()) // true
-// printfn "%A" (toggle2()) // true
-
-// primes() |> until (fun p -> p > 10) |> foreach (printfn "%d")
-// Expected: 2,3,5,7,11
-
-// finite_stream [10;20;30;40] |> skip 2 |> foreach (printfn "%d")
-// Expected: 30,40
-
-// finite_stream [1;2;3;4] |> find_last (fun x -> x % 2 = 0) |> printfn "%A"
-// Expected: Some 4
-// finite_stream [1;3] |> find_last (fun x -> x % 2 = 0) |> printfn "%A"
-// Expected: None
-
-// finite_stream [10;20;30] |> get_last |> printfn "%A" // Some 30
-// finite_stream ([]: int list) |> get_last |> printfn "%A" // None
-
-// powers_of_two() |> limit 8 |> foreach (printfn "%d")
-// Expected: 1,2,4,8,16,32,64,128
-
-// primefactors 10001 // 73,137
-// binaryfactors 45   // 1,4,8,32
-// printfn "%A" (power 2 8 (*) 1) // Some 256
 // printfn "%A" (Fib 10) // Some 55L
-
-// TODO: Add your own checks for empty streams, missing matches, skip 0,
-// skipping past the end, and until matching the first value.
-
-// let test_stream = finite_stream [2; 4; 7; 8]
-// test_stream |> take_while (fun x -> x < 6) |> foreach (printfn "%d")
