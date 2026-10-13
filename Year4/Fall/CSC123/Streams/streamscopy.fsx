@@ -456,12 +456,6 @@ printfn "%A" (toggle1())   // prints false
 printfn "%A" (toggle1())   // prints true
 printfn "%A" (toggle2())   // prints true
 
-// let toggle1 = maketoggle()
-// let toggle2 = maketoggle()
-// printfn "%A" (toggle1()) // true
-// printfn "%A" (toggle1()) // false
-// printfn "%A" (toggle1()) // true
-// printfn "%A" (toggle2()) // true
 
 // Stream exercise 1: until
 (*
