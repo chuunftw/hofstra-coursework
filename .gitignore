@@ -6,3 +6,4 @@
 *.class
 .venv/
 .env/
+/Year4/Fall/CSC113/FreeRTOSExp1/
