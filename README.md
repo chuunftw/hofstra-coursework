@@ -20,6 +20,6 @@ Design - M 4:15-4:35PM
 
 MIDTERMS: 
 
-Cyber: 10/15/2026 (closed notebook, 75mins)
+Cyber: 10/15/2026 (closed notebook, 70mins)
   - Tuesday 10/13 review day in class 
-  - Topics: Modules 1-6 
+  - Topics: Modules 1-5
