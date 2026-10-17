@@ -551,7 +551,7 @@ finite_stream [1;3] |> find_last (fun x -> x % 2 = 0) |> printfn "%A"
 // TODO: Use find_last with an appropriate predicate to get the last value.
 // An empty stream must produce None.
 let get_last (stream: Stream<'T>) : 'T option =
-    failwith "TODO: implement get_last"
+    find_last (fun x -> true) stream
 
 // finite_stream [10;20;30] |> get_last |> printfn "%A" // Some 30
 // finite_stream ([]: int list) |> get_last |> printfn "%A" // None
@@ -564,7 +564,7 @@ let get_last (stream: Stream<'T>) : 'T option =
 // This starter uses a function so each call can create a fresh stream.
 // Limit the stream when printing or checking it.
 let powers_of_two () : Stream<int> =
-    failwith "TODO: define powers of two using coinduction"
+    
 
 // powers_of_two() |> limit 8 |> foreach (printfn "%d")
 // Expected: 1,2,4,8,16,32,64,128
