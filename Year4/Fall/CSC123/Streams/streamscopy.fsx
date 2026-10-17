@@ -564,10 +564,10 @@ let get_last (stream: Stream<'T>) : 'T option =
 // This starter uses a function so each call can create a fresh stream.
 // Limit the stream when printing or checking it.
 let powers_of_two () : Stream<int> =
-    
+    coinduction 1 (fun x -> x*2)
 
-// powers_of_two() |> limit 8 |> foreach (printfn "%d")
-// Expected: 1,2,4,8,16,32,64,128
+powers_of_two() |> limit 8 |> foreach (printfn "%d")
+ // Expected: 1,2,4,8,16,32,64,128
 
 // Stream exercise 6: prime factors
 (*
@@ -581,7 +581,10 @@ let powers_of_two () : Stream<int> =
 // TODO: Use primes() and stream operations such as take_while and filter
 // to print the prime factors of n. Example: primefactors 10001 prints 73,137.
 let primefactors (n: int) : unit =
-    failwith "TODO: print the prime factors"
+  primes()
+    |> take_while(fun x -> x <= n) // pipes primes into take until it runs of of primes from 1 to n 
+    |> filter (fun x -> n % x =0) // keep primes that divide n cleanly 
+    |> foreach (printfn "%d")
 
 // primefactors 10001 // 73,137
 
@@ -607,84 +610,10 @@ let primefactors (n: int) : unit =
 // Combine take_while, filter and map to print the binary factors.
 // Example: binaryfactors 45 prints 1,4,8,32.
 let binaryfactors (n: int) : unit =
-    failwith "TODO: print the binary factors"
+    coinduction (1,n) (fun (f,m) -> (f*2, m/2)) // start at (1,n), double f and halve m each step
+    |> take_while (fun (f,m) -> m > 0) // keep taking pairs until m reaches 0
+    |> filter (fun (f,m) -> m % 2 = 1) // keep pairs where m is odd
+    |> map (fun (f,m) -> f) // take just the factor f from each remaining pair
+    |> foreach (printfn "%d") 
 
 // binaryfactors 45   // 1,4,8,32
-
-// Stream exercise 8 (challenge): power via coinduction
-(*
-  8. (challenge) The following function computes m to the nth power in
-     log(n) steps by binary factorization on n:
-
-     let power m n multiplier identity =
-       let rec inner ax factor n =
-         if (n>0) then 
-           let newfactor = multiplier factor factor
-           if n%2=1 then inner (multiplier ax factor) newfactor (n/2)
-           else inner ax newfactor (n/2)
-         else
-           ax
-       inner identify m n
-
-     power 2 8 (*) 1 will return 256.
-
-     Rewrite the function using coinduction (you will need until and get_last).
-     Hint: first write a (inner) function next that takes the tuple
-     (ax,factor,n) to the "next" (ax,factor,n) based on n%2.
-
-     The nth Fibonacci number can be computed in log(n) steps using 
-     matrix multiplication.
-
-     // 2x2 matrix multiplication
-     type M2x2 = (int64*int64*int64*int64)
-
-     let mmult(A:M2x2) (B:M2x2) = // 2x2 matrix multiplication
-       let ((a, b,
-             c, d), (q, r,
-                     s, t)) = (A,B)
-       (a*q+b*s, a*r+b*t,
-        c*q+d*s, c*r+d*t)
-
-     // using int64 types - L suffix required
-     let IDM = (1L, 0L,
-                0L, 1L)    // identity matrix
-     let FIBM = (1L, 1L,
-                 1L, 0L)   // Fibonacci matrix
-
-     // FIBM**n power gives
-     // (fib(n+1), fib(n)
-     //  fib(n),   fib(n-1))
-     
-     // nth Fibonacci number in log n steps,
-     let Fib n  =
-       match (power FIBM (n-1) mmult IDM) with
-         | Some(a,_,_,_) when a>0 -> Some(a)
-         | _ -> None
-*)
-// TODO: Rewrite the document's recursive power function using coinduction,
-// until and get_last. Follow its hint about a local next function on the
-// tuple (ax,factor,n). Keep multiplier and identity generic for matrices.
-// The supplied Fib example expects an option result, hence this signature.
-// Document typo: "inner identify m n" refers to the identity parameter.
-let power (m: 'T) (n: int) (multiplier: 'T -> 'T -> 'T) (identity: 'T) : 'T option =
-    failwith "TODO: rewrite power using coinduction"
-
-// printfn "%A" (power 2 8 (*) 1) // Some 256
-
-// Provided challenge support from the document (not an exercise solution).
-type M2x2 = (int64 * int64 * int64 * int64)
-
-let mmult (A: M2x2) (B: M2x2) =
-    let ((a, b, c, d), (q, r, s, t)) = (A, B)
-    (a*q+b*s, a*r+b*t,
-     c*q+d*s, c*r+d*t)
-
-let IDM = (1L, 0L, 0L, 1L)
-let FIBM = (1L, 1L, 1L, 0L)
-
-let Fib n =
-    match (power FIBM (n-1) mmult IDM) with
-    | Some(a,_,_,_) when a > 0L -> Some(a)
-    | _ -> None
-
-// printfn "%A" (Fib 10) // Some 55L
