@@ -6,3 +6,5 @@
 *.class
 .venv/
 .env/
+
+.fake

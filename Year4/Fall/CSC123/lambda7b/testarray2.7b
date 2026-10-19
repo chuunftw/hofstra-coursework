@@ -1,0 +1,28 @@
+define swapsort = lambda a:(
+  define i = 0;
+  define k = 0;
+  define si = 0;
+  define temp = 0;
+  while (i<len(a)-1) (
+    si = i;
+    k = i+1;
+    while (k<len(a)) (
+      if (a[k] < a[si]) si = k; else 0;
+      k = k+1;
+    );
+    temp = a[i];
+    a[i] = a[si];
+    a[si] = temp;
+    i = i+1;
+  );
+);
+
+define b = [6,3,8,2,1,5,9,7,4,];
+swapsort(b);
+define i = 0;
+while (i<len(b)) (
+  print b[i];  print " ";
+  i = i+1;
+);
+print "\n";
+
