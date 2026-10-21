@@ -225,7 +225,6 @@ let find_last (predicate: 'T -> bool) (stream: Stream<'T>) : 'T option =
         if predicate x then
             last <- Some(x)
       | None -> ()
-
       next <- stream()
     last
 
