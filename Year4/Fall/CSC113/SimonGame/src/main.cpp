@@ -23,7 +23,7 @@ const int waitingState = 0;
 const int playbackState = 1;
 const int playerInputState = 2;
 int gameState = waitingState;
-const int debounceMS = 25; // press and release readings must each stay unchanged for 25 ms
+const int debounceMS = 25; // prevents contact bounce, no extra presses 
 int lastButtonReadings[count] = {HIGH, HIGH, HIGH, HIGH};
 
 // unsigned long matches millis() and holds clock values too large for an Uno int
@@ -61,16 +61,17 @@ void requireButtonRelease() {
   for (int i = 0; i < count; i++) {
     lastButtonReadings[i] = digitalRead(buttons[i]);
   }
-  lastButtonChange = millis();
+  lastButtonChange = millis(); //returns ms have passed since start
 }
 
-// Return the color index (0-3) for one new press, or -1 when no press is accepted
+// Return the color index (red,blue,white,yellow) for one new press, or -1 when no press is accepted
 // Ignore brief changes in the button readings caused by mechanical contact bounce
 int readNewButtonPress() {
-  const unsigned long now = millis();
+  // declares variables to check buttons
+  const unsigned long now = millis(); // saves current time for timeout failure 
   int pressedCount = 0;
   int choice = -1;
-
+  // loop reads all four buttons 
   for (int i = 0; i < count; i++) {
     int reading = digitalRead(buttons[i]);
     if (reading != lastButtonReadings[i]) {
@@ -82,7 +83,6 @@ int readNewButtonPress() {
       choice = i;
     }
   }
-
   // If multiple buttons are down together, ignore them until all are released
   if (pressedCount > 1) {
     readyForPress = 0;
