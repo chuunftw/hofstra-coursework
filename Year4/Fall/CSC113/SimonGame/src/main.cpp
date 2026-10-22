@@ -8,32 +8,32 @@ Color:       Red    Blue   White   Yellow
 */
 const int count = 4; 
 const int ledPins[count] = {8,9,10,11}; // red, blue, white, yellow
-const int buttons[count] = {2,3,4,5}; // buttons 2-5 
-const  int toneFrequencies[count] = {262, 330, 392, 523}; // vals are hz for buzzer 
+const int buttons[count] = {2,3,4,5}; // same color order as ledPins
+const  int toneFrequencies[count] = {262, 330, 392, 523}; // matching tone frequencies in Hz 
 const int maxSequenceLength = 8; 
 const int buzzerPin = 6;
-const int responseMS = 160;
-const int playbackMS = 500;
-const int playbackGapMS = 250;
+const int responseMS = 160; // light and tone duration for an accepted answer, in ms
+const int playbackMS = 500; // light and tone duration for each sequence item, in ms
+const int playbackGapMS = 250; // dark, silent pause between sequence items, in ms
+// Stores color indices 0-3; only the first currentLen entries are used
 int sequenceArr[maxSequenceLength] = {};
-int answerPosition = 0; // position in the sequence that the players next button press must match
-int currentLen = 0;
+int answerPosition = 0; // position in the sequence that the player's next button press must match
+int currentLen = 0; // number of sequence items the player must repeat this round
 const int waitingState = 0;
 const int playbackState = 1;
 const int playerInputState = 2;
 int gameState = waitingState;
-const int debounceMS = 25; // waits until the button reading stops changing for 25 ms before accepting input
+const int debounceMS = 25; // press and release readings must each stay unchanged for 25 ms
 int lastButtonReadings[count] = {HIGH, HIGH, HIGH, HIGH};
 
-// millis() timestamps need unsigned long; Uno's int only reaches 32767
-// Keeping the full unsigned timestamp also allows subtraction across rollover
+// unsigned long matches millis() and holds clock values too large for an Uno int
 unsigned long lastButtonChange = 0;
 
-int readyForPress = 0; // 1 allows a new press; 0 requires all buttons to be released first
-const int answerTimeoutMS = 5000; // max allowed time for each next answer
+int readyForPress = 0; // 1 allows a new press; 0 waits for all buttons to be released for 25 ms
+const int answerTimeoutMS = 5000; // time allowed for each next answer, in ms
 unsigned long answerWaitStarted = 0; // unsigned long matches the type returned by millis()
 
-// Play one colors LED and matching tone for durationMS milliseconds
+// choice is a color index (0-3); play its LED and matching tone for durationMS milliseconds
 void playChoice(int choice, int durationMS) {
   digitalWrite(ledPins[choice], HIGH);
   tone(buzzerPin, toneFrequencies[choice]);
@@ -54,8 +54,8 @@ void playSequence() {
   Serial.println("Your turn");
 }
 
-// Require a fresh release after playback or feedback
-// A button held through either display cannot become an answer afterward
+// Require all buttons to be released for 25 ms before accepting another press
+// This prevents a button held during playback or feedback from counting afterward
 void requireButtonRelease() {
   readyForPress = 0;
   for (int i = 0; i < count; i++) {
@@ -64,8 +64,8 @@ void requireButtonRelease() {
   lastButtonChange = millis();
 }
 
-// Return one new color choice (0-3), or -1 if no press is ready
-// Mechanical contacts can flicker briefly, the stability check filters this bounce
+// Return the color index (0-3) for one new press, or -1 when no press is accepted
+// Ignore brief changes in the button readings caused by mechanical contact bounce
 int readNewButtonPress() {
   const unsigned long now = millis();
   int pressedCount = 0;
@@ -83,7 +83,7 @@ int readNewButtonPress() {
     }
   }
 
-  // Reject multiple buttons until every button has been released
+  // If multiple buttons are down together, ignore them until all are released
   if (pressedCount > 1) {
     readyForPress = 0;
     return -1;
@@ -98,16 +98,19 @@ int readNewButtonPress() {
   if (readyForPress == 0) {
     return -1;
   }
-  readyForPress = 0; // Holding this button cannot produce another event
+  readyForPress = 0; // this button must be released before another press can count
   return choice;
 }
 
+// state is HIGH to turn all LEDs on, or LOW to turn them off
 void setAllLeds(int state) {
   for (int i = 0; i < count; i++) {
     digitalWrite(ledPins[i], state);
   }
 }
 
+// frequency is in Hz; durationMS is how long all LEDs and the tone stay on
+// Each flash ends with a 120 ms dark, silent pause
 void flashFeedback(int frequency, int durationMS) {
   setAllLeds(HIGH);
   tone(buzzerPin, frequency);
@@ -120,7 +123,7 @@ void flashFeedback(int frequency, int durationMS) {
 void roundSuccessFeedback() {
   Serial.println("Correct round!");
   flashFeedback(659, 120);
-  flashFeedback(784, 120); // first val is tone freq, second is light / sound duration in ms
+  flashFeedback(784, 120);
 }
 
 void failureFeedback() {
@@ -147,6 +150,7 @@ void waitForNewGame() {
   Serial.println("Press any button to start");
 }
 
+// Start a new game with one random sequence item
 void startGame() {
   currentLen = 1;
   answerPosition = 0;
@@ -163,13 +167,14 @@ void setup() {
   for (int i = 0; i < count; i++) {
     pinMode(ledPins[i], OUTPUT);
     digitalWrite(ledPins[i], LOW); 
+    // Released reads HIGH; pressing the button connects this input to GND (LOW)
     pinMode(buttons[i], INPUT_PULLUP);
   }
   pinMode(buzzerPin, OUTPUT);
   noTone(buzzerPin);
 
-  // Seed randomness once here using an unconnected A0 reading;
-  // that does not guarantee a different sequence after every reset
+  // Leave A0 unconnected and use its reading to seed the random number generator
+  // This does not guarantee a different sequence after every reset
   randomSeed(analogRead(A0));
   waitForNewGame();
 }
@@ -182,7 +187,7 @@ void loop() {
     return; // The start press is not an answer
   }
 
-  // Playback blocks answer checking; held buttons must be released afterward
+  // Finish showing the sequence before checking answers, then require button release
   if (gameState == playbackState) {
     playSequence();
     answerPosition = 0;
@@ -193,7 +198,7 @@ void loop() {
   }
 
   // Only answer input has a time limit; playback and feedback do not
-  // Unsigned subtraction handles rollover of the millis() counter
+  // Unsigned subtraction still works when the millis() clock wraps back to zero
   if (millis() - answerWaitStarted >= answerTimeoutMS) {
     Serial.println("Time limit exceeded");
     failureFeedback();
@@ -208,7 +213,7 @@ void loop() {
   playChoice(choice, responseMS);
   requireButtonRelease();
 
-  // A wrong answer ends the game instantly
+  // A wrong answer ends the current game
   if (choice != sequenceArr[answerPosition]) {
     Serial.println("Wrong choice");
     failureFeedback();
@@ -222,7 +227,7 @@ void loop() {
     return; // More answers are needed to complete this round
   }
 
-  // Check for final victory before appending to the array
+  // Win at eight items before trying to add another item to the array
   if (currentLen == maxSequenceLength) {
     victoryFeedback();
     waitForNewGame();
