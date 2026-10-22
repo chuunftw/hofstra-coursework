@@ -165,7 +165,6 @@ void setup() {
     digitalWrite(ledPins[i], LOW); 
     pinMode(buttons[i], INPUT_PULLUP);
   }
-
   pinMode(buzzerPin, OUTPUT);
   noTone(buzzerPin);
 
