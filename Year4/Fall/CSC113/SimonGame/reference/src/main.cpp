@@ -1,66 +1,66 @@
 #include <Arduino.h>
 
-// Completed study reference. Write your own version in the parent src/main.cpp.
-// Each array uses the same order: red, blue, green, yellow.
 const int CHOICE_COUNT = 4;
-const int MAX_SEQUENCE_LENGTH = 4;
+const int MAX_SEQUENCE_LENGTH = 8;
 const int LED_PINS[CHOICE_COUNT] = {8, 9, 10, 11};
 const int BUTTON_PINS[CHOICE_COUNT] = {2, 3, 4, 5};
-const unsigned int TONE_FREQUENCIES[CHOICE_COUNT] = {262, 330, 392, 523};
+const int TONE_FREQUENCIES[CHOICE_COUNT] = {262, 330, 392, 523};
 const int BUZZER_PIN = 6;
-const unsigned long DEBOUNCE_MS = 25;
-const unsigned long PLAYBACK_MS = 500;
-const unsigned long PLAYBACK_GAP_MS = 250;
-const unsigned long RESPONSE_MS = 160;
+const int DEBOUNCE_MS = 25;
+const int PLAYBACK_MS = 500;
+const int PLAYBACK_GAP_MS = 250;
+const int RESPONSE_MS = 160;
+// Time allowed for each next answer, excluding playback and answer feedback.
+const int ANSWER_TIMEOUT_MS = 5000;
 
 // Delays are used only while displaying lights/sounds. Input is polled between
-// displays; there is no timer limiting how long the player can think.
-enum GameState { WAITING, PLAYBACK, PLAYER_INPUT };
-GameState gameState = WAITING;
+// displays. The answer timer is checked while waiting for player input.
+// Named integer values describe what the game is currently doing.
+const int WAITING = 0;
+const int PLAYBACK = 1;
+const int PLAYER_INPUT = 2;
+int gameState = WAITING;
 int correctSequence[MAX_SEQUENCE_LENGTH] = {};
 int sequenceLength = 0;
 int answerPosition = 0;
+// millis() returns an unsigned long. On Uno, int only reaches 32767, so it
+// cannot hold running timestamps. Unsigned subtraction also handles rollover.
+unsigned long answerWaitStarted = 0;
 
-// Button debouncing remembers the whole set of pressed buttons. A mask uses
-// one binary bit per button: 0001 = red, 0010 = blue, 0011 = both.
-unsigned int lastButtonMask = 0;
+// Remember each button's previous reading using an ordinary integer array.
+int lastButtonReadings[CHOICE_COUNT] = {HIGH, HIGH, HIGH, HIGH};
+// This is also a millis() timestamp, so it needs unsigned long.
 unsigned long lastButtonChange = 0;
-bool buttonsArmed = false;
-
-// Return the currently pressed buttons. INPUT_PULLUP makes a press read LOW.
-unsigned int readButtonMask() {
-  unsigned int mask = 0;
-  for (int i = 0; i < CHOICE_COUNT; i++) {
-    if (digitalRead(BUTTON_PINS[i]) == LOW) {
-      mask |= (1U << i);
-    }
-  }
-  return mask;
-}
+// readyForPress: 1 allows a new press; 0 requires all buttons to be released first.
+int readyForPress = 0;
 
 // Force a stable release before input can count again. This prevents a press
 // held through start, playback, or feedback from becoming an answer/restart.
 void requireButtonRelease() {
-  buttonsArmed = false;
-  lastButtonMask = readButtonMask();
+  readyForPress = 0;
+  for (int i = 0; i < CHOICE_COUNT; i++) {
+    lastButtonReadings[i] = digitalRead(BUTTON_PINS[i]);
+  }
   lastButtonChange = millis();
 }
 
 // Return exactly one new choice (0..3), or -1 when no press is ready.
 // Both release and press must stay stable for 25 ms to reject contact bounce.
 int readNewButtonPress() {
-  const unsigned int mask = readButtonMask();
+  // Keep the full millis() timestamp; an int would overflow too soon on Uno.
   const unsigned long now = millis();
-
-  if (mask != lastButtonMask) {
-    lastButtonMask = mask;
-    lastButtonChange = now;
-  }
 
   int pressedCount = 0;
   int choice = -1;
   for (int i = 0; i < CHOICE_COUNT; i++) {
-    if ((mask & (1U << i)) != 0) {
+    int reading = digitalRead(BUTTON_PINS[i]);
+    // Any change restarts the time needed for the buttons to become stable.
+    if (reading != lastButtonReadings[i]) {
+      lastButtonReadings[i] = reading;
+      lastButtonChange = now;
+    }
+    // INPUT_PULLUP makes a pressed button read LOW.
+    if (reading == LOW) {
       pressedCount++;
       choice = i;
     }
@@ -69,7 +69,7 @@ int readNewButtonPress() {
   // Reject simultaneous presses immediately, even if one is released first.
   // All buttons must be released before another single press is accepted.
   if (pressedCount > 1) {
-    buttonsArmed = false;
+    readyForPress = 0;
     return -1;
   }
 
@@ -78,25 +78,30 @@ int readNewButtonPress() {
     return -1;
   }
   if (pressedCount == 0) {
-    buttonsArmed = true;
+    readyForPress = 1;
     return -1;
   }
-  if (!buttonsArmed) {
+  if (readyForPress == 0) {
     return -1;
   }
 
-  buttonsArmed = false; // A held button produces only one event.
+  readyForPress = 0; // A held button produces only one event.
   return choice;
 }
 
-void setAllLeds(bool on) {
+// Pass HIGH to turn all LEDs on, or LOW to turn them off.
+void setAllLeds(int state) {
   for (int i = 0; i < CHOICE_COUNT; i++) {
-    digitalWrite(LED_PINS[i], on ? HIGH : LOW);
+    if (state == HIGH) {
+      digitalWrite(LED_PINS[i], HIGH);
+    } else {
+      digitalWrite(LED_PINS[i], LOW);
+    }
   }
 }
 
 // One game item is one LED plus its matching tone, shown together.
-void playChoice(int choice, unsigned long durationMs) {
+void playChoice(int choice, int durationMs) {
   digitalWrite(LED_PINS[choice], HIGH);
   tone(BUZZER_PIN, TONE_FREQUENCIES[choice]);
   delay(durationMs);
@@ -105,40 +110,40 @@ void playChoice(int choice, unsigned long durationMs) {
 }
 
 void playSequence() {
-  Serial.print(F("Round length: "));
+  Serial.print("Round length: ");
   Serial.println(sequenceLength);
   for (int i = 0; i < sequenceLength; i++) {
     playChoice(correctSequence[i], PLAYBACK_MS);
     // This dark, silent gap makes repeated colors distinguishable.
     delay(PLAYBACK_GAP_MS);
   }
-  Serial.println(F("Your turn."));
+  Serial.println("Your turn.");
 }
 
 // Reuse the four game LEDs as status LEDs; no extra LEDs are required.
-void flashFeedback(unsigned int frequency, unsigned long durationMs) {
-  setAllLeds(true);
+void flashFeedback(int frequency, int durationMs) {
+  setAllLeds(HIGH);
   tone(BUZZER_PIN, frequency);
   delay(durationMs);
   noTone(BUZZER_PIN);
-  setAllLeds(false);
+  setAllLeds(LOW);
   delay(120);
 }
 
 void roundSuccessFeedback() {
-  Serial.println(F("Correct round!"));
+  Serial.println("Correct round!");
   flashFeedback(659, 120);
   flashFeedback(784, 120);
 }
 
 void failureFeedback() {
-  Serial.println(F("Wrong choice. Game over."));
+  Serial.println("Game over.");
   flashFeedback(196, 300);
   flashFeedback(131, 400);
 }
 
 void victoryFeedback() {
-  Serial.println(F("You completed all four rounds!"));
+  Serial.println("You completed all eight rounds!");
   // Three rising notes and a longer finish distinguish victory from a round.
   flashFeedback(523, 180);
   flashFeedback(659, 180);
@@ -146,13 +151,13 @@ void victoryFeedback() {
 }
 
 void waitForNewGame() {
-  setAllLeds(false);
+  setAllLeds(LOW);
   noTone(BUZZER_PIN);
   sequenceLength = 0;
   answerPosition = 0;
   gameState = WAITING;
   requireButtonRelease();
-  Serial.println(F("Release buttons, then press any one to start."));
+  Serial.println("Release buttons, then press any one to start.");
 }
 
 void startGame() {
@@ -162,7 +167,7 @@ void startGame() {
   answerPosition = 0;
   correctSequence[0] = random(CHOICE_COUNT); // Upper bound excluded: 0..3.
   requireButtonRelease();
-  Serial.println(F("Watch and listen..."));
+  Serial.println("Watch and listen...");
   delay(500); // Give the player time to release the start button.
   gameState = PLAYBACK;
 }
@@ -194,7 +199,17 @@ void loop() {
     playSequence();
     answerPosition = 0;
     requireButtonRelease();
+    // Begin the five-second thinking period only after playback finishes.
+    answerWaitStarted = millis();
     gameState = PLAYER_INPUT;
+    return;
+  }
+
+  // Unsigned subtraction keeps this check valid across millis() rollover.
+  if (millis() - answerWaitStarted >= ANSWER_TIMEOUT_MS) {
+    Serial.println("Time limit exceeded.");
+    failureFeedback();
+    waitForNewGame();
     return;
   }
 
@@ -206,12 +221,15 @@ void loop() {
 
   // Check each accepted press immediately, rather than storing a second array.
   if (choice != correctSequence[answerPosition]) {
+    Serial.println("Wrong choice.");
     failureFeedback();
     waitForNewGame();
     return;
   }
 
   answerPosition++;
+  // A correct answer gives the player a fresh five seconds for the next one.
+  answerWaitStarted = millis();
   if (answerPosition < sequenceLength) {
     return; // More answers are still needed for this round.
   }
@@ -219,7 +237,7 @@ void loop() {
   if (sequenceLength == MAX_SEQUENCE_LENGTH) {
     victoryFeedback();
     waitForNewGame();
-    return; // Never append a fifth item to the four-element array.
+    return; // Never append a ninth item to the eight-element array.
   }
 
   roundSuccessFeedback();
