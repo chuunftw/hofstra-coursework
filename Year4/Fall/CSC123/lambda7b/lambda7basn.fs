@@ -223,7 +223,20 @@ and eval (stack:bindings) expression =
 
     // TODO (your code): add Lambda and Apply cases here.
     // #endregion Level 3
-
+    | Lambda (parameter, body) -> 
+      Closure(stack, Lambda(parameter,body))
+    
+    | Apply(functionExpr, argumentExpr) ->
+        match eval stack functionExpr with
+        | RuntimeError message -> RuntimeError message
+        | Closure(capturedStack, Lambda(parameter, body)) ->
+            match eval stack argumentExpr with
+            | RuntimeError message -> RuntimeError message
+            | argumentValue ->
+                let functionStack =
+                    (parameter, ref argumentValue) :: capturedStack
+                eval functionStack body
+        | _ -> RuntimeError "attempted to call a nonfunction"
     // #region LEVEL 4
     (*
     Level 4: TERAGEEK.  Being another order of magnitude higher than a
@@ -238,10 +251,24 @@ and eval (stack:bindings) expression =
     
        Completing level 4 will earn full credit for the assignment.
     *)
-
-    // TODO (your code): check static scope, recursion, and inner functions.
-    // This level builds on your function and binding rules.
     // #endregion Level 4
+    | Let(name, valExpression, body) -> 
+        match eval stack valExpression with 
+        | RuntimeError message -> RuntimeError message
+        | value ->
+            let localStack = (name, ref value) :: stack 
+            eval localStack body 
+
+    | Sequence steps ->
+        let preparedSteps =
+            List.rev steps
+            |> List.collect (function
+                | Define(name, Lambda(parameter, body)) ->
+                    [ Define(name, Void)
+                      Assign(Var name, Lambda(parameter, body))
+                      Void ]
+                | step -> [step]) //step is one item from list of steps 
+        eval_seq stack preparedSteps
 
     // #region LEVEL 5
     (*
@@ -260,9 +287,6 @@ and eval (stack:bindings) expression =
 
     // #region Provided sequence, input/output, and variable rules
 
-    | Sequence es ->  // sequences are constructed in reverse by parser
-        eval_seq stack (List.rev es)
-
     | Sym("get") ->
         let get = Console.ReadLine();
         let x = ref 0;
@@ -271,7 +295,7 @@ and eval (stack:bindings) expression =
     | Uniop("print",Str(s)) ->
         let fixeds = s.Substring(1,s.Length-2).Replace("\\n","\n");
         printf "%s" fixeds;
-        Void // print always returns Void
+        Void 
 
     | Uniop("print",Num(n)) -> printf "%d" n; Void;
 
@@ -283,8 +307,6 @@ and eval (stack:bindings) expression =
         match (lookup stack x) with
             | Some(v) -> eval stack !v
             | None -> RuntimeError(sprintf "%s not found in scope" x)
-
-    // #endregion Provided evaluation rules
 
     | e -> RuntimeError(sprintf "no rule to evaluate %A" e);;
 
