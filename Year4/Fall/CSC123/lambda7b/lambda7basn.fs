@@ -186,10 +186,29 @@ and eval (stack:bindings) expression =
     
        To complete level 2, you must be able to run the program *testloop.7b*
     *)
+    | Assign (Var x, valuetox) ->
+      match lookup stack x with
+      | Some(variableRef) ->
+          let evaluatedValue = eval stack valuetox
+          match evaluatedValue with
+          | RuntimeError message -> RuntimeError message
+          | _ ->
+              variableRef := evaluatedValue
+              evaluatedValue
+      | None ->
+          RuntimeError(sprintf "%s not found in scope" x)
 
-    // TODO (your code): add the missing Let, Assign, and While cases here.
-    // Define is already handled in eval_seq above; Var is handled below.
-    // #endregion Level 2
+    | While (condition, body) -> 
+      match eval stack condition with 
+      | RuntimeError message -> RuntimeError message
+      | Num 0 -> Void 
+      | Num n -> 
+          match eval stack body with
+          | RuntimeError message -> RuntimeError message
+          | _ -> eval stack (While(condition, body))
+      | _ -> RuntimeError "while condition requires a number"
+
+
 
     // #region LEVEL 3
     (*
