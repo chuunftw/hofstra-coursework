@@ -1,3 +1,425 @@
+// CSC 123/252: Lambda7b interpreter assignment
+// Level descriptions now sit beside their code / TODO areas inside eval.
+// Goal: finish Level 4; Level 5 is optional. TODO comments are scaffolding.
+// Run tests from this folder: dotnet run -- testbool.7b
+// Use the editor Outline or fold the regions to jump between levels.
+// Full original background/setup notes and Levels 6-7 are at the bottom.
+
+// #region Provided AST and helpers
+open System
+open System.Collections.Generic;
+open Option
+
+////////////Abstract Syntax for Language "Lambda7b"
+type expr =
+  | Num of int     // integer constants
+  | Str of string  // string literals "abc", includes ""'s inside string
+  | Var of string  // alphanumeric identifiers like x, y1, etc
+  | Uniop of string * expr   // unary operations such as Uniop "-" (Num 3)
+  | Binop of string * expr * expr   // e.g. Binop("*",A,B), Binop("+",A,B)
+  | Ifelse of expr * expr * expr
+  | While of expr * expr
+  | Lambda of string * expr
+  | Apply of expr * expr
+  | Closure of bindings * expr   // does not correspond to concrete syntax
+  | Let of string * expr * expr  // variable bindings
+  | Define of string * expr
+  | Assign of lvalue:expr * rvalue:expr  // destructive assignment
+  | Sequence of expr list   // sequence of expressions separated by ;
+  | Void                    // unit, no value (print returns Void)
+  | RuntimeError of string  // error with error message
+  | Sym of string  // token "*": not an expression, exists pre-parsing only
+  | EOF          // EOF - pre-parsing only.
+
+and
+     bindings = list<string*expr ref>;; // bindings are lists of pairs
+
+let rec lookup (B:bindings) (x:string) = // lookup stack for binding for x
+  match B with
+    | (y,e)::bs when x=y -> Some(e)
+    | _::bs -> lookup bs x
+    | [] -> None
+let lookupval B x = (lookup B x) |> map (fun r -> !r) // dereferences
+// to add to environment, do non-destructive cons: (x,ref Num(0))::bindings
+
+//// The AST incorporates its own monad for error handling.
+let numap f = function // equiv to let numap f arg = match arg with ...
+  | Num(n) -> Num(f(n))
+  | RuntimeError(e) -> RuntimeError(e)
+  | _ -> RuntimeError("cannot map function to non-numerical value");;
+let numap2 f a b =
+  match (a,b) with
+    | (Num(x),Num(y)) -> Num(f(x,y))
+    | _ -> RuntimeError("function requires two numerical normal forms");;
+let numbind2 f a b =
+  match (a,b) with
+    | (Num(x),Num(y)) -> f(x,y)
+    | _ -> RuntimeError("function requires two numerical normal forms");;
+// sample use:
+let safediv(x,y) = if y<>0 then Num(x/y) else RuntimeError("div by zero")
+// numbind2 safediv (Num 6) (Num 2) will return Num(3)
+
+let numtest p a = // test predicate on num
+  match a with
+    | Num(x) -> p(x)
+    | _ -> false;;
+let istrue = function  // for convenience
+  | Num(x) when x<>0 -> true
+  | _ -> false
+let iserr = function
+  | RuntimeError(_) -> true
+  | _ -> false
+
+///// eval maps AST to another AST in normal form   *********
+let normal_form = function
+  | Num(_) | Str(_) | Void | Closure(_,_) | RuntimeError(_) -> true
+  | _ -> false
+
+// #endregion Provided AST and helpers
+
+// #region Evaluator: Levels 1-5
+// evaluation defined simultaneously by eval and eval_seq,
+// eval_seq has already been defined for you and should be left as-is
+let rec eval_seq (stack:bindings) (seq:expr list) =
+   match seq with
+    | Define(x,e)::es ->  // define x = 2+3; x = 3; print x; 
+       let ev = eval stack e
+       if (iserr ev) then ev 
+       else eval_seq ((x,ref ev)::stack) es
+    | e::e2::es ->
+       match (eval stack e) with
+         | RuntimeError er -> RuntimeError er
+         | _ -> eval_seq stack (e2::es)
+    | [e] -> eval stack e
+    | [] -> Void;
+    
+and eval (stack:bindings) expression =
+    match expression with
+
+    | n when normal_form(n) -> n // normal forms eval to themselves
+
+    // #region Core evaluation rules
+    | Uniop("-",e) -> (eval stack e) |> numap (fun x -> -1*x)
+
+    | Binop("+",a,b) ->
+        match ((eval stack a), (eval stack b)) with
+            | (Num(x),Num(y)) -> Num(x+y)
+            | _ -> RuntimeError("+ requires two numbers")
+
+    | Binop("-",a,b) -> numap2 (fun (x,y) -> x-y) (eval stack a) (eval stack b)
+
+    // #endregion Core evaluation rules
+
+    // #region LEVEL 1
+    (*
+    Level 1 (minimal pass): BASIC GEEK. A basic geek must be able to evaluate
+       booleans, if-else expressions, and implement multiplication, division and
+       remainder safely, and division by zero should eval to a RuntimeError, but
+       not crash the interpreter.  Booleans must be short circuited.
+       Also implement the case for Binop("<",a,b), as well as for operators
+       "*", "/" and "%", which are missing from the basic interpreter.  If a
+       and b are not both numbers, a RuntimeError should be returned indicating
+       that invalid operands were given to the operator.
+    
+       To complete level 1 you must be able to run the program  *testbool.7b*
+    *)
+
+    | Binop ("*", a,b) -> numap2 (fun (x,y) -> x*y) (eval stack a) (eval stack b)
+
+    | Binop ("/", a,b) -> numbind2 (fun (x,y) -> if y=0 then RuntimeError("division by zero") else Num(x/y)) (eval stack a) (eval stack b)
+
+    | Binop ("%", a,b) -> numbind2 (fun (x,y) -> if y=0 then RuntimeError("mod by zero") else Num(x%y)) (eval stack a) (eval stack b)
+
+    | Binop ("==",a,b) ->
+        match ((eval stack a), (eval stack b)) with
+            | (Num(x),Num(y)) -> if x=y then Num 1 else Num 0
+            | _ -> RuntimeError("== requires two numbers")
+
+    | Binop ("<",a,b) ->
+        match ((eval stack a), (eval stack b)) with
+            | (Num(x),Num(y)) -> if x<y then Num 1 else Num 0
+            | (RuntimeError er, _) -> RuntimeError er
+            | (_, RuntimeError er) -> RuntimeError er
+            | _ -> RuntimeError("< requires two numbers")
+
+    | Binop ("&&",a,b) ->
+        match (eval stack a) with
+            | RuntimeError er -> RuntimeError er
+            | Num 0 -> Num 0
+            | Num _ ->
+                match (eval stack b) with
+                    | RuntimeError er -> RuntimeError er
+                    | Num n -> if n=0 then Num 0 else Num 1
+                    | _ -> RuntimeError "invalid op for &&"
+            | _ -> RuntimeError "invalid op for &&"
+
+    | Binop ("||",a,b) ->
+        match (eval stack a) with
+            | RuntimeError er -> RuntimeError er
+            | Num 0 ->
+                match (eval stack b) with
+                    | RuntimeError er -> RuntimeError er
+                    | Num n -> if n=0 then Num 0 else Num 1
+                    | _ -> RuntimeError "invalid op for ||"
+            | Num _ -> Num 1
+            | _ -> RuntimeError "invalid op for ||"
+
+    | Uniop("!", a) ->
+        match (eval stack a) with
+            | RuntimeError er -> RuntimeError er
+            | Num n -> if n=0 then Num 1 else Num 0
+            | _ -> RuntimeError "! requires a number"
+
+    | Ifelse(cond, tcase, fcase) ->
+        match (eval stack cond) with
+            | RuntimeError er -> RuntimeError er
+            | Num n -> if n=0 then eval stack fcase else eval stack tcase
+            | _ -> RuntimeError "if condition requires a number"
+
+    // #endregion Level 1
+
+    // #region LEVEL 2
+    (*
+    Level 2: MEGAGEEK.  An accomplished megageek must first complete the
+       requirements of being a basic geek, then implement the definition of
+       variables, destructive assignment (ASSIGN) and while loops.
+    
+       To complete level 2, you must be able to run the program *testloop.7b*
+    *)
+
+    // TODO (your code): add the missing Let, Assign, and While cases here.
+    // Define is already handled in eval_seq above; Var is handled below.
+    // #endregion Level 2
+
+    // #region LEVEL 3
+    (*
+    Level 3: GIGAGEEK.  An honored gigageek is a megageek who can also
+       interpret basic functions (lambdas) and function calls.  Function
+       calls should be CALL-BY-VALUE: the argument must be evaluated to a
+       normal form before being passed to the function.  Hint: augment the
+       stack with a new pair binding the formal argument var to a
+       reference to the actual argument.
+       Run the programs *testfun.7b* and *testfun2.7b*
+    *)
+
+    // TODO (your code): add Lambda and Apply cases here.
+    // #endregion Level 3
+
+    // #region LEVEL 4
+    (*
+    Level 4: TERAGEEK.  Being another order of magnitude higher than a
+       gigageek, a revered terageek must be prepared to defend the planet
+       from extra-terrestrials.  You must pass the all-important "AREA 51"
+       test by running the program *area51.7b* and keep the planet safe.
+    
+       A terageek must also be able to interpret recursive functions, and
+       functions within functions.
+    
+       Run the following programs: *area51.7b*, *testrec.7b*, *testinner.7b*
+    
+       Completing level 4 will earn full credit for the assignment.
+    *)
+
+    // TODO (your code): check static scope, recursion, and inner functions.
+    // This level builds on your function and binding rules.
+    // #endregion Level 4
+
+    // #region LEVEL 5
+    (*
+    LEVEL 5: PETAGEEK.  Completing this level would mean matching most of 
+       the features of the professor's demo program. A powerful petageek can
+       pass lambdas as arguments and return lambda-closures.  This means
+       defining and calling curried functions and returning mutable
+       closures that capture local state, simulating objects.  Run all of
+       the following programs:
+    
+        *testfun2.7b*, *testhigherorder.7b*, *testclosure.7b*, *testcons.7b*,
+    *)
+
+    // OPTIONAL (your code): extend or verify the closure rules above.
+    // #endregion Level 5
+
+    // #region Provided sequence, input/output, and variable rules
+
+    | Sequence es ->  // sequences are constructed in reverse by parser
+        eval_seq stack (List.rev es)
+
+    | Sym("get") ->
+        let get = Console.ReadLine();
+        let x = ref 0;
+        if Int32.TryParse(get,x) then Num(!x) else Str(get)
+
+    | Uniop("print",Str(s)) ->
+        let fixeds = s.Substring(1,s.Length-2).Replace("\\n","\n");
+        printf "%s" fixeds;
+        Void // print always returns Void
+
+    | Uniop("print",Num(n)) -> printf "%d" n; Void;
+
+    | Uniop("print",n) when normal_form(n) -> printf "%A" n; Void;  
+
+    | Uniop("print",e) -> eval stack (Uniop("print",(eval stack e)));
+
+    | Var x ->
+        match (lookup stack x) with
+            | Some(v) -> eval stack !v
+            | None -> RuntimeError(sprintf "%s not found in scope" x)
+
+    // #endregion Provided evaluation rules
+
+    | e -> RuntimeError(sprintf "no rule to evaluate %A" e);;
+
+// #endregion Evaluator
+
+// #region Provided parser and program entry point
+//////////////////////////////////////////// PARSING (leave alone)
+let precedence = function
+  | Sym("+") -> 100
+  | Sym("-") -> 100
+  | Sym("u-") -> 210
+  | Sym("*") -> 200
+  | Sym("/") -> 200
+  | Sym("%") -> 200
+  | Sym("||") -> 80  //400  fixes problem (80 is correct value)
+  | Sym("&&") -> 80  //400
+  | Sym("==") -> 80  //400  
+  | Sym("!") -> 500
+  | Sym("(") -> 1000
+  | Sym("in") -> 70  // forces shift on let x=1 in x+x
+  | Sym("=") -> 50
+  | Sym(")") -> 20
+  | EOF -> 0   // don't ever shift EOF
+  | _ -> 20;;
+
+let binops = ["+";"-";"*";"/";"%";"||";"&&";"==";"<";">"];
+let uniops = ["-";"!";"print"];
+let inlist(x,L) = List.exists (fun y -> y=x) L
+
+let proper_expr = function  // identify pre-parsing symbols
+  | EOF -> false
+  | Sym("get") -> true
+  | Sym(_) -> false
+  | _ -> true;
+
+// assume all operators are left-associative, for now
+let leftassoc x = true
+
+// check for precedence,associativity and proper expressions
+let check(a,b,es) =
+  match (a,b) with
+    | (a,b) when a=b -> leftassoc(a) && List.forall(fun e -> proper_expr(e)) es
+    | (a,b) ->
+       let (pa,pb) = (precedence(a),precedence(b));
+       (pa >= pb) && List.forall(fun e -> proper_expr(e)) es
+
+let applicable = function // things that can be applied as functions
+  | Var(_) | Lambda(_,_) | Apply(_,_) -> true
+  | _ -> false
+
+let error_report (stack:expr list) (input:expr list) =
+  let mutable report = sprintf "Parse error on reading token %A. Top of parse stack: " input.[0]
+  let mutable i = 0
+  while i<4 && i<stack.Length do
+    report <- report + (sprintf "%A, " stack.[i])
+    i <- i+1
+  report
+
+///// main bottom-up, operator precedence parser:
+let rec parse (pstack,input:expr list) =
+  match (pstack,input) with
+    | ([ast], [EOF]) -> ast  // ACCEPT
+    | (Sym(")")::e::Sym("(")::f::pst, la::inp)
+         when (applicable f) && (proper_expr e) ->
+       parse (Apply(f,e)::pst, la::inp)
+    | (Sym(")")::e::Sym("(")::pst, la::inp)
+         when check(Sym("("),la,[e]) -> parse (e::pst, la::inp)
+    | (fcase::Sym("else")::tcase::cond::Sym("if")::pst, la::inp)
+         when check(Sym("if"),la,[cond;tcase;fcase]) ->
+       parse (Ifelse(cond,tcase,fcase)::pst, la::inp)
+    | (e2::Sym(s)::e1::pst, la::inp)
+         when inlist(s,binops) && check(Sym(s),la,[e1;e2]) ->
+       parse (Binop(s,e1,e2)::pst, la::inp)
+    | (body::cond::Sym("while")::pst, la::inp)
+         when check(Sym("while"),la,[body;cond]) ->
+       parse (While(cond,body)::pst, la::inp)
+    | (e::Sym("-")::pst, la::inp) when check(Sym("u-"),la,[e]) ->
+       parse (Uniop("-",e)::pst, la::inp) // unary - has higher prec than *    
+    | (e::Sym(s)::pst, la::inp)
+         when inlist(s,uniops) && check(Sym(s),la,[e]) ->
+       parse (Uniop(s,e)::pst, la::inp)
+    | (e::Sym("=")::Var(x)::Sym("define")::pst, la::inp)
+         when check(Sym("="),la,[e]) ->
+       parse (Define(x,e)::pst, la::inp)
+    | (body::Sym("in")::init::Sym("=")::Var(x)::Sym("let")::pst, la::inp)
+         when check(Sym("let"),la,[init;body]) ->
+       parse (Let(x,init,body)::pst, la::inp)
+    | (e::Sym("=")::Var(x)::pst, la::inp) when check(Sym("="),la,[e]) ->
+       parse (Assign(lvalue=Var(x),rvalue=e)::pst, la::inp)
+    | (body::Sym(":")::Var(x)::Sym("lambda")::pst, la::inp)
+         when check(Sym("lambda"),la,[body]) ->
+       parse(Lambda(x,body)::pst, la::inp)
+    | (Sym(";")::e::(Sequence es)::pst, la::inp) when (proper_expr e) ->
+       parse ((Sequence (e::es))::pst, la::inp)
+    | (Sym(";")::e::pst, la::inp) when (proper_expr e) ->
+       parse ((Sequence [e])::pst, la::inp)
+    | (pst, la::inp) when la<>EOF -> parse (la::pst, inp)  // shift
+    | (p,i) -> RuntimeError(error_report p i);;
+//    | (p,i) -> RuntimeError(sprintf "Parse Error: parse stack %A" p);;
+
+/////// lexical tokenizer
+
+// function to convert C# lexToken structures to F# type expr
+let convert_token (token:lexToken) =
+  match token.token_type with
+   | "Integer" -> Num(token.token_value :?> int) // :?> downcasts from obj
+   | "Alphanumeric" -> Var(token.token_value :?> string)
+   |  "Symbol" | "Keyword" -> Sym(token.token_value :?> string)
+   | "StringLiteral" -> Str(token.token_value :?> string)
+   | _ -> EOF;;  // if can't tokenize, force end of stream
+
+// reverses list m while applying function f to each value
+let rec revmap f M stack =
+  match (M,stack) with
+   | ([],s) -> s
+   | (a::b,s) -> revmap f b ((f a)::s);;
+
+let rec gettokens (lexer:simpleLexer) ax =
+   let next_token = lexer.next()
+   if next_token=null then ax else gettokens lexer (next_token::ax);;
+
+// collect all tokens into a list, which will enable pattern matching
+let tokenize(lexer:simpleLexer) = 
+   let tokens = gettokens lexer []
+   revmap convert_token tokens [EOF];;
+
+
+//////////////////////////// "main"
+let on_behalf f =
+  try (Some (f())) with | _ -> None
+  
+let main(print_final_result:bool) =
+  let argv = Environment.GetCommandLineArgs(); //command-line args
+  let lexeropt = on_behalf (fun () -> simpleLexer(argv[1],""))
+  for k in ["print";"get";"define";"let";"in";"lambda"] do
+    lexeropt |> iter (fun lx -> lx.addKeyword(k))
+  // keywords are recognized as symbols instead of variables (Sym, not Var)
+  let result =
+    lexeropt
+    |> map (fun lx -> tokenize lx)
+    |> map (fun tokens -> parse([],tokens))
+    |> map (fun ast -> eval [] ast)
+  match (result,print_final_result) with
+    | (Some (RuntimeError e), _ ) ->
+      printfn "RuntimeError: %s" e
+    | (Some r, true) ->
+      printfn "Final Value: %A" r
+    | (None,_) -> printfn "no input found"
+    | _ -> ()
+
+main(false);  // run main
+// #endregion Provided parser and program entry point
+
+// #region Assignment background, setup, and optional Levels 6-7
 (* CSC 123/252 Assignment: Completing an Interpreter for a Programming Language
 
    This assignment can be completed at several levels.  The most basic
@@ -172,55 +594,8 @@ constructs are represented as expr trees.  In particular, understand that
   The most common syntactic mistake I made was to forget the ; at the end of
   a line.
   
-  *YOUR ASSIGNMENT.*  Your grade for the assignment will depend on how
-  much of the interpreter you can complete, and how many of the test 
-  programs you can run.  You will be graded on the following scale:
-
- Level 1 (minimal pass): BASIC GEEK. A basic geek must be able to evaluate
-   booleans, if-else expressions, and implement multiplication, division and
-   remainder safely, and division by zero should eval to a RuntimeError, but
-   not crash the interpreter.  Booleans must be short circuited.
-   Also implement the case for Binop("<",a,b), as well as for operators
-   "*", "/" and "%", which are missing from the basic interpreter.  If a
-   and b are not both numbers, a RuntimeError should be returned indicating
-   that invalid operands were given to the operator.
-
-   To complete level 1 you must be able to run the program  *testbool.7b*
-
- Level 2: MEGAGEEK.  An accomplished megageek must first complete the
-   requirements of being a basic geek, then implement the definition of
-   variables, destructive assignment (ASSIGN) and while loops.
-
-   To complete level 2, you must be able to run the program *testloop.7b*
-
- Level 3: GIGAGEEK.  An honored gigageek is a megageek who can also
-   interpret basic functions (lambdas) and function calls.  Function
-   calls should be CALL-BY-VALUE: the argument must be evaluated to a
-   normal form before being passed to the function.  Hint: augment the
-   stack with a new pair binding the formal argument var to a
-   reference to the actual argument.
-   Run the programs *testfun.7b* and *testfun2.7b*
-
- Level 4: TERAGEEK.  Being another order of magnitude higher than a
-   gigageek, a revered terageek must be prepared to defend the planet
-   from extra-terrestrials.  You must pass the all-important "AREA 51"
-   test by running the program *area51.7b* and keep the planet safe.
-
-   A terageek must also be able to interpret recursive functions, and
-   functions within functions.
-
-   Run the following programs: *area51.7b*, *testrec.7b*, *testinner.7b*
-
-   Completing level 4 will earn full credit for the assignment.
-
- LEVEL 5: PETAGEEK.  Completing this level would mean matching most of 
-   the features of the professor's demo program. A powerful petageek can
-   pass lambdas as arguments and return lambda-closures.  This means
-   defining and calling curried functions and returning mutable
-   closures that capture local state, simulating objects.  Run all of
-   the following programs:
-
-    *testfun2.7b*, *testhigherorder.7b*, *testclosure.7b*, *testcons.7b*,
+  Levels 1-5 are placed beside the evaluator above.
+  Additional optional levels follow:
 
  LEVEL 6: EXAGEEK. The given interpreter is CALL-BY-VALUE.  A magical
    exageek can also implement a call-by-name version.  That is, f(e)
@@ -257,325 +632,4 @@ constructs are represented as expr trees.  In particular, understand that
    
    Are you the One?
 *)
-
-open System
-open System.Collections.Generic;
-open Option
-
-////////////Abstract Syntax for Language "Lambda7b"
-type expr =
-  | Num of int     // integer constants
-  | Str of string  // string literals "abc", includes ""'s inside string
-  | Var of string  // alphanumeric identifiers like x, y1, etc
-  | Uniop of string * expr   // unary operations such as Uniop "-" (Num 3)
-  | Binop of string * expr * expr   // e.g. Binop("*",A,B), Binop("+",A,B)
-  | Ifelse of expr * expr * expr
-  | While of expr * expr
-  | Lambda of string * expr
-  | Apply of expr * expr
-  | Closure of bindings * expr   // does not correspond to concrete syntax
-  | Let of string * expr * expr  // variable bindings
-  | Define of string * expr
-  | Assign of lvalue:expr * rvalue:expr  // destructive assignment
-  | Sequence of expr list   // sequence of expressions separated by ;
-  | Void                    // unit, no value (print returns Void)
-  | RuntimeError of string  // error with error message
-  | Sym of string  // token "*": not an expression, exists pre-parsing only
-  | EOF          // EOF - pre-parsing only.
-
-and
-     bindings = list<string*expr ref>;; // bindings are lists of pairs
-
-let rec lookup (B:bindings) (x:string) = // lookup stack for binding for x
-  match B with
-    | (y,e)::bs when x=y -> Some(e)
-    | _::bs -> lookup bs x
-    | [] -> None
-let lookupval B x = (lookup B x) |> map (fun r -> !r) // dereferences
-// to add to environment, do non-destructive cons: (x,ref Num(0))::bindings
-
-//// The AST incorporates its own monad for error handling.
-let numap f = function // equiv to let numap f arg = match arg with ...
-  | Num(n) -> Num(f(n))
-  | RuntimeError(e) -> RuntimeError(e)
-  | _ -> RuntimeError("cannot map function to non-numerical value");;
-let numap2 f a b =
-  match (a,b) with
-    | (Num(x),Num(y)) -> Num(f(x,y))
-    | _ -> RuntimeError("function requires two numerical normal forms");;
-let numbind2 f a b =
-  match (a,b) with
-    | (Num(x),Num(y)) -> f(x,y)
-    | _ -> RuntimeError("function requires two numerical normal forms");;
-// sample use:
-let safediv(x,y) = if y<>0 then Num(x/y) else RuntimeError("div by zero")
-// numbind2 safediv (Num 6) (Num 2) will return Num(3)
-
-let numtest p a = // test predicate on num
-  match a with
-    | Num(x) -> p(x)
-    | _ -> false;;
-let istrue = function  // for convenience
-  | Num(x) when x<>0 -> true
-  | _ -> false
-let iserr = function
-  | RuntimeError(_) -> true
-  | _ -> false
-
-///// eval maps AST to another AST in normal form   *********
-let normal_form = function
-  | Num(_) | Str(_) | Void | Closure(_,_) | RuntimeError(_) -> true
-  | _ -> false
-
-// evaluation defined simultaneously by eval and eval_seq,
-// eval_seq has already been defined for you and should be left as-is
-let rec eval_seq (stack:bindings) (seq:expr list) =
-   match seq with
-    | Define(x,e)::es ->  // define x = 2+3; x = 3; print x; 
-       let ev = eval stack e
-       if (iserr ev) then ev 
-       else eval_seq ((x,ref ev)::stack) es
-    | e::e2::es ->
-       match (eval stack e) with
-         | RuntimeError er -> RuntimeError er
-         | _ -> eval_seq stack (e2::es)
-    | [e] -> eval stack e
-    | [] -> Void;
-    
-and eval (stack:bindings) expression =
-    match expression with
-
-    | n when normal_form(n) -> n // normal forms eval to themselves
-
-    | Uniop("-",e) -> (eval stack e) |> numap (fun x -> -1*x)
-
-    | Binop("+",a,b) ->
-        match ((eval stack a), (eval stack b)) with
-            | (Num(x),Num(y)) -> Num(x+y)
-            | _ -> RuntimeError("+ requires two numbers")
-
-    | Binop("-",a,b) -> numap2 (fun (x,y) -> x-y) (eval stack a) (eval stack b)
-
-    | Binop ("*", a,b) -> numap2 (fun (x,y) -> x*y) (eval stack a) (eval stack b)
-
-    | Binop ("/", a,b) -> numbind2 (fun (x,y) -> if y=0 then RuntimeError("division by zero") else Num(x/y)) (eval stack a) (eval stack b)
-
-    | Binop ("%", a,b) -> numbind2 (fun (x,y) -> if y=0 then RuntimeError("mod by zero") else Num(x%y)) (eval stack a) (eval stack b)
-
-    | Binop ("==",a,b) ->
-        match ((eval stack a), (eval stack b)) with
-            | (Num(x),Num(y)) -> if x=y then Num 1 else Num 0
-            | _ -> RuntimeError("== requires two numbers")
-
-    | Binop ("<",a,b) ->
-        match ((eval stack a), (eval stack b)) with
-            | (Num(x),Num(y)) -> if x<y then Num 1 else Num 0
-            | (RuntimeError er, _) -> RuntimeError er
-            | (_, RuntimeError er) -> RuntimeError er
-            | _ -> RuntimeError("< requires two numbers")
-
-    | Binop ("&&",a,b) ->
-        match (eval stack a) with
-            | RuntimeError er -> RuntimeError er
-            | Num 0 -> Num 0
-            | Num _ ->
-                match (eval stack b) with
-                    | RuntimeError er -> RuntimeError er
-                    | Num n -> if n=0 then Num 0 else Num 1
-                    | _ -> RuntimeError "invalid op for &&"
-            | _ -> RuntimeError "invalid op for &&"
-
-    | Binop ("||",a,b) ->
-        match (eval stack a) with
-            | RuntimeError er -> RuntimeError er
-            | Num 0 ->
-                match (eval stack b) with
-                    | RuntimeError er -> RuntimeError er
-                    | Num n -> if n=0 then Num 0 else Num 1
-                    | _ -> RuntimeError "invalid op for ||"
-            | Num _ -> Num 1
-            | _ -> RuntimeError "invalid op for ||"
-
-    | Uniop("!", a) ->
-        match (eval stack a) with
-            | RuntimeError er -> RuntimeError er
-            | Num n -> if n=0 then Num 1 else Num 0
-            | _ -> RuntimeError "! requires a number"
-
-    | Ifelse(cond, tcase, fcase) ->
-        match (eval stack cond) with
-            | RuntimeError er -> RuntimeError er
-            | Num n -> if n=0 then eval stack fcase else eval stack tcase
-            | _ -> RuntimeError "if condition requires a number"
-
-    | Sequence es ->  // sequences are constructed in reverse by parser
-        eval_seq stack (List.rev es)
-
-    | Sym("get") ->
-        let get = Console.ReadLine();
-        let x = ref 0;
-        if Int32.TryParse(get,x) then Num(!x) else Str(get)
-
-    | Uniop("print",Str(s)) ->
-        let fixeds = s.Substring(1,s.Length-2).Replace("\\n","\n");
-        printf "%s" fixeds;
-        Void // print always returns Void
-
-    | Uniop("print",Num(n)) -> printf "%d" n; Void;
-
-    | Uniop("print",n) when normal_form(n) -> printf "%A" n; Void;  
-
-    | Uniop("print",e) -> eval stack (Uniop("print",(eval stack e)));
-
-    | Var x ->
-        match (lookup stack x) with
-            | Some(v) -> eval stack !v
-            | None -> RuntimeError(sprintf "%s not found in scope" x)
-
-    | e -> RuntimeError(sprintf "no rule to evaluate %A" e);;
-
-//////////////////////////////////////////// PARSING (leave alone)
-let precedence = function
-  | Sym("+") -> 100
-  | Sym("-") -> 100
-  | Sym("u-") -> 210
-  | Sym("*") -> 200
-  | Sym("/") -> 200
-  | Sym("%") -> 200
-  | Sym("||") -> 80  //400  fixes problem (80 is correct value)
-  | Sym("&&") -> 80  //400
-  | Sym("==") -> 80  //400  
-  | Sym("!") -> 500
-  | Sym("(") -> 1000
-  | Sym("in") -> 70  // forces shift on let x=1 in x+x
-  | Sym("=") -> 50
-  | Sym(")") -> 20
-  | EOF -> 0   // don't ever shift EOF
-  | _ -> 20;;
-
-let binops = ["+";"-";"*";"/";"%";"||";"&&";"==";"<";">"];
-let uniops = ["-";"!";"print"];
-let inlist(x,L) = List.exists (fun y -> y=x) L
-
-let proper_expr = function  // identify pre-parsing symbols
-  | EOF -> false
-  | Sym("get") -> true
-  | Sym(_) -> false
-  | _ -> true;
-
-// assume all operators are left-associative, for now
-let leftassoc x = true
-
-// check for precedence,associativity and proper expressions
-let check(a,b,es) =
-  match (a,b) with
-    | (a,b) when a=b -> leftassoc(a) && List.forall(fun e -> proper_expr(e)) es
-    | (a,b) ->
-       let (pa,pb) = (precedence(a),precedence(b));
-       (pa >= pb) && List.forall(fun e -> proper_expr(e)) es
-
-let applicable = function // things that can be applied as functions
-  | Var(_) | Lambda(_,_) | Apply(_,_) -> true
-  | _ -> false
-
-let error_report (stack:expr list) (input:expr list) =
-  let mutable report = sprintf "Parse error on reading token %A. Top of parse stack: " input.[0]
-  let mutable i = 0
-  while i<4 && i<stack.Length do
-    report <- report + (sprintf "%A, " stack.[i])
-    i <- i+1
-  report
-
-///// main bottom-up, operator precedence parser:
-let rec parse (pstack,input:expr list) =
-  match (pstack,input) with
-    | ([ast], [EOF]) -> ast  // ACCEPT
-    | (Sym(")")::e::Sym("(")::f::pst, la::inp)
-         when (applicable f) && (proper_expr e) ->
-       parse (Apply(f,e)::pst, la::inp)
-    | (Sym(")")::e::Sym("(")::pst, la::inp)
-         when check(Sym("("),la,[e]) -> parse (e::pst, la::inp)
-    | (fcase::Sym("else")::tcase::cond::Sym("if")::pst, la::inp)
-         when check(Sym("if"),la,[cond;tcase;fcase]) ->
-       parse (Ifelse(cond,tcase,fcase)::pst, la::inp)
-    | (e2::Sym(s)::e1::pst, la::inp)
-         when inlist(s,binops) && check(Sym(s),la,[e1;e2]) ->
-       parse (Binop(s,e1,e2)::pst, la::inp)
-    | (body::cond::Sym("while")::pst, la::inp)
-         when check(Sym("while"),la,[body;cond]) ->
-       parse (While(cond,body)::pst, la::inp)
-    | (e::Sym("-")::pst, la::inp) when check(Sym("u-"),la,[e]) ->
-       parse (Uniop("-",e)::pst, la::inp) // unary - has higher prec than *    
-    | (e::Sym(s)::pst, la::inp)
-         when inlist(s,uniops) && check(Sym(s),la,[e]) ->
-       parse (Uniop(s,e)::pst, la::inp)
-    | (e::Sym("=")::Var(x)::Sym("define")::pst, la::inp)
-         when check(Sym("="),la,[e]) ->
-       parse (Define(x,e)::pst, la::inp)
-    | (body::Sym("in")::init::Sym("=")::Var(x)::Sym("let")::pst, la::inp)
-         when check(Sym("let"),la,[init;body]) ->
-       parse (Let(x,init,body)::pst, la::inp)
-    | (e::Sym("=")::Var(x)::pst, la::inp) when check(Sym("="),la,[e]) ->
-       parse (Assign(lvalue=Var(x),rvalue=e)::pst, la::inp)
-    | (body::Sym(":")::Var(x)::Sym("lambda")::pst, la::inp)
-         when check(Sym("lambda"),la,[body]) ->
-       parse(Lambda(x,body)::pst, la::inp)
-    | (Sym(";")::e::(Sequence es)::pst, la::inp) when (proper_expr e) ->
-       parse ((Sequence (e::es))::pst, la::inp)
-    | (Sym(";")::e::pst, la::inp) when (proper_expr e) ->
-       parse ((Sequence [e])::pst, la::inp)
-    | (pst, la::inp) when la<>EOF -> parse (la::pst, inp)  // shift
-    | (p,i) -> RuntimeError(error_report p i);;
-//    | (p,i) -> RuntimeError(sprintf "Parse Error: parse stack %A" p);;
-
-/////// lexical tokenizer
-
-// function to convert C# lexToken structures to F# type expr
-let convert_token (token:lexToken) =
-  match token.token_type with
-   | "Integer" -> Num(token.token_value :?> int) // :?> downcasts from obj
-   | "Alphanumeric" -> Var(token.token_value :?> string)
-   |  "Symbol" | "Keyword" -> Sym(token.token_value :?> string)
-   | "StringLiteral" -> Str(token.token_value :?> string)
-   | _ -> EOF;;  // if can't tokenize, force end of stream
-
-// reverses list m while applying function f to each value
-let rec revmap f M stack =
-  match (M,stack) with
-   | ([],s) -> s
-   | (a::b,s) -> revmap f b ((f a)::s);;
-
-let rec gettokens (lexer:simpleLexer) ax =
-   let next_token = lexer.next()
-   if next_token=null then ax else gettokens lexer (next_token::ax);;
-
-// collect all tokens into a list, which will enable pattern matching
-let tokenize(lexer:simpleLexer) = 
-   let tokens = gettokens lexer []
-   revmap convert_token tokens [EOF];;
-
-
-//////////////////////////// "main"
-let on_behalf f =
-  try (Some (f())) with | _ -> None
-  
-let main(print_final_result:bool) =
-  let argv = Environment.GetCommandLineArgs(); //command-line args
-  let lexeropt = on_behalf (fun () -> simpleLexer(argv[1],""))
-  for k in ["print";"get";"define";"let";"in";"lambda"] do
-    lexeropt |> iter (fun lx -> lx.addKeyword(k))
-  // keywords are recognized as symbols instead of variables (Sym, not Var)
-  let result =
-    lexeropt
-    |> map (fun lx -> tokenize lx)
-    |> map (fun tokens -> parse([],tokens))
-    |> map (fun ast -> eval [] ast)
-  match (result,print_final_result) with
-    | (Some (RuntimeError e), _ ) ->
-      printfn "RuntimeError: %s" e
-    | (Some r, true) ->
-      printfn "Final Value: %A" r
-    | (None,_) -> printfn "no input found"
-    | _ -> ()
-
-main(false);  // run main
+// #endregion Assignment reference
