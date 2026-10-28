@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "wifi_secrets.h"
 
 /*********
   Based on code from:
@@ -9,9 +10,9 @@
 // Load Wi-Fi library
 #include <WiFi.h>
 
-// Replace with your network credentials
-const char* ssid = "REPLACE_WITH_YOUR_SSID";
-const char* password = "REPLACE_WITH_YOUR_PASSWORD";
+// login info in .env 
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
 
 // Set web server port number to 80
 WiFiServer server(80);
