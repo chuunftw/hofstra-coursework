@@ -26,7 +26,7 @@ public class Part2Learning {
     
         static class Phone extends Device {
             public void turnOn() {
-                activate(); // A subclass can call its inherited protected method.
+                activate(); // A subclass can call its inherited protected (activate) method.
             }
         }
     
