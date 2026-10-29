@@ -173,7 +173,8 @@ public class Part1Learning {
     
         static class Car {
             // A Car HAS an Engine. It does not extend Engine.
-            private final Engine engine = new Engine();
+            private final Engine engine = new Engine(); 
+            // Composition, class uses object in definition 
     
             public void start() {
                 // Delegate the work instead of copying Engine's implementation.
