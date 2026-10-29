@@ -1,0 +1,19 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package javaasn;
+
+public class B implements Ib {
+   public B() {
+   }
+
+   public void f() {
+      System.out.println("B.f");
+   }
+
+   public void g() {
+      System.out.println("B.g");
+   }
+
+   public void h2() {
+      System.out.println("B.h2");
+   }
+}

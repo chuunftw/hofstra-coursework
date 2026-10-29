@@ -1,0 +1,19 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package javaasn;
+
+public class B2 {
+   public B2() {
+   }
+
+   protected void f() {
+      System.out.println("B2.f");
+   }
+
+   protected void g() {
+      System.out.println("B2.g");
+   }
+
+   protected void h2() {
+      System.out.println("B2.h2");
+   }
+}
