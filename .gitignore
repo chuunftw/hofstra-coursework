@@ -5,7 +5,7 @@
 *.pyc
 *.class
 # Professor-supplied Java assignment classes.
-!/Year4/Fall/CSC123/javaasn/*.class
+!/Year4/Fall/CSC123/javaHW/javaasn/*.class
 .venv/
 .env/
 

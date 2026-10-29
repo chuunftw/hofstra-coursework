@@ -67,7 +67,7 @@ public class Part1Learning {
             Animal animal = new Animal();
             animal.eat(); // Output: Eating
     
-            // Uncommenting this would cause a compile error:
+            // Uncommenting this(below line) would cause a compile error:
             // animal.bark();
             // Animal does not have a bark() method. Inheritance goes one way.
         }
@@ -121,18 +121,19 @@ public class Part1Learning {
     // A class can implement multiple interfaces, but extend only one class.
     // Run: java Part1Learning.java
     
-    static class Interfaces {
+    static class Interfaces { //class named Interfaces of Interfaces 
         interface Speaker {
             void speak(); // Implicitly public and abstract
         }
-    
+        // contains two interfaces Speaker and Walker
         interface Walker {
             void walk();
         }
     
-        static class Dog implements Speaker, Walker {
+        static class Dog implements Speaker, Walker { //once called the interfaces, functions can now reference other functions 
+                                                    // from referenced interfaces
             @Override
-            public void speak() {
+            public void speak() { //speaker is REFERENCED allowing speak to be used
                 System.out.println("Woof");
             }
     
