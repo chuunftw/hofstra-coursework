@@ -1,4 +1,5 @@
-// Learning notes and practice examples for Part1.
+// Le
+// arning notes and practice examples for Part1.
 // Run from this folder: java Part1Learning.java
 // These examples are separate from your assignment solution.
 // Read the numbered topics from top to bottom.

@@ -45,9 +45,9 @@ Which of the functions above can be written in GNU C? Explain.
 
 ### Solution
 
-**f's behavior can be reproduced; g requires an escaping mutable closure.** f's mutable local is reset on every invocation, so a C function taking x0 and y can compute the same result. For the specific f1 example, a function that returns 2 + y suffices.
+**Both general factories return closures; only g preserves changing state between calls.** Neither general factory can safely be implemented by returning a GNU C nested function that captures automatic locals after its enclosing call has returned. f still needs its captured x0, even though its mutable x is reset on every invocation.
 
-There is an interface qualification: a fully general f(x0) that returns a function capturing arbitrary runtime x0 is still a closure. Ordinary C function pointers do not carry that captured value, so reproducing the exact general factory interface also requires an explicit environment or another mechanism.
+f's arithmetic behavior can be reproduced by a C function taking x0 and y explicitly. For the specific f1 example, a function that returns 2 + y suffices. These alternatives change or specialize the interface: ordinary C function pointers do not carry arbitrary captured x0, so reproducing the general factory requires an explicit environment or another mechanism.
 
 g must retain a separate, changing x for each returned function after its factory returns. GNU C nested functions do not preserve the enclosing automatic variables after the enclosing call ends. A static variable would share state rather than support arbitrary independent closures. An explicit allocated environment plus function pointer can simulate this with a changed representation/interface.
 
@@ -259,7 +259,7 @@ let foreach (action: 'T -> unit) (stream: unit -> 'T option) =
 ```
 Each iteration pulls one value, performs the action, and repeats. None ends the traversal. The recursive call is in tail position.
 
-An infinite source with no terminating wrapper keeps running:
+The supplied odds() is finite: without a wrapper, it produces 50 values, from 1 through 99. A truly infinite source with no terminating wrapper keeps running. Here take_while stops the traversal at 9:
 ```fsharp
 odds()
 |> take_while (fun x -> x < 10)
