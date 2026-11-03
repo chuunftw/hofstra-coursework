@@ -36,6 +36,55 @@ void MAIN() {
 ```
 Devise one C** program whose behavior differs under static and dynamic scoping. Explain how to interpret its output.
 
+### Additional questions from prior quizzes
+
+Source: *CamScanner 11-3-26 11.24.pdf*, scanned quiz pages 1–6. Original quiz numbers and stable L/F/O identifiers are retained. Answers and grades are omitted.
+
+### Prior quiz L02 — Alpha-equivalence (original Q2; 6 points)
+
+Determine if the following λ-terms are alpha-equivalent and explain why in each case.
+
+**(a)**
+
+```text
+λxλy.x + y       and       λyλx.y + x
+```
+
+**(b)**
+
+```text
+λxλy.(y x) z    and       λyλz.(z y) x
+```
+
+### Prior quiz L03 — Evaluation strategy and normal form (original Q3; 5 points)
+
+Reduce the term
+
+```text
+(λx.y) ((λx.x x) (λx.x x))
+```
+
+to beta normal form. Which evaluation strategy did you apply (call-by-value or call-by-name)?
+
+*Study note: for the current midterm review, focus on how the evaluation strategies affect termination; the printed question also requests a reduction.*
+
+### Prior quiz L07 — Type soundness (original Q7; 5 points)
+
+What is the Type Soundness Theorem? What does it state?
+
+### Prior quiz F02 — Static scoping (original Q2)
+
+Determine the output of the following fragment and explain why.
+
+```fsharp
+let x = 1
+let f y = x+y
+let g() =
+    let x = 2
+    printfn "%d" (f 0)
+g()
+```
+
 ## Topic 2: F# functions and recursion
 
 ### Question 1
@@ -111,6 +160,56 @@ Given:
 type List<'T> = Nil | Cons of 'T * List<'T>
 ```
 Write a tail-recursive function that finds a list's length.
+
+### Additional questions from prior quizzes
+
+Source: *CamScanner 11-3-26 11.24.pdf*, scanned quiz pages 1–6. Original quiz numbers and stable L/F/O identifiers are retained. Answers and grades are omitted.
+
+### Prior quiz F01 — Curried function (original Q1)
+
+Write a curried version of:
+
+```fsharp
+let g(x,y) = x+y+1
+```
+
+### Prior quiz F01b — General currying function (original Q1b)
+
+Define a function `Curry` that transforms a non-curried function into a curried one. Hint: the type of this function should be:
+
+```fsharp
+('a * 'b -> 'c) -> ('a -> 'b -> 'c)
+```
+
+### Prior quiz F04 — Tail recursion (original Q4)
+
+Is the following function tail-recursive?
+
+```fsharp
+let factorial n = if n<2 then 1 else n*factorial(n-1)
+```
+
+*Transcription note: the printed definition omits `rec`. For the intended tail-recursion analysis, also consider the definition with `let rec factorial n = ...`. The line above preserves the printed version.*
+
+### Prior quiz F05 — forall over a custom list (original Q5)
+
+Given the type of linked lists as:
+
+```fsharp
+type List<'T> = Nil | Cons of 'T * List<'T>;;
+```
+
+Define `forall`, which takes a predicate and a list and determines whether all elements of the list satisfy the predicate, returning `true` or `false`.
+
+### Prior quiz F05b — Tail recursion of your solution (original Q5b)
+
+Is your `forall` tail-recursive?
+
+*Supplemental F# reference: the array question below is retained from the quiz; inclusion does not establish exam coverage.*
+
+### Prior quiz F07 — Array arguments (original Q7)
+
+If an array is passed to a function, is it passed a copy or a reference?
 
 ## Topic 3: Pattern matching and error handling
 
@@ -235,6 +334,101 @@ Write divide, multiplying the first Number by the inverse of the second when it 
 ### Question 9
 
 Write the divide function from Question 8 without pattern matching, using map/bind.
+
+### Additional questions from prior quizzes
+
+Source: *CamScanner 11-3-26 11.24.pdf*, scanned quiz pages 1–6. Original quiz numbers and stable L/F/O identifiers are retained. Answers and grades are omitted.
+
+### Prior quiz F03 — Pattern guard versus if (original Q3)
+
+Explain the difference, if any, between the following fragments of code.
+
+**(a)**
+
+```fsharp
+match m with
+| a::b::c when (a=b) -> printfn "first two are the same"
+| _ -> printfn "something else"
+```
+
+**(b)**
+
+```fsharp
+match m with
+| a::b::c -> if (a=b) then printfn "first two are the same"
+| _ -> printfn "something else"
+```
+
+If they are different, under what value of `m` will the difference show up?
+
+### Prior quiz F06 — Option.map and safe division (original Q6)
+
+Given:
+
+```fsharp
+let safediv a b = if b=0 then None else Some(a/b)
+let opt = Some 2;
+```
+
+What is the value of:
+
+```fsharp
+opt |> Option.map (fun x -> x+x)
+    |> Option.map (fun y -> safediv 12 y)
+```
+
+### Prior quiz O01 — Option expressions (original Q1a–Q1d)
+
+Given:
+
+```fsharp
+open Option
+let a = Some(8)
+let b = Some(2)
+let c : int option = None
+
+let safediv x y = if y=0 then None else Some(x/y)
+```
+
+For each expression, give its value.
+
+**O01a (original Q1a)**
+
+```fsharp
+a |> map (fun x -> x+1)
+```
+
+**O01b (original Q1b)**
+
+```fsharp
+c |> map (fun x -> x+1)
+```
+
+**O01c (original Q1c)**
+
+```fsharp
+a |> map (fun x -> b |> map (fun y -> x+y))
+```
+
+**O01d (original Q1d)**
+
+```fsharp
+a |> bind (fun x -> b |> map (fun y -> safediv x y))
+```
+
+### Prior quiz O02 — Safe expression evaluator (original Q2)
+
+Given:
+
+```fsharp
+type expr =
+    | Val of int
+    | Times of expr * expr
+    | Divide of expr * expr
+    | Neg of expr;;
+```
+
+Show how to write a function `eval` of type `expr -> Option<int>` that evaluates an expression into an option, avoiding division by zero.
 
 ## Topic 4: Mutable closures, streams and comparison to OOP
 
@@ -615,3 +809,54 @@ Explain what's meant by the "lifetime" of a value in memory.  When does
 ### Question 1
 
 Write your name on the exam.
+
+## Optional reference: Lambda reduction and encoding quizzes
+
+These original quiz questions are retained for completeness. Beta-reduction exercises are excluded from the supplied midterm scope; they are not required drills for our review. L01 is the original quiz's participation question.
+
+Source: *CamScanner 11-3-26 11.24.pdf*, pages 1–3.
+
+### Prior quiz L01 — Select an option (original Q1; 5 points)
+
+You're a good person and deserve 5 points (select a or b).
+
+- (a) `λxλy.y`
+- (b) `λxλy.x`
+
+### Prior quiz L04 — I, K, and S (original Q4; 10 points)
+
+Let
+
+```text
+I = λx.x
+K = λxλy.x
+S = λxλyλz.x z (y z)
+```
+
+Reduce the following terms to normal form. Show work: if you use an axiom such as `I A = A`, you must first show why it holds.
+
+**(a)** `K (I y)`. Here, `y` is a free variable.
+
+**(b)** `S I I`.
+
+### Prior quiz L05 — Church numeral multiplication (original Q5; 6 points)
+
+Church numeral ZERO is `λfλx.x`, and ONE is `λfλx.f x`. Multiplication TIMES is `λmλnλfλx.m (n f) x`.
+
+Show that `(TIMES ONE ZERO)` beta-reduces to ZERO.
+
+### Prior quiz L06 — Pair construction and extraction (original Q6; 8 points)
+
+A pair of values can be constructed with
+
+```text
+CONS = λaλbλc.c a b
+```
+
+Write a pure lambda term to extract the first element (`CAR`) of a pair. Then show that
+
+```text
+CAR (CONS A B)
+```
+
+beta-reduces to `A` (for any terms `A` and `B`).
