@@ -1,273 +1,368 @@
 module MidtermStudyGuide
 
 (*
-MIDTERM STUDY GUIDE + PRACTICE
-Based on your uploaded "Sample Solutions to Practice Problems on Midterm
-Study Guide." Answers are in 02_MidtermSolutions.fs, with matching numbers.
-Java and C++ snippets are inside F# comments so this remains an F# file.
+Sample Solutions to Practice Problems on Midterm Study Guide
 
-HOW TO USE
-1. Review the notes, then cover them and explain each idea aloud.
-2. Attempt the problems without opening the solutions file.
-3. Check both your answer AND your explanation. Retry missed problems later.
-4. For a timed review, attempt P01-P20 in 75-90 minutes.
+1. Explain what is meant by "covariance" and by "contravariance".  Under
+   what circumstances is each principle valid?  Give an example of each.
 
-QUICK REVIEW
+   Covariance means that the codomain (return type) of a function can become
+   more specific (smaller). Contravariance means the domain can become
+   more general (larger).  The domain cannot become smaller and the codomain
+   cannot become larger.  For example, a function of type string -> object
+   can be replaced by a function of type object -> string but not vice versa.
 
-A. VARIANCE AND TYPE SAFETY
-If Dog is a subtype of Animal:
-- Covariant output: a function returning Dog can replace one returning Animal.
-- Contravariant input: a function accepting Animal can replace one accepting Dog.
-- Together: Animal -> Dog can replace Dog -> Animal.
-These are safe substitution rules; a language need not allow every safe conversion.
-A mutable container that both reads and writes generally must be invariant.
-Java arrays are covariant but check writes at runtime. Java generic classes such
-as ArrayList<T> are invariant. Wildcards provide restricted views:
-? extends Animal: read as Animal; cannot add a specific non-null Animal.
-? super Dog: can add Dog; reading gives Object without a cast.
-Memory cue: producer extends, consumer super.
+2. What's the difference between the following two lines in Java. Will
+   either compile and run?
 
-B. F# FUNCTIONS, RECURSION, AND OPTIONS
-let f (x,y) = x+y      // int * int -> int: one tuple argument
-let g x y = x+y        // int -> int -> int: curried
-let add3 = g 3         // partial application, int -> int
-A recursive call is in tail position when its result is returned directly:
-no addition, list construction, or other work remains after it returns.
-An accumulator stores progress so recursion can be tail-recursive.
-p x && loop rest can be tail-recursive because && short-circuits.
-Some x means a present result; None means no result.
-Option.map:  ('a -> 'b) -> 'a option -> 'b option
-Option.bind: ('a -> 'b option) -> 'a option -> 'b option
-map transforms a present value; bind chains an operation that can fail.
-Integer division truncates toward zero. For these exercises, assume values fit
-in int and exclude Int32.MinValue / -1; handling every arithmetic failure is extra.
+    i. Object[] A = new String[10];
+   ii. ArrayList<Object> B = new ArrayList<String>();
 
-C. SCOPE AND CLOSURES
-Lexical/static scope resolves a name using where a function is DEFINED.
-Dynamic scope resolves it using the active calling environment.
-A closure combines function code with captured bindings. A captured mutable
-binding is shared by closures capturing that same binding. Separate factory
-calls can create separate mutable bindings.
-Temporarily changing a global can simulate some dynamic-scope behavior; restore
-it with try/finally. Explicit environment parameters are another approach.
 
-D. EXPRESSION TREES
-Discriminated unions describe alternatives; recursive cases build trees.
-Evaluation recursively reduces children, combines values, and propagates errors.
-An evaluator need not be tail-recursive unless explicitly required.
+   The first line will compile but the second will not.  This is
+   because arrays were allowed to be covariant in order to support
+   polymorphism, which they shouldn't be, as it results in the
+   following inconsistency:
 
-E. GENERICS AND C++ CONCEPTS
-Java generics mostly use erasure: T becomes its upper bound (Object if unbounded),
-with casts/bridge methods where needed. One class type parameter cannot be used
-as a static field's type: a static field belongs to the class, not each T.
-C++ templates are instantiated for requested arguments. Some checks occur at
-initial definition; dependent operations are checked at instantiation.
-Concepts constrain template arguments and participate in overload resolution.
-Dropping a requires clause may still compile for valid arguments, but can change
-overload selection and errors. Templates are not simply "never type-checked."
+     A[0] = "abc";
+     A[1] = new Integer(2);
 
-F. OBJECT-ORIENTED DISPATCH AND MEMORY
-Overloading: same name, different parameter lists; Java chooses the signature
-using compile-time types. Overriding: subclass supplies an inherited instance
-method's implementation; runtime receiver selects the implementation.
-Dynamic dispatch also exists in statically typed languages; it is not dynamic typing.
-A covariant reference return is allowed when overriding in Java. Narrowing the
-parameter type instead creates an overload, not an override.
-C++ pure virtual member: virtual double area() const = 0;
-It makes the class abstract. Use a virtual destructor for deletion through a base.
-Polymorphism does not universally require heap allocation: a base reference can
-refer to a stack-allocated derived object. Dynamic allocation is useful when
-runtime lifetime/ownership or allocation size cannot fit a fixed local object.
-Leak: allocated storage becomes unreachable without being freed.
-Dangling pointer: pointer refers to an object whose lifetime has ended.
-Double delete/use after free: undefined behavior, not a guaranteed exception.
-Scope is name visibility; lifetime is when an object exists. Assignment usually
-changes an existing object's value; a C++ move does not itself end the source
-object's lifetime. A valid object can move in memory under a moving GC.
+   This will compile but shouldn't.  The rules of type variance are
+   properly observed with generics.
 
-G. PULL STREAMS
-Here a stream has type unit -> 'a option. Each call requests the next item.
-limit n: emit at most n items, without pulling extra source items.
-takeWhile p: emit a prefix; permanently stop at the first failure.
-filter p: skip failures and continue searching. An infinite source with no
-matching item can make a single filtered pull run forever.
-We use permanent end-of-stream: after None, future calls also return None.
 
-SOURCE CORRECTIONS TO REMEMBER
-- The uploaded Fibonacci solution has misspelled/wrong helper calls.
-- The scope example prints nothing until g() is called.
-- The alternate Divide evaluator can return the original unevaluated expression
-  on error; errors must propagate as RuntimeError.
-- C++ B must inherit A for override; pointers use ->; overload examples must
-  have parameter types matching the actual arguments.
-- The uploaded take_while can resume after failure; our version stays stopped.
-- A returned GNU C nested-function pointer is unsafe after the enclosing call
-  ends; ordinary C does not support nested function definitions at all.
+3. Explain the difference between the following functions:
 
-PRACTICE PROBLEMS — WRITE ANSWERS BEFORE OPENING FILE 02
+   a. let f(x,y) = x+y
+   b. let g x y = x+y
 
-P01. Function variance
-Assume Dog <: Animal. Which can safely replace Dog -> Animal?
-(a) Animal -> Dog (b) Dog -> Dog (c) Animal -> Animal
-(d) Poodle -> Animal, where Poodle <: Dog. Explain each decision.
-Why is an unrestricted mutable Box<Dog> not a Box<Animal>?
+   Give an example of the functions behaving differently
 
-P02. Java array covariance and generics
-For each independent snippet, say: compile error, successful execution, or
-runtime failure. Explain the exact operation that causes failure.
-(a) Object[] xs = new String[2]; xs[0] = "hi"; xs[1] = 42;
-(b) ArrayList<Object> xs = new ArrayList<String>();
-(c) List<? extends Number> xs = new ArrayList<Integer>(); xs.add(3);
-(d) List<? super Integer> xs = new ArrayList<Number>(); xs.add(3);
-What static type can you safely use for xs.get(0) in (d)?
+   Function f is not Curried but the function g is.  One can call
+   g 1, which returns a function expecting another argument but one
+   can only call f with both arguments in a pair, as in f(2,3).
 
-P03. Currying and inferred types
-let f (x,y) = x+y
-let g x y = x+y
-let h = g 7
-Give the types of f, g, h. Evaluate h 5 and f (7,5).
-Explain why f 7 and g (7,5) fail for these definitions.
 
-P04. Tail-recursive Fibonacci
-Use F1=1, F2=1. Explain why the naive two-call implementation is not
-tail-recursive. Write fib : int -> int using a tail-recursive helper.
-Reject n < 1 using invalidArg. Give fib 1, fib 2, fib 7.
-Compare the naive and accumulator versions' time complexity.
+4. Determine if the following function is tail-recursive and if not,
+   write a tail-recursive version
 
-P05. Tail position
-Which recursive calls are in tail position? Explain short-circuit evaluation.
-(a) let rec sum xs = match xs with [] -> 0 | h::t -> h + sum t
-(b) let rec all p xs = match xs with [] -> true | h::t -> p h && all p t
-(c) let rec copy xs = match xs with [] -> [] | h::t -> h :: copy t
-(d) let rec any p xs = match xs with [] -> false | h::t -> p h || any p t
+     let rec fib n = if (n<3) then 1 else fib(n-1) + fib(n-2)
 
-P06. Option composition
-Write safeDiv : int -> int -> int option with None for a zero denominator.
-Evaluate:
-Some 3 |> Option.bind (fun y -> Some 14 |> Option.bind (fun x -> safeDiv x y))
-Replace Some 3 with Some 0, then None. What changes?
-Why use bind rather than map with a function returning an option?
+   This function is not tail recursive.  The following one is:
 
-P07. Tail-recursive counting
-Write howmany xs predicate without List.filter or List.length.
-Example: howmany [-2;0;3;4;7] (fun x -> x > 0) = 3.
-Give its time complexity and explain the accumulator invariant.
+     let fib n =
+       let rec fibiter n a b =  // this is tail recursive
+         if (n<3) then b else fib (n-1) b (a+b)
+       fibter n 1 1  // body of outer function
 
-P08. First match
-Write tail-recursive find_first predicate xs, returning an option.
-Evaluate it for even numbers in [3;7;8;10], and for [].
-Explain why it should not evaluate the predicate after the first match.
 
-P09. Lexical scope
-let x = 10
-let f y = x + y
-let g () =
-    let x = 99
-    f 2
-What does g() return? What would it return under dynamic scope?
-Show a mutable-global simulation that restores the old value even if f throws.
+5. Is the following function tail-recursive?
 
-P10. Stateful closures
-let make n =
-    let mutable x = n
-    fun y -> x <- x+y; x
-let a = make 10
-let b = make 10
-let c = a
-Evaluate in order: a 2; a 3; b 4; c 1; b 0.
-Which closures share state? Must a itself be declared mutable?
+     let rec forall predicate m =
+       match m with
+         | [] -> true
+	 | a::b -> (predicate a) && forall predicate b
 
-P11. Expression evaluator
-Using the expr type below, implement eval : expr -> expr.
-Propagate RuntimeError; integer division by zero yields RuntimeError.
-Predict these results before running:
-(a) Plus(Num 3, Times(Num 4, Num 2))
-(b) Divide(Num 7, Num 2)
-(c) Times(Num 0, Divide(Num 1, Num 0))
-(d) Divide(RuntimeError, Num 2)
+   It is, even though the && appears to be the last operation.  But it isn't:
+   the && is shortcircuited: the recursive call is only made if (predicate a)
+   returns true.
 
-P12. Java erasure
-(a) Why is class Box<T> { static T value; } rejected?
-(b) What is T erased to in class Box<T extends Number> { T value; }?
-(c) Can you write new T() or new T[10] inside an ordinary generic class?
-(d) Contrast Java generics and C++ templates without claiming C++ skips checks.
 
-P13. C++ concepts
-Given template<typename T> requires std::totally_ordered<T>
-bool before(T a, T b) { return a < b; }
-If requires is removed, must every use compile? Explain for int and for a
-custom type with no operator<. How can constraints help overloaded templates?
+6. Rewrite the following to use the Option monad instead of raising exceptions
 
-P14. Java overloading AND overriding
-class A {
-    String f(Object x) { return "A:Object"; }
-}
-class B extends A {
-    @Override String f(Object x) { return "B:Object"; }
-    String f(String x) { return "B:String"; }
-}
-A a = new B();
-B b = new B();
-Predict a.f("hi"), b.f("hi"), b.f((Object) "hi").
-Separate compile-time signature selection from runtime implementation selection.
+     let safediv a b =
+       if b<>0 then a/b else raise(Exception "div by zero")
 
-P15. Java covariance
-interface I { Object f(); }
-class C implements I { public String f() { return "ok"; } }
-Does it compile? If I instead declares void put(Object x), does
-public void put(String x) alone implement it? Explain.
+     let safediv a b =
+       if b<>0 then Some(a/b) else None
 
-P16. C++ abstraction and allocation
-Write an abstract Shape with area(), a virtual destructor, and a Square.
-Demonstrate dynamic dispatch through a Shape reference to a stack Square.
-Why does this refute the claim that all polymorphic objects require the heap?
+6b. Write a function 'howmany' that takes a list and a predicate, and
+    returns how many values x in the list are such that predicate(x) evaluates
+    to true.  The function must be tail-recursive
 
-P17. C++ memory diagnosis
-int* p = new int(3);
-int* q = new int(4);
-p = q;
-delete p;
-delete q;
-Identify the leak and double delete precisely. Is *q valid after delete p?
-Show a corrected version using std::unique_ptr.
+   let howmany m predicate =
+     let rec iter m counter =  // this is tail-recursive
+       match m with
+         | [] -> counter
+	 | a::b when (predicate a) -> iter b (counter+1)
+	 | a::b -> iter b counter
+     iter m 0
 
-P18. Lifetime, scope, and moves
-Distinguish scope from lifetime. Does assigning 9 to an existing int end that
-int object's lifetime? Does std::move(s) itself destroy s? Explain why a pointer
-to a local variable must not be returned for use after the function exits.
+6c. Write a function 'find_first' that takes a predicate and returns as
+    an Option the first value in the list that satisfy the predicate, if
+    it exists.  The function must be tail-recursive.
 
-P19. Pull-stream modifiers (larger coding problem)
-Write makeOdds(), limit n stream, takeWhile predicate stream, and
-filterStream predicate stream. Use permanent termination after None.
-A fresh odds stream emits 1,3,5,... . For independent fresh sources, predict:
-(a) makeOdds() |> limit 3                         (five pulls)
-(b) makeOdds() |> takeWhile (fun x -> x < 6)      (five pulls)
-(c) makeOdds() |> filterStream (fun x -> x % 3 = 0) |> limit 3
-Explain why filterStream must keep pulling after a failed predicate, and why
-limit 0 should not pull the source at all.
+    let rec find_first predicate m =
+      match m with
+        | [] -> None
+	| a::b when (predicate a) -> Some(a)
+	| a::b -> find_first predicate b
 
-P20. Closures in C
-Why is this unsafe in GNU C, and invalid in standard C?
-typedef int (*intfun)(int);
-intfun K(int x) {
-    int inner(int y) { return x; }
-    return inner;
-}
-How does an F# closure avoid the captured-local lifetime problem?
+6d. Given
+  open Option
+  let a = Some 8
+  let b = Some 4
+  
+  what is the value of
+  b |> bind (fun y -> if y=0 then None else a |> map (fun x -> x/y))
 
-EXTRA CHALLENGE P21. Combine topics
-Write reciprocalOfFirstEven xs using find_first and Option.bind.
-Find the first even number, then calculate integer 100 / that number safely.
-Predict outputs for [3;4;8], [1;0;4], and [1;3;5].
-Do not skip a matching zero to look for a later nonzero number.
+  Some(2)
+
+7. Determine the output of the following program and explain why:
+
+     let x = 1
+     let f y = x+y
+     let g() =
+       let x = 2
+       printfn "f(1) is %d"  (f 1)
+
+     F# will output 2 because it's statically scoped.
+   
+7b. Show how to emulate dynamic scoping in a programming language that
+   only allows static scoping
+
+   Requires mutation:
+
+   let mutable x = 1
+   let f y = x+y
+   let g() =
+     let savex = x
+     x <- 2
+     printfn "f(1) is %d"  (f 1)  // prints 3
+     x <- savex
+
+   Dynamic scoping is simulated by temporarily replacing the value of a global
+
+8. Given
+
+ type expr =
+   | Num of int
+   | Plus of expr*expr
+   | Times of expr*expr
+   | Divide of expr*expr
+   | RuntimeError
+
+Write a function 'eval' that evaluates an expr to an expr.  A
+Num or RuntimeError should be evaluated to itself (normal form).
+Division by zero should evaluate to a runtime error.  For example,
+eval (Plus(Num 2, Times(Num 2, Num 3))) should return (Num 8).  and
+eval (Divide(Num 2, Num 0)) should return RuntimeError.
+
+let rec eval e =
+  match e with
+    | Num n -> e
+    | RuntimeError -> e
+    | Plus(a,b) ->
+      match (eval a, eval b) with
+        |(Num x, Num y) -> Num(x+y)
+	| _ -> RuntimeError
+    | Times(a,b) ->
+      match (eval a, eval b) with
+        |(Num x, Num y) -> Num(x*y)
+	| _ -> RuntimeError      
+    | Divide(a,b) ->
+      match (eval a, eval b) with
+        | (Num x, Num 0) -> RuntimeError
+	| (Num x, Num y) -> Num(x/y)
+        | _ -> RuntimeError
+
+Alternatively, to be more efficient, the last clause can be written as
+
+    | Divide(a,b) ->
+      match (eval b) with
+        | Num 0 -> RuntimeError
+	| Num y ->
+	  match (eval a) with
+	    | Num x -> Num (x/y)
+	    | ee -> ee
+        | _ -> e	    
+
+9. Determine the output of the following program:
+
+     let make n =
+       let mutable x = n
+       fun y ->
+         x <- x+y
+	 x
+	 
+     let mutable a1 = make 0
+     let mutable a2 = make 0
+     a1 2  // 2
+     a1 2  // 4
+     a1 2  // 6
+     a2 2  // 2
+
+
+10. Concerning templates (generics), explain the differences between how
+    they're implemented in C++ compared to Java.
+     
+    C++ templates are instantiated at compile time and carries zero
+    runtime overhead. However, template code is not type-checked, which
+    they are in Java.  Java uses "type erasure" to implement templates
+    (generics).  For each generic class C<T>, java creates a non-generic
+    class C where T is replaced by Object, or the closest supertype that
+    T is declared to extend. (i.e, in class C<T extends Comparable<T>>,
+    T will be replaced by Comparable.)
+
+
+11. C++20 introduced "concepts", illustrated in
+
+      template<typename T> requires std::totally_ordered<T>
+
+    Explain whether the program will still compile if the "requires"
+    clause is dropped.
+
+    The requirement is checked against instantiations of T at compile time.
+    But it will still compile: the joke is that "the requirement is optional."
+    
+
+12. Explain why advanced object oriented programming requires dynamic
+    memory allocation.  Why is stack allocation not enough?
+
+      Because the compiler doesn't know the exact type and
+      therefore the size of the object.
+
+12b.  Explain what is meant by "dynamic dispatch" and "dynamic typing"
+
+      Dynamic typing means that the exact type of objects is only known
+      at runtime and is carried by the objects.  Dynamic dispatch means
+      when a function a.f() is invoked, the dynamic type of a is used to
+      determine which version of f to call.
+    
+
+13. What's the difference between "overloading" and "overriding"?
+    Give an example of each.
+
+    Both concern resolving functions that share the same name.
+    Overloading happens at compile time while overriding happens at
+    runtime using dynamic dispatch.
+
+    struct A {
+      virtual int f() { return 1; }
+    };
+    struct B {
+      int f() override { return 2; }
+    };
+    
+    int g(A x) { return 1; }
+    int g(B x) { return 2; }
+
+    int main() {
+      A* n = new B(); // static type A, dynamic type B
+      int x = n.f();  // returns 2 because of overriding (dynamic dispatch)
+      x = g(n);   // returns 1 because of overloading (static type used)
+    }
+
+
+14. Give an example of a "pure virtual function" in the context of
+    the shapes example in C++.
+
+    class shape {
+      virtual double area() = 0;
+    };  // one cannot create an instance of such a class
+
+15. Explain if the following compiles in Java:
+
+    interface I {
+      Object f();
+    }
+    class A implements I {
+      public String f() { return "abc"; }
+    }
+
+    Yes, it compiles because Java recognizes this kind of covariance.
+
+15b. How about the following:
+
+    class A<T> {
+      T x;
+      static T y;
+    }
+
+    No, this will not compile because of type erasure.  The type of y
+    would be Object, and there would be no way to distinguish the y in
+    A<String> with A<Integer>, for example.
+
+
+16. (maybe on exam) Determine if the following C++ code contain any memory errors, and if so,
+    what type of errors:
+
+    int* px = new int(3);
+    int* qx = new int(4);
+    px = qx;
+    delete px;
+    delete qx;
+
+    px = qx; causes a memory leak: the int(3) is still on the heap
+    with no live pointer pointing to it.  There is also a double free
+    at the end.  Both are runtime errors.
+
+17. (maybe on exam) Explain what's meant by the "lifetime" of a value in memory.  When does
+    lifetime end?
+
+    The lifetime of a value is how long it's guaranteed to stay at the same
+    location in memory.  Lifetime ends with mutation: either by being assigned
+    to a different value or being popped from the stack or freed from the heap.
+    It also ends following a "transfer of ownership" or "move".
+
+18. Concerning streams in F# such as the following (infinite odd numbers):
+
+    let mutable x = 1
+    let oddstream = fun () ->
+      x <- x+2
+      Some(x-2)
+      
+    Show how to define a stream modifier `limit` that would limit the
+    stream to a certain number, i.e oddstream |> limit 10, should limit
+    the stream to the first 10 odds.
+
+    let limit n stream =
+      let mutable cx = 0
+      fun () ->
+        cx <- cx+1
+	if cx<=n then stream()
+	else None
+	
+18b. Show how to define a stream modifier take_while that would return
+     values that satisfy a predicate, and None otherwise.
+     
+   let take_while predicate stream =
+     fun () ->
+       match (stream()) with
+         | Some(x) when (predicate x) -> Some(x)
+	 | _ -> None
+
+   alternatively,
+
+   let take_while predicate stream =
+     fun () ->
+       let next = stream()
+       if (next |> Option.map predicate |> Option.DefaultValue false)
+         then next
+       else None
+
+18c. (harder) Show how to define a stream modifier `filter` that takes
+     a predicate and modifies a stream to only return values that satisfy
+     the predicate.
+
+   let filter predicate stream =
+     let rec inner next =
+       match next with
+         | Some(x) when (predicate x) -> next
+	 | Some(x) -> inner (stream())
+	 | None -> None
+     fun () -> inner (stream())
+
+
+19.  Explain why in (Gnu) C the K combinator cannot be defined as follows:
+
+    typedef int (*intfun)(int);
+    intfun K(int x) {
+       int inner(int y) { return x; }
+       return inner;
+    }
+
+    Because the local variable x will get popped off the stack and will
+    no longer be valid inside the inner function.
+
 *)
-
-type expr =
-    | Num of int
-    | Plus of expr * expr
-    | Times of expr * expr
-    | Divide of expr * expr
-    | RuntimeError
-
-// Put your implementations below, or practice on paper first.
-// Suggested order: P03, P06-P08, P04-P05, P09-P11, P19, P21.
