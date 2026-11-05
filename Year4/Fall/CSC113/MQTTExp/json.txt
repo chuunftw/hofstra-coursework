@@ -1,0 +1,7 @@
+Channel Name: csc113/ambientenv
+
+Json Data:
+	ID, Str
+	humidity, FP
+	temp, FP
+	location, Str
