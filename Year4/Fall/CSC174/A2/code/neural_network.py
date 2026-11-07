@@ -65,16 +65,15 @@ class NeuralNetwork:
 		w, b = [], []
 
 		# create a list of layer sizes
-		layer_sizes = ...
+		layer_sizes = [self.input_size] + self.hidden_layer_sizes + [self.output_size]
 
 		# iterate through layer sizes
 		# create weights for each layer
-		for i in range(...):
-
+		for i in range(len(layer_sizes) - 1):
 			# initialize weights using standard normal distribution
 			# with mean=0 and variance=1
-			w_layer = ...
-			b_layer = ...
+			w_layer = np.random.randn(layer_sizes[i], layer_sizes[i + 1])
+			b_layer = np.zeros(layer_sizes[i + 1])
 
 			# append layer weights and biases
 			w.append(w_layer)
@@ -116,25 +115,25 @@ class NeuralNetwork:
 		a.append(X)
 
 		# iterate through layers (weights)
-		for i in range(...):
+		for i in range(len(self.w)):
 
 			# compute pre-activations from activations in previous layer
-			z_layer = ...
+			z_layer = a[i] @ self.w[i] + self.b[i]
 			z.append(z_layer)
 
 			# compute activation (except for last layer)
 			if i < len(self.w) - 1:
 				if self.activation_function == 'sigmoid':
-					a_layer = ...
+					a_layer = sigmoid(z_layer)
 				elif self.activation_function == 'linear':
 					a_layer = z_layer.copy()
 				a.append(a_layer)
 
 		# logits should be final pre-activations
-		logits = ...
+		logits = z[-1]
 
 		# compute probabilities by sending logits through softmax
-		y_prob = ...
+		y_prob = softmax(logits)
 
 		return z, a, y_prob
 
@@ -175,29 +174,29 @@ class NeuralNetwork:
 
 		# compute the gradient of the loss with respect to the
 		# output layer pre-activations (logits)
-		delta = ...
+		delta = y_prob - y_true
 
 		# compute gradients for the output layer
-		grads_w[-1] = ...
-		grads_b[-1] = ...
+		grads_w[-1] = a[-1].T @ delta / m
+		grads_b[-1] = np.sum(delta, axis=0) / m
 
 		# propagate the error backward through each hidden layer
-		for layer in range(...):
+		for layer in range(len(self.w)-2, -1, -1):
 
 			# compute the derivative of the activation function
-			activation_derivative = ...
+			activation_derivative = sigmoid_derivative(z[layer]) if self.activation_function == 'sigmoid' else np.ones_like(z[layer])
 	
 			# compute the error signal for the current hidden layer
-			delta = ...
+			delta = (delta @ self.w[layer + 1].T) * activation_derivative
 
 			# compute gradients for the current layer
-			grads_w[layer] = ...
-			grads_b[layer] = ...
+			grads_w[layer] = a[layer].T @ delta / m
+			grads_b[layer] = np.sum(delta, axis=0) / m
 
 		# update weights and biases using gradient descent
-		for i in range(...):
-			self.w[i] = ...
-			self.b[i] = ...
+		for i in range(len(self.w)):
+			self.w[i] = self.w[i] - self.learning_rate * grads_w[i]
+			self.b[i] = self.b[i] - self.learning_rate * grads_b[i]
 
 
 	def train(self, X, y):
@@ -233,39 +232,39 @@ class NeuralNetwork:
 		n, d = X.shape
 
 		# convert y to one-hot
-		y = ...
+		y =  one_hot_encode(y, self.output_size)
 
 		# iterate through number of epochs
-		for epoch in range(...):
+		for epoch in range(self.num_epochs):
 			
 			# keep track of batch losses
 			batch_losses = []
 
 			# iterate through batches
 			batch_start_idx = 0
-			while ...:
+			while batch_start_idx < n:
 
 				# extract batch data
-				X_batch = ...
-				y_batch = ...
+				X_batch = X[batch_start_idx : batch_start_idx + self.batch_size]
+				y_batch = y[batch_start_idx : batch_start_idx + self.batch_size]
 
 				# compute forward pass to get logits
-				z, a, y_prob = ...
+				z, a, y_prob = self.forward_pass(X_batch)
 		
 				# compute the cross entropy loss
-				loss = ...
+				loss = cross_entropy_loss(y_batch, y_prob)
 
 				# append loss for batch to batch_losses
 				batch_losses.append(loss)
 
 				# compute backward pass
-				...
+				self.backward_pass(y_batch, z, a, y_prob)
 
 				# increment batch idx
 				batch_start_idx += self.batch_size
 
 			# compute average batch loss
-			epoch_loss = ...
+			epoch_loss = np.mean(batch_losses)
 			training_loss.append(epoch_loss)
 	
 		return training_loss
@@ -291,10 +290,10 @@ class NeuralNetwork:
 		# TODO
 
 		# compute forward pass
-		_, _, y_prob = ...
+		_, _, y_prob = self.forward_pass(X)
 
 		# choose class with highest probabilities
-		y_class = ...
+		y_class = np.argmax(y_prob, axis=1)
 
 		return y_class
 

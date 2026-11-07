@@ -1,4 +1,4 @@
-﻿# A2 Plan — Neural Networks from Scratch
+# A2 Plan — Neural Networks from Scratch
 
 ## How we will work
 
@@ -40,8 +40,6 @@ To start working:
 2. Run `python tests.py` to check the assignment code.
 3. For one helper function, for example, run `python -c "from tests import test_sigmoid_derivative; test_sigmoid_derivative()"`.
 
-All four helper functions pass their supplied tests. The five network functions remain unfinished, so their tests still report failures. The environment itself is ready. Read the printed test results, since the supplied runner can report failures while still exiting normally.
-
 If your editor asks for a Python interpreter, select:
 `C:\Users\Ryan\miniconda3\envs\deep-learning-a2\python.exe`
 
@@ -78,12 +76,12 @@ Suggested helper-functions commit message: `Implement A2 neural network utility 
 
 ### Network functions in code/neural_network.py
 
-- [ ] `initialize_parameters` — create the weights and biases.
-- [ ] `forward_pass` — turn inputs into predicted probabilities.
-- [ ] `backward_pass` — calculate gradients and update weights and biases.
-- [ ] `train` — repeat learning over batches and epochs.
-- [ ] `predict` — choose the most likely class.
-- [ ] Pass the provided tests and check behavior beyond those tests where needed.
+- [x] `initialize_parameters` — implemented; supplied function test passed.
+- [x] `forward_pass` — implemented; both supplied test cases passed.
+- [x] `backward_pass` — implemented; both supplied test cases and numerical gradient checks passed (sigmoid, linear, and no hidden layers).
+- [x] `train` — implemented; both supplied test cases passed.
+- [x] `predict` — implemented; both supplied test cases passed.
+- [x] All supplied Part 1 tests pass. Extra checks passed for softmax stability, numerical gradients, smaller final batches, continued training, and prediction behavior.
 
 ## Part 2 — Run the experiments
 
@@ -137,7 +135,7 @@ Parts 2 and 3 together make up the 40-point analysis section.
 
 ## Where to begin
 
-Environment setup and the four helper implementations are done; their supplied tests pass. The softmax stability check also passes. Next, begin `initialize_parameters` in `code/neural_network.py`. Part 1 is still in progress.
+Environment setup and the four helper implementations are done; their supplied tests pass. The softmax stability check also passes. Parameter initialization is implemented and tested. Forward and backward passes are implemented and tested. Training and prediction are now implemented and tested. Part 1 is complete; next is Part 2 in `code/analysis.py`. Part 1 is complete: all nine required functions are implemented and all supplied tests pass.
 
 
 
