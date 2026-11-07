@@ -55,11 +55,30 @@ def part1():
 	accuracy = None
 
 	# TODO
+	model = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=[4],
+		output_size=3,
+		batch_size=8,
+		num_epochs=10,
+		learning_rate=0.1,
+		activation_function='linear',
+		random_seed=42
+	)
+	model.train(X, y)
+
+	predictions = model.predict(X)
+	accuracy = accuracy_score(y, predictions)
+
+	plt.close(fig)
+	fig = plot_decision_boundary(
+		X, y, model, title='Linearly Separable Data: Linear Network'
+	)
 
 	# save figure and print accuracy
 	print('Part 1 - Accuracy:', accuracy)
 	fig.savefig(join(plots_directory, 'part1.png'))
-
+	
 
 def part2():
 
@@ -109,8 +128,59 @@ def part2():
 	# instantiate accuracy
 	training_accuracy_model1, training_accuracy_model2, training_accuracy_model3 = None, None, None
 
-	# TODO
+	model1 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=[],
+		output_size=3,
+		batch_size=8,
+		num_epochs=500,
+		learning_rate=0.02,
+		activation_function='linear',
+		random_seed=42
+	)
+	model1.train(X, y)
+	predictions1 = model1.predict(X)
+	training_accuracy_model1 = accuracy_score(y, predictions1)
+	plt.close(fig_model1)
+	fig_model1 = plot_decision_boundary(
+		X, y, model1, title='Circles: No Hidden Layer (Linear)'
+	)
 
+	model2 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=[8],
+		output_size=3,
+		batch_size=8,
+		num_epochs=500,
+		learning_rate=0.02,
+		activation_function='linear',
+		random_seed=42
+	)
+	model2.train(X, y)
+	predictions2 = model2.predict(X)
+	training_accuracy_model2 = accuracy_score(y, predictions2)
+	plt.close(fig_model2)
+	fig_model2 = plot_decision_boundary(
+		X, y, model2, title='Circles: 8 Hidden Neurons (Linear)'
+	)
+
+	model3 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=[8],
+		output_size=3,
+		batch_size=8,
+		num_epochs=500,
+		learning_rate=0.02,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+	model3.train(X, y)
+	predictions3 = model3.predict(X)
+	training_accuracy_model3 = accuracy_score(y, predictions3)
+	plt.close(fig_model3)
+	fig_model3 = plot_decision_boundary(
+		X, y, model3, title='Circles: 8 Hidden Neurons (Sigmoid)'
+	)
 
 	# save figure and print accuracy
 	print('Part 2 - Model 1 Accuracy:', training_accuracy_model1)
@@ -179,7 +249,155 @@ def part3():
 	train_time_model1, train_time_model2, train_time_model3 = None, None, None
 	train_time_model4, train_time_model5, train_time_model6 = None, None, None
 
-	# TODO
+	model1 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[0],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model1.train(X, y)
+	train_time_model1 = time.perf_counter() - start_time
+
+	predictions1 = model1.predict(X)
+	training_accuracy_model1 = accuracy_score(y, predictions1)
+	num_params_model1 = model1.num_parameters()
+
+	plt.close(fig_decision_boundary_model1)
+	fig_decision_boundary_model1 = plot_decision_boundary(
+		X, y, model1,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[0]} (Sigmoid)'
+	)
+
+	model2 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[1],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model2.train(X, y)
+	train_time_model2 = time.perf_counter() - start_time
+
+	predictions2 = model2.predict(X)
+	training_accuracy_model2 = accuracy_score(y, predictions2)
+	num_params_model2 = model2.num_parameters()
+
+	plt.close(fig_decision_boundary_model2)
+	fig_decision_boundary_model2 = plot_decision_boundary(
+		X, y, model2,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[1]} (Sigmoid)'
+	)
+
+	model3 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[2],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model3.train(X, y)
+	train_time_model3 = time.perf_counter() - start_time
+
+	predictions3 = model3.predict(X)
+	training_accuracy_model3 = accuracy_score(y, predictions3)
+	num_params_model3 = model3.num_parameters()
+
+	plt.close(fig_decision_boundary_model3)
+	fig_decision_boundary_model3 = plot_decision_boundary(
+		X, y, model3,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[2]} (Sigmoid)'
+	)
+
+	model4 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[3],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model4.train(X, y)
+	train_time_model4 = time.perf_counter() - start_time
+
+	predictions4 = model4.predict(X)
+	training_accuracy_model4 = accuracy_score(y, predictions4)
+	num_params_model4 = model4.num_parameters()
+
+	plt.close(fig_decision_boundary_model4)
+	fig_decision_boundary_model4 = plot_decision_boundary(
+		X, y, model4,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[3]} (Sigmoid)'
+	)
+
+	model5 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[4],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model5.train(X, y)
+	train_time_model5 = time.perf_counter() - start_time
+
+	predictions5 = model5.predict(X)
+	training_accuracy_model5 = accuracy_score(y, predictions5)
+	num_params_model5 = model5.num_parameters()
+
+	plt.close(fig_decision_boundary_model5)
+	fig_decision_boundary_model5 = plot_decision_boundary(
+		X, y, model5,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[4]} (Sigmoid)'
+	)
+
+	model6 = NeuralNetwork(
+		input_size=2,
+		hidden_layer_sizes=hidden_layer_sizes_list[5],
+		output_size=2,
+		batch_size=8,
+		num_epochs=1000,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=42
+	)
+
+	start_time = time.perf_counter()
+	model6.train(X, y)
+	train_time_model6 = time.perf_counter() - start_time
+
+	predictions6 = model6.predict(X)
+	training_accuracy_model6 = accuracy_score(y, predictions6)
+	num_params_model6 = model6.num_parameters()
+
+	plt.close(fig_decision_boundary_model6)
+	fig_decision_boundary_model6 = plot_decision_boundary(
+		X, y, model6,
+		title=f'Two Moons: Hidden Layers {hidden_layer_sizes_list[5]} (Sigmoid)'
+	)
 
 	# print accuracies
 	print('Part 3 - Model 1 Accuracy:', training_accuracy_model1)
@@ -281,7 +499,16 @@ def part4():
 	X_test = scaler.transform(X_test)
 
 	# instantiate neural network
-	nn_model = ...
+	nn_model = NeuralNetwork(
+		input_size=30,
+		hidden_layer_sizes=[16],
+		output_size=2,
+		batch_size=16,
+		num_epochs=1,
+		learning_rate=0.01,
+		activation_function='sigmoid',
+		random_seed=43
+	)
 
 	# number of training epochs
 	num_epochs = 3000
@@ -308,43 +535,54 @@ def part4():
 	for epoch in range(num_epochs):
 
 		# train for one epoch
-
+		nn_model.train(X_train, y_train) 
 		# save model parameters
-		#weights_history.append([w.copy() for w in nn_model.w])
-		#biases_history.append([b.copy() for b in nn_model.b])
+		weights_history.append([w.copy() for w in nn_model.w])
+		biases_history.append([b.copy() for b in nn_model.b])
 
 		# compute training and validation probabilities
-		y_train_prob = ...
-		y_val_prob = ...
+		y_train_prob = nn_model.forward_pass(X_train)[2]
+		y_val_prob = nn_model.forward_pass(X_val)[2]
 
 		# compute losses
-		training_loss = ...
-		validation_loss = ...
+		training_loss = cross_entropy_loss(y_train_one_hot, y_train_prob)
+		validation_loss = cross_entropy_loss(y_val_one_hot, y_val_prob)
 
-		#training_losses.append(training_loss)
-		#validation_losses.append(validation_loss)
+		training_losses.append(training_loss)
+		validation_losses.append(validation_loss)
 
 		# compute accuracies
-		training_accuracy = ...
-		validation_accuracy = ...
+		training_accuracy = accuracy_score(y_train, nn_model.predict(X_train))
+		validation_accuracy = accuracy_score(y_val, nn_model.predict(X_val))
 
-		#training_accuracies.append(training_accuracy)
-		#validation_accuracies.append(validation_accuracy)
+		training_accuracies.append(training_accuracy)
+		validation_accuracies.append(validation_accuracy)
 
 	# determine optimal epoch using validation loss
-	
+	optimal_epoch_idx = np.argmin(validation_losses)
+	optimal_epoch = optimal_epoch_idx + 1
 
 	# restore model parameters from optimal epoch
-	#nn_model.w = [w.copy() for w in weights_history[optimal_epoch_idx]]
-	#nn_model.b = [b.copy() for b in biases_history[optimal_epoch_idx]]
+	nn_model.w = [w.copy() for w in weights_history[optimal_epoch_idx]]
+	nn_model.b = [b.copy() for b in biases_history[optimal_epoch_idx]]
 
 	# compute final predictions
+	y_train_pred = nn_model.predict(X_train)
+	y_val_pred = nn_model.predict(X_val)
+	y_test_pred = nn_model.predict(X_test)
 
 
 	# compute final accuracies
+	training_accuracy = accuracy_score(y_train, y_train_pred)
+	validation_accuracy = accuracy_score(y_val, y_val_pred)
+	testing_accuracy = accuracy_score(y_test, y_test_pred)
 
 
 	# compute metrics on testing set
+	cm = confusion_matrix(y_test, y_test_pred)
+	precision = precision_score(y_test, y_test_pred, pos_label=1)
+	recall = recall_score(y_test, y_test_pred, pos_label=1)
+	f1 = f1_score(y_test, y_test_pred, pos_label=1)
 	
 
 	# print training results
@@ -358,6 +596,27 @@ def part4():
 	print('Part 4 - Precision:', precision)
 	print('Part 4 - Recall:', recall)
 	print('Part 4 - F1-score:', f1)
+
+	epochs = np.arange(1, num_epochs + 1)
+	ax_loss = fig_loss_curves.add_subplot(1,1,1) # 1 row, 1 column, 1 plot number
+	ax_loss.plot(epochs, training_losses, label='Training')
+	ax_loss.plot(epochs, validation_losses, label='Validation')
+	ax_loss.axvline(optimal_epoch, color='black', linestyle='--', label=f'Best Epoch: {optimal_epoch}')
+	ax_loss.set_xlabel('Epoch')
+	ax_loss.set_ylabel('Cross-Entropy Loss')
+	ax_loss.set_title('Breast Cancer: Training and Validation Loss')
+	ax_loss.legend()
+	fig_loss_curves.tight_layout()
+
+	ax_accuracy = fig_accuracy_curves.add_subplot(1,1,1)
+	ax_accuracy.plot(epochs, training_accuracies, label='Training')
+	ax_accuracy.plot(epochs, validation_accuracies, label='Validation')
+	ax_accuracy.axvline(optimal_epoch, color='black', linestyle='--', label=f'Best Epoch: {optimal_epoch}')
+	ax_accuracy.set_xlabel('Epoch')
+	ax_accuracy.set_ylabel('Accuracy')
+	ax_accuracy.set_title('Breast Cancer: Training and Validation Accuracy')
+	ax_accuracy.legend()
+	fig_accuracy_curves.tight_layout()
 
 	# save figures
 	fig_loss_curves.savefig(join(plots_directory, 'part4_loss_curves.png'))
