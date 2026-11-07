@@ -29,8 +29,29 @@ Assignment files are in `A2/`. This plan stays outside that folder.
 
 ### Set up
 
-- [ ] Set up and activate the supplied environment using `a2_env.yml`.
+- [x] Set up and verify the supplied environment using `a2_env.yml`.
 - [ ] Learn how to run the supplied tests.
+
+Environment setup is complete on this PC. Python 3.12, NumPy, Matplotlib, and scikit-learn were installed and checked. Assignment imports and graph rendering work.
+
+To start working:
+
+1. Double-click `A2 terminal.cmd` in CSC174. It opens in `A2/code` with `deep-learning-a2` active.
+2. Run `python tests.py` to check the assignment code.
+3. For one helper function, for example, run `python -c "from tests import test_sigmoid_derivative; test_sigmoid_derivative()"`.
+
+The starter tests currently report failures because the assigned functions are not implemented. This is expected; the environment itself is ready. Read the printed test results, since the supplied runner can report failures while still exiting normally.
+
+If your editor asks for a Python interpreter, select:
+`C:\Users\Ryan\miniconda3\envs\deep-learning-a2\python.exe`
+
+Alternative in Anaconda Prompt:
+
+```text
+conda activate deep-learning-a2
+cd /d "C:\Users\Ryan\Desktop\senior\senior\Year4\Fall\CSC174\A2\code"
+python tests.py
+```
 
 ### Helper functions in code/utils.py
 
@@ -103,3 +124,4 @@ Parts 2 and 3 together make up the 40-point analysis section.
 ## Where to begin
 
 Begin with environment setup, then `sigmoid_derivative` in `code/utils.py`. No assignment implementation has been completed as part of creating this plan.
+
