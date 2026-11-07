@@ -30,7 +30,7 @@ Assignment files are in `A2/`. This plan stays outside that folder.
 ### Set up
 
 - [x] Set up and verify the supplied environment using `a2_env.yml`.
-- [ ] Learn how to run the supplied tests.
+- [x] Learn how to run the supplied tests.
 
 Environment setup is complete on this PC. Python 3.12, NumPy, Matplotlib, and scikit-learn were installed and checked. Assignment imports and graph rendering work.
 
@@ -40,10 +40,18 @@ To start working:
 2. Run `python tests.py` to check the assignment code.
 3. For one helper function, for example, run `python -c "from tests import test_sigmoid_derivative; test_sigmoid_derivative()"`.
 
-The starter tests currently report failures because the assigned functions are not implemented. This is expected; the environment itself is ready. Read the printed test results, since the supplied runner can report failures while still exiting normally.
+All four helper functions pass their supplied tests. The five network functions remain unfinished, so their tests still report failures. The environment itself is ready. Read the printed test results, since the supplied runner can report failures while still exiting normally.
 
 If your editor asks for a Python interpreter, select:
 `C:\Users\Ryan\miniconda3\envs\deep-learning-a2\python.exe`
+
+From the VS Code PowerShell terminal, start the same ready-to-use A2 terminal with:
+
+```powershell
+& "C:\Users\Ryan\Desktop\senior\senior\Year4\Fall\CSC174\A2 terminal.cmd"
+```
+
+Wait for `(deep-learning-a2)` and a path ending in `A2\code`, then run the test commands above.
 
 Alternative in Anaconda Prompt:
 
@@ -57,10 +65,16 @@ python tests.py
 
 For each function: understand its purpose, work through a small example, write it, and check it.
 
-- [ ] `sigmoid_derivative` — how the sigmoid output changes as its input changes.
-- [ ] `softmax` — convert class scores into probabilities.
-- [ ] `cross_entropy_loss` — measure prediction error.
-- [ ] `one_hot_encode` — represent each label as a vector.
+- [x] `sigmoid_derivative` — implemented; supplied function test passed.
+- [x] `softmax` — implemented; supplied function test passed. Large-score stability check also passed.
+- [x] `cross_entropy_loss` — implemented; supplied function test passed.
+- [x] `one_hot_encode` — implemented; both supplied test cases passed.
+
+### Helper verification complete
+
+All four supplied helper tests pass, including both one-hot cases. The softmax stability fix is saved and the large-score check passes.
+
+Suggested helper-functions commit message: `Implement A2 neural network utility functions`.
 
 ### Network functions in code/neural_network.py
 
@@ -123,5 +137,8 @@ Parts 2 and 3 together make up the 40-point analysis section.
 
 ## Where to begin
 
-Begin with environment setup, then `sigmoid_derivative` in `code/utils.py`. No assignment implementation has been completed as part of creating this plan.
+Environment setup and the four helper implementations are done; their supplied tests pass. The softmax stability check also passes. Next, begin `initialize_parameters` in `code/neural_network.py`. Part 1 is still in progress.
+
+
+
 

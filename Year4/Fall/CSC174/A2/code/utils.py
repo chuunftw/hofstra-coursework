@@ -26,8 +26,9 @@ def sigmoid_derivative(x):
   """
 
   # TODO
-
-  return None
+  s = sigmoid(x)
+  s_d = s*(1-s)
+  return s_d
 
 
 def softmax(logits):
@@ -46,8 +47,9 @@ def softmax(logits):
   """
 
   # TODO
-
-  return None
+  logits = logits - np.max(logits, axis=1, keepdims=True) # cases w/ larges scores to handle 
+  softmax = (np.exp(logits) / np.sum(np.exp(logits), axis = 1, keepdims=True))
+  return softmax 
 
 
 def cross_entropy_loss(y_true, y_prob):
@@ -66,8 +68,12 @@ def cross_entropy_loss(y_true, y_prob):
   """
 
   # TODO
+  n_samples, n_classes = y_true.shape
+  zero = 0.00000000000000000000001
+  y_prob = np.clip(y_prob, zero, 1 - zero)
 
-  return None
+  loss = -np.sum(y_true * np.log(y_prob)) / n_samples
+  return loss
 
 
 
@@ -87,8 +93,10 @@ def one_hot_encode(y, num_classes):
   """
 
   # TODO
-
-  return None
+  encode = np.zeros((len(y), num_classes))
+  for row, label in enumerate(y):
+    encode[row,label] = 1 
+  return encode
 
 
 
