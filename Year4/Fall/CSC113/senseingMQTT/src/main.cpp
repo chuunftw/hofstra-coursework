@@ -1,5 +1,77 @@
 #include <Arduino.h>
 #include "DHT.h"
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+
+const char* ssid = "Ryan's IPhone";
+const char* password = "wigwomm87";
+const char* mqtt_server = "broker.hivemq.com";
+const char* publishTopic = "csc113/ambientenv/publish";
+const char* subscribeTopic = "csc113/ambientenv/listen";
+const char* sensorID = "RC";
+const char* location = "RC desk";
+
+WiFiClient wifiClient;
+PubSubClient client(wifiClient);
+bool publishingEnabled = true;
+unsigned long lastMeasurement = 0;
+unsigned long lastMqttAttempt = 0;
+unsigned long lastWiFiAttempt = 0;
+unsigned long lastLedChange = 0;
+bool ledOn = false;
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  JsonDocument doc;
+  DeserializationError error = deserializeJson(doc, payload, length);
+  if (error) {
+    Serial.print("Invalid command JSON: ");
+    Serial.println(error.c_str());
+    return;
+  }
+  if (!doc["ID"].is<const char*>() ||
+      strcmp(doc["ID"].as<const char*>(), sensorID) != 0) {
+    return;
+  }
+  const char* command = doc["cmd"] | "";
+  if (strcmp(command, "STOP") == 0) {
+    publishingEnabled = false;
+    Serial.println("RC: publishing stopped");
+  } else if (strcmp(command, "START") == 0) {
+    publishingEnabled = true;
+    Serial.println("RC: publishing started");
+  } else {
+    Serial.println("Unknown command; use STOP or START");
+  }
+}
+
+void maintainConnection() {
+  unsigned long now = millis();
+  if (WiFi.status() != WL_CONNECTED) {
+    if (now - lastWiFiAttempt >= 10000) {
+      lastWiFiAttempt = now;
+      Serial.println("Retrying Wi-Fi...");
+      WiFi.reconnect();
+    }
+    return;
+  }
+  if (!client.connected() && now - lastMqttAttempt >= 5000) {
+    lastMqttAttempt = now;
+    String clientID = "ESP32-RC-" + WiFi.macAddress();
+    Serial.println("Connecting to MQTT...");
+    if (client.connect(clientID.c_str())) {
+      if (client.subscribe(subscribeTopic)) {
+        Serial.println("MQTT connected and subscribed");
+      } else {
+        Serial.println("MQTT subscription failed; retrying");
+        client.disconnect();
+      }
+    } else {
+      Serial.print("MQTT connection failed, rc=");
+      Serial.println(client.state());
+    }
+  }
+}
 
 #define LED_PIN 32
 #define VOUT_PIN 25
@@ -35,6 +107,11 @@ void setup()
   //digitalWrite(VOUT_PIN,HIGH);
   Serial.println("before dht begin");
   dht.begin();
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to CSC113 Wi-Fi...");
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
 }
 
 void measureTemp() {
@@ -72,17 +149,41 @@ void measureTemp() {
   Serial.print(F("°C "));
   Serial.print(hif);
   Serial.println(F("°F"));
+
+  if (publishingEnabled && client.connected()) {
+    JsonDocument doc;
+    doc["ID"] = sensorID;
+    doc["humidity"] = h;
+    doc["temp"] = t; // Celsius
+    doc["location"] = location;
+    String json;
+    serializeJson(doc, json);
+    if (client.publish(publishTopic, json.c_str())) {
+      Serial.print("Published: ");
+      Serial.println(json);
+    } else {
+      Serial.println("MQTT publish failed");
+    }
+  }
 }
 
 void loop() 
 {
   // put your main code here, to run repeatedly:
-  delay(1000);
-  digitalWrite(LED_PIN,HIGH);
-  delay(1000);
-  digitalWrite(LED_PIN,LOW);
-  // mesure temp...
-  measureTemp();
+  maintainConnection();
+  if (client.connected()) {
+    client.loop();
+  }
+  unsigned long now = millis();
+  if (now - lastLedChange >= 1000) {
+    lastLedChange = now;
+    ledOn = !ledOn;
+    digitalWrite(LED_PIN, ledOn ? HIGH : LOW);
+  }
+  if (now - lastMeasurement >= 2000) {
+    lastMeasurement = now;
+    measureTemp();
+  }
 
 }
 
