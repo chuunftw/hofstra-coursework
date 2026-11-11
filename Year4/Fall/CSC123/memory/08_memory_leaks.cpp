@@ -19,9 +19,11 @@ int main() {
     cout << "1. Release an allocation before its owner leaves scope\n";
     {
         int* A = new int[4]{}; // {} initializes the integers to zero.
+        // pointer A points to the first value in the array 
         A[0] = 7;
         cout << "A[0] = " << A[0] << '\n'; // 7
         delete[] A;
+        cout << A[0] << "\n";
     } // Nothing was left allocated.
 
     cout << "\n2. Release old storage before overwriting its address\n";
