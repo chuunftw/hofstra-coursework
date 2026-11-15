@@ -23,3 +23,9 @@ MIDTERMS:
 Cyber: 10/15/2026 (closed notebook, 70mins)
   - Tuesday 10/13 review day in class 
   - Topics: Modules 1-5
+
+Finals: 
+
+Chuck: 12/14 1:30 - 3:30PM 
+Neural: 12/14 ?PM 
+Embedded: Project Design
