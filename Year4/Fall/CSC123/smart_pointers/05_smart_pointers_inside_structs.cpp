@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 07_structs_and_rule_of_zero.cpp -o 07_structs_and_rule_of_zero.exe
-// Run:     .\07_structs_and_rule_of_zero.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 7: Smart pointer members and the Rule of Zero.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 05_smart_pointers_inside_structs.cpp -o 05_smart_pointers_inside_structs.exe
+// Run:     .\05_smart_pointers_inside_structs.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 5: Smart pointers inside structs.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

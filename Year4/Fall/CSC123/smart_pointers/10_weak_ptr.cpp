@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 14_weak_ptr_and_cycles.cpp -o 14_weak_ptr_and_cycles.exe
-// Run:     .\14_weak_ptr_and_cycles.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 14: Weak pointers and ownership cycles.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 10_weak_ptr.cpp -o 10_weak_ptr.exe
+// Run:     .\10_weak_ptr.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 10: weak_ptr.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

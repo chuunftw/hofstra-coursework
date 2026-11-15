@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 04_lifetimes_and_cleanup.cpp -o 04_lifetimes_and_cleanup.exe
-// Run:     .\04_lifetimes_and_cleanup.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 4: Lifetime and automatic cleanup.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 03_lifetime_and_ownership.cpp -o 03_lifetime_and_ownership.exe
+// Run:     .\03_lifetime_and_ownership.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 3: Lifetime and ownership.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

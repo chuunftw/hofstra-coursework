@@ -1,75 +1,61 @@
 # Smart pointers prediction questions
 
-Answer these after studying the matching numbered lesson. Explain who owns the data, not just the printed number. Answers are in [quizAns.md](quizAns.md).
+13 topic sections, matching the C++ files. Explain ownership and lifetime as well as output. Check [quizAns.md](quizAns.md) after trying each topic.
 
-## 1. Raw pointers and memory errors
+## 1. Raw pointer review and memory errors
 
-Why would assigning heap = &local before delete heap cause two different problems?
+1. Why would assigning heap = &local before delete heap cause two different problems?
 
 ## 2. unique_ptr and make_unique
 
-Why is auto second = number rejected, while int copy = *number works?
+1. Why is auto second = number rejected, while int copy = *number works?
+2. What are the initial contents of make_unique<int[]>(4)?
 
-## 3. Smart pointers to arrays
+## 3. Lifetime and ownership
 
-What are the initial contents of make_unique<int[]>(4)?
+1. When does target 2 disappear below: at reset or at the closing brace?
 
-## 4. Lifetime and automatic cleanup
+## 4. Moving and transferring ownership
 
-When does target 2 disappear below: at reset or at the closing brace?
+1. After b = move(a), which old object is destroyed, and which owner is empty?
+2. Which call leaves the caller's pointer empty: inspect(*p), increment(*p), or consume(move(p))?
 
-## 5. Moving ownership
+## 5. Smart pointers inside structs
 
-After b = move(a), which old object is destroyed, and which owner is empty?
+1. Why can a moved-from Buffer have empty cells but a size of 3?
 
-## 6. Functions: borrow or take ownership
+## 6. RAII
 
-Which call leaves the caller's pointer empty: inspect(*p), increment(*p), or consume(move(p))?
+1. Why must you never call delete on the result of owner.get() while owner still owns it?
 
-## 7. Smart pointer members and the Rule of Zero
+## 7. References and borrowing
 
-Why can a moved-from Buffer have empty cells but a size of 3?
+1. After the move below, why is value_ref usable while *owner_ref is invalid?
+2. What does r = b change: the old integer a, or which integer r observes?
+3. Why would for (auto p : values) fail when values holds unique_ptr objects?
 
-## 8. RAII and raw observers
+## 8. Remaining memory hazards
 
-Why must you never call delete on the result of owner.get() while owner still owns it?
+1. Why is reserving capacity alone insufficient to make the commented range-for safe?
 
-## 9. Borrowing the owner versus borrowing the target
+## 9. shared_ptr and make_shared
 
-After the move below, why is value_ref usable while *owner_ref is invalid?
+1. What are the counts after p1 = other, p2 = p3, and p2 = move(p3)?
 
-## 10. Reseatable borrowing
+## 10. weak_ptr
 
-What does r = b change: the old integer a, or which integer r observes?
+1. Why does the previous link below not prevent cleanup?
 
-## 11. Traversing owned structures
+## 11. Custom move operations and rvalue references
 
-Why would for (auto p : values) fail when values holds unique_ptr objects?
+1. Why does binding candidate = move(owner) below leave owner nonempty?
+2. Which operation runs for Buffer b(move(a)), and which runs for c = move(b)?
 
-## 12. Mutation and remaining hazards
+## 12. Rules of Three, Five, and Zero
 
-Why is reserving capacity alone insufficient to make the commented range-for safe?
+1. Why is copying ValueBuffer safe while copying OwnerBuffer is disabled?
 
-## 13. Shared ownership and reference counts
+## 13. Building a custom smart pointer
 
-What are the counts after p1 = other, p2 = p3, and p2 = move(p3)?
-
-## 14. Weak pointers and ownership cycles
-
-Why does the previous link below not prevent cleanup?
-
-## 15. References and what move actually does
-
-Why does binding candidate = move(owner) below leave owner nonempty?
-
-## 16. Custom move constructors and assignment
-
-Which operation runs for Buffer b(move(a)), and which runs for c = move(b)?
-
-## 17. Inside a teaching smart pointer
-
-Why must a rejected move leave both pointers unchanged?
-
-## 18. Packet corrections and a final ownership trace
-
-Trace every owner and strong count below before running it.
+1. Why must a rejected move leave both pointers unchanged?
+2. Trace every owner and strong count below before running it.

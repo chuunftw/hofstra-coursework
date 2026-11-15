@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 01_raw_pointer_review.cpp -o 01_raw_pointer_review.exe
-// Run:     .\01_raw_pointer_review.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 1: Raw pointers and memory errors.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 01_raw_pointers_and_memory_errors.cpp -o 01_raw_pointers_and_memory_errors.exe
+// Run:     .\01_raw_pointers_and_memory_errors.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 1: Raw pointer review and memory errors.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

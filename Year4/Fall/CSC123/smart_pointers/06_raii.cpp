@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 08_raii_and_raw_observers.cpp -o 08_raii_and_raw_observers.exe
-// Run:     .\08_raii_and_raw_observers.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 8: RAII and raw observers.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 06_raii.cpp -o 06_raii.exe
+// Run:     .\06_raii.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 6: RAII.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

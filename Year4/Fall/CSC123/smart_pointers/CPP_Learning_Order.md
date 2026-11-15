@@ -1,54 +1,44 @@
 # Smart pointers learning order
 
-This follows the numbered, standalone lesson format in the neighboring [memory folder](../memory/CPP_Learning_Order.md). It is based on the professor's **Critical Notes on Memory Management in Modern C++**, with corrections explained in the lessons.
+These **13 C++ files match the 13 topics in our overview**. The learning format follows the neighboring [memory folder](../memory/CPP_Learning_Order.md): explanations in comments, labeled demonstrations, predicted results, and incorrect examples commented out. Related demonstrations are sections inside one topic file.
 
-Start with one topic. Read the corresponding [study guide](studyguideMD.md) section and the code comments, predict the labeled output, then compile and run. Each file has its own main(). Incorrect examples stay commented out. Assertions check the ownership/value facts while you experiment; an assertion failure means a stated expectation no longer holds.
+Read the matching [study guide](studyguideMD.md) topic, predict the output, then run that file. Assertions check the stated results. Each file is a separate program with one main().
 
-| Section | File | Topic |
+| Topic | File | Sections |
 | --- | --- | --- |
-| 1 | [01_raw_pointer_review.cpp](01_raw_pointer_review.cpp) | Raw pointers and memory errors |
-| 2 | [02_unique_ptr_basics.cpp](02_unique_ptr_basics.cpp) | unique_ptr and make_unique |
-| 3 | [03_unique_arrays.cpp](03_unique_arrays.cpp) | Smart pointers to arrays |
-| 4 | [04_lifetimes_and_cleanup.cpp](04_lifetimes_and_cleanup.cpp) | Lifetime and automatic cleanup |
-| 5 | [05_move_ownership.cpp](05_move_ownership.cpp) | Moving ownership |
-| 6 | [06_function_parameters_and_returns.cpp](06_function_parameters_and_returns.cpp) | Functions: borrow or take ownership |
-| 7 | [07_structs_and_rule_of_zero.cpp](07_structs_and_rule_of_zero.cpp) | Smart pointer members and the Rule of Zero |
-| 8 | [08_raii_and_raw_observers.cpp](08_raii_and_raw_observers.cpp) | RAII and raw observers |
-| 9 | [09_references_and_borrowing.cpp](09_references_and_borrowing.cpp) | Borrowing the owner versus borrowing the target |
-| 10 | [10_reference_wrappers.cpp](10_reference_wrappers.cpp) | Reseatable borrowing |
-| 11 | [11_vectors_and_linked_lists.cpp](11_vectors_and_linked_lists.cpp) | Traversing owned structures |
-| 12 | [12_mutation_and_remaining_hazards.cpp](12_mutation_and_remaining_hazards.cpp) | Mutation and remaining hazards |
-| 13 | [13_shared_ptr_and_counts.cpp](13_shared_ptr_and_counts.cpp) | Shared ownership and reference counts |
-| 14 | [14_weak_ptr_and_cycles.cpp](14_weak_ptr_and_cycles.cpp) | Weak pointers and ownership cycles |
-| 15 | [15_lvalues_rvalues_and_move.cpp](15_lvalues_rvalues_and_move.cpp) | References and what move actually does |
-| 16 | [16_custom_move_operations.cpp](16_custom_move_operations.cpp) | Custom move constructors and assignment |
-| 17 | [17_build_a_managed_pointer.cpp](17_build_a_managed_pointer.cpp) | Inside a teaching smart pointer |
-| 18 | [18_packet_corrections_and_trace.cpp](18_packet_corrections_and_trace.cpp) | Packet corrections and a final ownership trace |
+| 1. Raw pointer review and memory errors | [01_raw_pointers_and_memory_errors.cpp](01_raw_pointers_and_memory_errors.cpp) | Raw pointers and memory errors |
+| 2. unique_ptr and make_unique | [02_unique_ptr_and_make_unique.cpp](02_unique_ptr_and_make_unique.cpp) | unique_ptr and make_unique; Smart pointers to arrays |
+| 3. Lifetime and ownership | [03_lifetime_and_ownership.cpp](03_lifetime_and_ownership.cpp) | Lifetime and automatic cleanup |
+| 4. Moving and transferring ownership | [04_moving_and_transferring_ownership.cpp](04_moving_and_transferring_ownership.cpp) | Moving ownership; Functions: borrow or take ownership |
+| 5. Smart pointers inside structs | [05_smart_pointers_inside_structs.cpp](05_smart_pointers_inside_structs.cpp) | Smart pointer members and the Rule of Zero |
+| 6. RAII | [06_raii.cpp](06_raii.cpp) | RAII and raw observers |
+| 7. References and borrowing | [07_references_and_borrowing.cpp](07_references_and_borrowing.cpp) | Borrowing the owner versus borrowing the target; Reseatable borrowing; Traversing owned structures |
+| 8. Remaining memory hazards | [08_remaining_memory_hazards.cpp](08_remaining_memory_hazards.cpp) | Mutation and remaining hazards |
+| 9. shared_ptr and make_shared | [09_shared_ptr_and_make_shared.cpp](09_shared_ptr_and_make_shared.cpp) | Shared ownership and reference counts |
+| 10. weak_ptr | [10_weak_ptr.cpp](10_weak_ptr.cpp) | Weak pointers and ownership cycles |
+| 11. Custom move operations and rvalue references | [11_custom_moves_and_rvalue_references.cpp](11_custom_moves_and_rvalue_references.cpp) | References and what move actually does; Custom move constructors and assignment |
+| 12. Rules of Three, Five, and Zero | [12_rules_of_three_five_and_zero.cpp](12_rules_of_three_five_and_zero.cpp) | Rules of Three, Five, and Zero |
+| 13. Building a custom smart pointer | [13_building_a_custom_smart_pointer.cpp](13_building_a_custom_smart_pointer.cpp) | Inside a teaching smart pointer; Packet corrections and a final ownership trace |
 
 ## Compile and run one topic
 
 Open a PowerShell terminal in this folder:
 
 ```powershell
-g++ -std=c++17 -Wall -Wextra -pedantic 02_unique_ptr_basics.cpp -o 02_unique_ptr_basics.exe
-.\02_unique_ptr_basics.exe
+g++ -std=c++17 -Wall -Wextra -pedantic 02_unique_ptr_and_make_unique.cpp -o 02_unique_ptr_and_make_unique.exe
+.\02_unique_ptr_and_make_unique.exe
 ```
 
-Replace both filenames for another lesson. Recompile after edits. Do not link all .cpp files together: each has its own main(). C++17 matches the memory folder; most examples use C++11/14 features.
+Replace both filenames for another topic and recompile after edits. Do not link all .cpp files together. C++17 matches the memory folder; most examples use C++11/14 features.
 
-## Check all examples
+## Check all topics
 
 ```powershell
 .\run_all.ps1
 ```
 
-The script compiles each lesson separately with warnings, runs it, and stops on failure. Executables go into the ignored build folder. It requires g++ on PATH. Run assertions enabled (do not add -DNDEBUG).
+Requires g++ on PATH. Compiles each file separately with warnings treated as errors, then runs it. Stops on a failed compilation or assertion. Executables go into the ignored build folder. Keep assertions enabled: do not add -DNDEBUG.
 
-## Suggested pace
+## Study rhythm
 
-- 1–4: basics and automatic cleanup.
-- 5–10: moving, functions, structs, RAII, and borrowing.
-- 11–14: containers, mutation, shared ownership, and weak links.
-- 15–18: why move works, custom operations, and a final trace.
-
-After each topic, answer its prediction question before opening [quizAns.md](quizAns.md). Section 17 is the advanced implementation exercise. These examples are small learning programs, not general-purpose container implementations.
+Read and run one section at a time, even when a topic has several sections. Answer the topic's [prediction questions](pracQuiz.md) before checking [the answers](quizAns.md). Topic 13 is the advanced implementation exercise and finishes with a trace combining ownership types. These are small learning programs, not general-purpose containers.

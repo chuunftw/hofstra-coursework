@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 13_shared_ptr_and_counts.cpp -o 13_shared_ptr_and_counts.exe
-// Run:     .\13_shared_ptr_and_counts.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 13: Shared ownership and reference counts.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 09_shared_ptr_and_make_shared.cpp -o 09_shared_ptr_and_make_shared.exe
+// Run:     .\09_shared_ptr_and_make_shared.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 9: shared_ptr and make_shared.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>

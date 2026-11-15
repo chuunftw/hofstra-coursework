@@ -1,9 +1,9 @@
-// In the VS Code terminal, open this file's folder and run:
-// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 12_mutation_and_remaining_hazards.cpp -o 12_mutation_and_remaining_hazards.exe
-// Run:     .\12_mutation_and_remaining_hazards.exe
-// Each lesson has its own main(); compile one .cpp file at a time.
-// Study guide section 12: Mutation and remaining hazards.
-// Predict the output, run, then change one value and try again.
+// Open this folder in the VS Code terminal.
+// Compile: g++ -std=c++17 -Wall -Wextra -pedantic 08_remaining_memory_hazards.cpp -o 08_remaining_memory_hazards.exe
+// Run:     .\08_remaining_memory_hazards.exe
+// One standalone program per topic; compile one .cpp file at a time.
+// Study guide topic 8: Remaining memory hazards.
+// Read, predict, run, then change one value and predict again.
 
 #include <cassert>
 #include <functional>
