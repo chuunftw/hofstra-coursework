@@ -37,7 +37,7 @@ void run() {
     // auto second = number; // Compile error: cannot copy unique_ptr.
     int copy = *number; // Copies the INTEGER, not its owner.
     assert(copy == 15);
-
+    // to use make_unique, the object must be of type unique_ptr
     cout << "\n2. Own a struct\n";
     auto point = make_unique<Point>(3, 5);
     point->x += 1;

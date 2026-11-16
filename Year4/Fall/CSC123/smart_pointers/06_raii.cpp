@@ -46,5 +46,6 @@ int main() {
     // delete observer; // Wrong: owner would later delete the same object.
     owner.reset();
     observer = nullptr; // It would otherwise dangle after reset.
+    // delete frees the object; = nullptr clears the stored address.
     // unique_ptr<int> duplicate(owner.get()); // Never manufacture a second owner.
 }

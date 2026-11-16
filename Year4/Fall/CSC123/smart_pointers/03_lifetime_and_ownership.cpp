@@ -23,7 +23,12 @@ using namespace std;
 
 struct Tracked {
     int id;
+    // Constructor: runs when a Tracked object is created.
+    // Takes n, initializes the member id with n using : id(n), then prints Create.
+    // explicit prevents an integer from being implicitly converted into a Tracked object.
     explicit Tracked(int n) : id(n) { cout << "Create " << id << '\n'; }
+    // Destructor: runs when a Tracked object is destroyed; ~ marks the destructor.
+    // Here it prints Destroy so we can see when the object's lifetime ends.
     ~Tracked() { cout << "Destroy " << id << '\n'; }
 };
 int main() {

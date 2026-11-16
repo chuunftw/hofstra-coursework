@@ -37,7 +37,7 @@ void run() {
     b = move(a); // Destroy 2; b now owns object 1.
     cout << "a empty = " << boolalpha << !a << ", b id = " << b->id << '\n';
     assert(!a && b->id == 1 && b.get() == original_address);
-    // cout << a->id; // Invalid: a is empty.
+    // cout << a->id; // Invalid: a is empty b/c b took its value 
 
     cout << "\n2. Move construction\n";
     auto c = move(b);
