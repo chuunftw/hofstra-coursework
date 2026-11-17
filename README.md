@@ -29,7 +29,7 @@ Cyber: 10/15/2026 (closed notebook, 70mins)
 | Course | Date | Time | Location |
 | --- | --- | --- | --- |
 | CSC123 - Programming Languages | Monday, December 14, 2026 | 1:30–3:30 PM | Science and Innovation Center, Room 0126 |
-| CSC174 - Deep Learning / Neural Networks | Monday, December 14, 2026 | 6:15–7:40 PM | Science and Innovation Center, Room 0126 (SIC-0126) |
+| CSC174 - Deep Learning / Neural Networks | Wednesday, December 16, 2026 | 6:15–7:40 PM | Science and Innovation Center, Room 0126 (SIC-0126) |
 | CSC113 - Embedded Systems | Tuesday, December 15, 2026 | 10:30 AM–12:30 PM | Science and Innovation Center, Room 0100 |
 | CSC105 - Fundamentals of Cybersecurity | Thursday, December 17, 2026 | 1:30–3:30 PM | C. V. Starr Hall, Room 0108 |
 
