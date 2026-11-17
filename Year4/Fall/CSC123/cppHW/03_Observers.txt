@@ -1,0 +1,110 @@
+CSC123 - C++ Homework (cppHW)
+Assignment reference and working checklist
+Status: Planning/study document. Solutions and corrected programs are not yet completed.
+
+PURPOSE
+Understand why the supplied programs fail, explain the exact causes, and
+make the required corrections. A working program alone is not enough:
+the explanations are a major part of the assignment.
+
+MATERIALS
+1. Bubblesort with rosters (C++) - pasted assignment in our chat.
+2. Matrix (C++):
+   https://cs.hofstra.edu/~cscccl/csc123/matrixerror.cpp
+3. Stocks and Investors (C++):
+   https://cs.hofstra.edu/~cscccl/csc123/observers_problem.cpp
+4. Stocks and Investors (Java), comparison/hint for #3:
+   https://cs.hofstra.edu/~cscccl/csc123/observers_problem.java
+
+There are three explicitly stated C++ tasks/programs. The supplied Java
+version has no separate assignment questions; the C++ Observer assignment
+links to it as a hint. Check any separate course instructions for additional
+requirements.
+
+SUBMISSION FORMAT
+The professor reportedly requires a .txt file. Plain text can include both
+source code and explanations. The exact submission wording has not been
+provided, so whether to include full corrected programs or just changed
+sections, and whether one or several files are wanted, remains unconfirmed.
+This file is an assignment organizer, not a finished submission.
+
+Suggested final organization, subject to the professor's instructions:
+- Part 1: original error explanation, prescribed changes, explanation of
+  resulting compilation issues, and corrected code.
+- Part 2: original memory-error explanations in comments and corrected code.
+- Part 3: precise original error explanation, focused corrected code, and
+  a small independent example of the same error.
+- Java: comparison notes if useful; no separate deliverable is stated.
+
+PART 3 - OBSERVERS_PROBLEM.CPP
+What the program does:
+- Stocks are observed subjects.
+- Investors are observers.
+- Investors hold portfolios of stocks.
+- A stock notifies its attached investors when its price changes.
+- Each investor's update() implements a different reaction.
+- An investor may dump a stock and detach from it during an update.
+
+Memory relationships:
+- Investor portfolios contain shared_ptr<stock>.
+- Stock observer maps contain weak_ptr<investor>.
+- The investor destructor detaches it from its remaining stocks.
+- The source requires C++17.
+
+Required work:
+[ ] Run the program several times as suggested.
+[ ] Pinpoint the error and explain the exact causal lines.
+[ ] Name the error type and trace the relevant calls.
+[ ] Make a small, efficient correction.
+[ ] Preserve the existing observer/investor behavior.
+[ ] Give a short independent example of the same error.
+[ ] Verify the corrected program, including a notification that triggers
+    the panicky investor to detach.
+
+Strict restrictions:
+- Do not modify main.
+- No cloning.
+- Do not redesign the investment strategies.
+- Address the actual memory error, not unrelated stock logic.
+- The professor identifies the precise explanation as the MAIN task.
+
+Useful functions to trace together:
+    stock::price_change()
+    stock::notify()
+    panickyinvestor::update()
+    investor::dump()
+    stock::detach()
+
+Concepts to learn:
+- Observer pattern and virtual functions.
+- shared_ptr versus weak_ptr.
+- Container entries and iteration.
+- What happens when a callback modifies the container being traversed.
+- Smart pointers do not prevent every lifetime or iterator error.
+
+Exact error explanation:
+[To complete together.]
+
+Focused correction:
+[To complete together.]
+
+Small example of the same error:
+[To complete together.]
+
+Verification:
+[To complete together.]
+
+PART 4 - JAVA OBSERVER COMPARISON
+Purpose:
+The C++ assignment points to the Java equivalent as a hint. Compare how
+notification, update, dump, and detach interact in both versions.
+
+[ ] Read notify_investors().
+[ ] Follow the calls made when the panicky investor dumps a stock.
+[ ] Compare this sequence with the C++ version.
+[ ] Note what garbage collection handles and what it does not handle.
+
+No separate numbered assignment or required Java fix appears in the pasted
+Java source. Do not assume a fourth graded deliverable without checking
+the course-level instructions.
+
