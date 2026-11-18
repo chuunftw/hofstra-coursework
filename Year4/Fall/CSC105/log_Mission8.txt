@@ -1,0 +1,455 @@
+9cr804a6db1ea7ebae7a4b8a07afc98d071
+====================================================
+Mission 8: Godfather III (80 pts)
+Name: ryan chen
+Grade: 80.0 pts
+Time Spent: 178 seconds	Accumuated: 50592 seconds
+Timestamp: Wed Nov 18 14:12:49 2026
+
+====================================================
+QID  Title               Pts     Time   QID  Title               Pts     Time   
+----------------------------------------------------
+1    Single Sign On      15.0/15 15     2    NFS Server          15.0/15 2      3    Home                15.0/15 2      4    NFS Client          20.0/20 5      5    The Arts of Google  15.0/15 154    
+----------------------------------------------------
+Enter question ID (e.g., 1) to redo a question or hit Q to quit
+%13792012345-------------
+100%139209234----
+15%139209234----
+46858%139209234----
+EMPTY-------------------------------------------
+	Q1. Single Sign On
+-------------------------------------------
+This assignment is created in memory of God Father III.
+
+Mike Corleone is continuing the effort of legalizing his underground empire. He has recently purchased a bank called Victory Bank and he plans to hire all his key family members as administrators of this bank. In addition to the Single-Sign-On campaign, he wants everybody to enjoy the benefits of Network File System.
+
+Ready? Press ENTER to continue.
+
+Please complete the following before proceeding:
+
+   (1) Comment out 'session optional    pam_systemd.so' (by putting a # before it) in /etc/pam.d/common-session in both the main and Vegas images. This is for speeding up the sshpass ssh commands used by EvTrainer! You only have to do it once. 
+
+   (2) If this is the FIRST TIME you work on the GodFatherIII mission. Please take a screenshot of the main and vegas images right now. This is for recovery if any mis-config causes the hang of your system.
+
+Done? Press ENTER to continue.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Q1. Single-Sign-On on Main Image
+
+We need you to replicate your success of setting up the  SSO client  on the main image now. The goal is that mary and tony will automatically be legal users on the main image using LDAP  authentication.
+We'll verify using the following command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.2 whoami
+Hint: to make it work, you may have to install openssh-server using apt-get
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+
+Nice! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q1. Single Sign On
+Total Points Available: 15, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 46843 sec, Accumulated Time:  0 
+Penalty: 50%, Earned Points: 7.50 out of 15 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 300 seconds: 0%
+  < 2* expected time: 600 seconds: 20%
+  < 3* expected time: 900 seconds: 30%
+  < 4* expected time: 1200 seconds: 40%
+  >= 4* expected time: 1200 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q1. Single Sign On
+-------------------------------------------
+This assignment is created in memory of God Father III.
+
+Mike Corleone is continuing the effort of legalizing his underground empire. He has recently purchased a bank called Victory Bank and he plans to hire all his key family members as administrators of this bank. In addition to the Single-Sign-On campaign, he wants everybody to enjoy the benefits of Network File System.
+
+Ready? Press ENTER to continue.
+
+Please complete the following before proceeding:
+
+   (1) Comment out 'session optional    pam_systemd.so' (by putting a # before it) in /etc/pam.d/common-session in both the main and Vegas images. This is for speeding up the sshpass ssh commands used by EvTrainer! You only have to do it once. 
+
+   (2) If this is the FIRST TIME you work on the GodFatherIII mission. Please take a screenshot of the main and vegas images right now. This is for recovery if any mis-config causes the hang of your system.
+
+Done? Press ENTER to continue.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Q1. Single-Sign-On on Main Image
+
+We need you to replicate your success of setting up the  SSO client  on the main image now. The goal is that mary and tony will automatically be legal users on the main image using LDAP  authentication.
+We'll verify using the following command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.2 whoami
+Hint: to make it work, you may have to install openssh-server using apt-get
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q1. Single Sign On
+Total Points Available: 15, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 15 sec, Accumulated Time:  0 
+Earned Points: 15.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+2%139209234----
+2077%139209234----
+EMPTY-------------------------------------------
+	Q2. NFS Server
+-------------------------------------------
+The next step is to install nfs-server on the Vegas image!
+
+Please follow the tutorial and finish the steps as required below:
+    (1) install nfs-kernel-server
+    (2) create a folder /nfs_home in the root folder. At this moment, do not worry about its permission bits.
+    (3) configure the /etc/exports properly. Need to allow both read and write access for the exported directory.
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+Wrong: the service is not installed properly because port 111 on 169.254.251.1 (Vegas) is not available! You can run 'nc -zv 169.254.251.1 111' to verify
+
+
+Attempt 2 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+Wrong: the service is not installed properly because port 111 on 169.254.251.1 (Vegas) is not available! You can run 'nc -zv 169.254.251.1 111' to verify
+
+
+Attempt 3 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+Wrong: the service is not installed properly because port 111 on 169.254.251.1 (Vegas) is not available! You can run 'nc -zv 169.254.251.1 111' to verify
+
+You can try it again later. Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. NFS Server
+Total Points Available: 15, Expected Time to Complete: 600 sec
+Completion: 0%, Time Spent: 475 sec, Accumulated Time:  0 
+Earned Points: 0.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q2. NFS Server
+-------------------------------------------
+The next step is to install nfs-server on the Vegas image!
+
+Please follow the tutorial and finish the steps as required below:
+    (1) install nfs-kernel-server
+    (2) create a folder /nfs_home in the root folder. At this moment, do not worry about its permission bits.
+    (3) configure the /etc/exports properly. Need to allow both read and write access for the exported directory.
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+
+Done! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. NFS Server
+Total Points Available: 15, Expected Time to Complete: 600 sec
+Completion: 100%, Time Spent: 1600 sec, Accumulated Time:  0 
+Penalty: 30%, Earned Points: 10.50 out of 15 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 600 seconds: 0%
+  < 2* expected time: 1200 seconds: 20%
+  < 3* expected time: 1800 seconds: 30%
+  < 4* expected time: 2400 seconds: 40%
+  >= 4* expected time: 2400 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q2. NFS Server
+-------------------------------------------
+The next step is to install nfs-server on the Vegas image!
+
+Please follow the tutorial and finish the steps as required below:
+    (1) install nfs-kernel-server
+    (2) create a folder /nfs_home in the root folder. At this moment, do not worry about its permission bits.
+    (3) configure the /etc/exports properly. Need to allow both read and write access for the exported directory.
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Verifying ... May take 10 seconds ...
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. NFS Server
+Total Points Available: 15, Expected Time to Complete: 600 sec
+Completion: 100%, Time Spent: 2 sec, Accumulated Time:  0 
+Earned Points: 15.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+2%139209234----
+723%139209234----
+EMPTY-------------------------------------------
+	Q3. Home
+-------------------------------------------
+The next step is to create a home folder for Tony and Mary. In the Vegas image: 
+    (1) Create /nfs_home/tony and /nfs_home/mary
+    (2) Set permission bits so that both users can navigate into /nfs_home and have full access of their own home folders, but cannot read/write/enter the home folders of the other users. Make sure to change the owners of these two folders.
+    (3) create file /nfs_home/tony/me.txt containing string 'sing', with permissions properly set (owner tony should have all access)
+    (4) create file /nfs_home/mary/me.txt  containing string 'donate', with permissions properly set (owner mary  should have all access)
+    (5) Make sure that LDAP and sshd are working - EvTrainer will ssh into the Vegas image to perform the check.
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+
+(1) Verify mary's access over her own me.txt, using command:
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.1 cat /nfs_home/mary/me.txt 2>&1
+It may take 10 seconds ...
+
+(2) Verify tony's access over his own me.txt, using command:
+   sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 cat /nfs_home/tony/me.txt 2>&1
+It may take 10 seconds ...
+
+(3) Verify tony has NO access over mary's me.txt, using command:
+   sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 cat /nfs_home/mary/me.txt 2>&1
+It may take 10 seconds ...
+
+Super! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. Home
+Total Points Available: 15, Expected Time to Complete: 600 sec
+Completion: 100%, Time Spent: 721 sec, Accumulated Time:  0 
+Penalty: 20%, Earned Points: 12.0 out of 15 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 600 seconds: 0%
+  < 2* expected time: 1200 seconds: 20%
+  < 3* expected time: 1800 seconds: 30%
+  < 4* expected time: 2400 seconds: 40%
+  >= 4* expected time: 2400 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+[A[B
+-------------------------------------------
+	Q3. Home
+-------------------------------------------
+The next step is to create a home folder for Tony and Mary. In the Vegas image: 
+    (1) Create /nfs_home/tony and /nfs_home/mary
+    (2) Set permission bits so that both users can navigate into /nfs_home and have full access of their own home folders, but cannot read/write/enter the home folders of the other users. Make sure to change the owners of these two folders.
+    (3) create file /nfs_home/tony/me.txt containing string 'sing', with permissions properly set (owner tony should have all access)
+    (4) create file /nfs_home/mary/me.txt  containing string 'donate', with permissions properly set (owner mary  should have all access)
+    (5) Make sure that LDAP and sshd are working - EvTrainer will ssh into the Vegas image to perform the check.
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+
+(1) Verify mary's access over her own me.txt, using command:
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.1 cat /nfs_home/mary/me.txt 2>&1
+It may take 10 seconds ...
+
+(2) Verify tony's access over his own me.txt, using command:
+   sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 cat /nfs_home/tony/me.txt 2>&1
+It may take 10 seconds ...
+
+(3) Verify tony has NO access over mary's me.txt, using command:
+   sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 cat /nfs_home/mary/me.txt 2>&1
+It may take 10 seconds ...
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. Home
+Total Points Available: 15, Expected Time to Complete: 600 sec
+Completion: 100%, Time Spent: 2 sec, Accumulated Time:  0 
+Earned Points: 15.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+5%139209234----
+780%139209234----
+EMPTY-------------------------------------------
+	Q4. NFS Client
+-------------------------------------------
+Our next goal is to set up NFS client on both the main and Vegas image. Please be prepared that if the set up is invalid, it may hang your systems. So it's a good idea to take snapshots of both images first. 
+
+Ready? Press ENTER to continue.
+
+Step 1: Double Check NFS Server
+
+Make a double check of the /etc/exports file on the Vegas image: 
+    (1) Is the /nfs_home folder listed?
+    (2) Is the 169.254.251.0/24 network allowed both read and write access?
+If you have made any changes, you can use the following command to refresh the service: 
+    sudo systemctl restart nfs-kernel-server
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Reading 169.254.251.1:/etc/exports ... It may take 10 seconds...
+WARNING: we could not find 169.254.251.0/24 in the accessor list. It might cause problems.
+
+Super! Press ENTER to continue.
+
+Step 2: Install NFS Client on Main
+
+We will use the /etc/fstab approach. Modify the file on the main image: 
+    (1) The remote /nfs_home on 169.254.251.1 (Vegas) is mounted as /home2
+    (2) Note that you may have to create /home2 folder first.
+    (3) Run 'sudo mount -a' to refresh mount list after updating the /etc/fstab file.
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+(1) Run command 'mount' to check the mount list...
+(2) Act as mary and create test_write.txt in /home2/mary/,  using command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.2 "echo 'corleone' > /home2/mary/test_write.txt; cat /home2/mary/test_write.txt" 2>&1
+
+It may take 10 seconds ...
+
+Super! Press ENTER to continue.
+
+Step 3: Install NFS Client on Vegas
+
+Let's replicate the success of the /etc/fstab approach on Vegas (169.254.251.1)
+Similarly, you need to mount the /nfs_home as /home2
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Act as tony and create test_write.txt in /home2/tony/,  using command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 "echo 'family' > /home2/tony/test_write.txt; cat /home2/tony/test_write.txt" 2>&1
+
+It may take 10 seconds ...
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q4. NFS Client
+Total Points Available: 20, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 775 sec, Accumulated Time:  0 
+Penalty: 30%, Earned Points: 14.0 out of 20 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 300 seconds: 0%
+  < 2* expected time: 600 seconds: 20%
+  < 3* expected time: 900 seconds: 30%
+  < 4* expected time: 1200 seconds: 40%
+  >= 4* expected time: 1200 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q4. NFS Client
+-------------------------------------------
+Our next goal is to set up NFS client on both the main and Vegas image. Please be prepared that if the set up is invalid, it may hang your systems. So it's a good idea to take snapshots of both images first. 
+
+Ready? Press ENTER to continue.
+
+Step 1: Double Check NFS Server
+
+Make a double check of the /etc/exports file on the Vegas image: 
+    (1) Is the /nfs_home folder listed?
+    (2) Is the 169.254.251.0/24 network allowed both read and write access?
+If you have made any changes, you can use the following command to refresh the service: 
+    sudo systemctl restart nfs-kernel-server
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Reading 169.254.251.1:/etc/exports ... It may take 10 seconds...
+
+Good job! Press ENTER to continue.
+
+Step 2: Install NFS Client on Main
+
+We will use the /etc/fstab approach. Modify the file on the main image: 
+    (1) The remote /nfs_home on 169.254.251.1 (Vegas) is mounted as /home2
+    (2) Note that you may have to create /home2 folder first.
+    (3) Run 'sudo mount -a' to refresh mount list after updating the /etc/fstab file.
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+(1) Run command 'mount' to check the mount list...
+(2) Act as mary and create test_write.txt in /home2/mary/,  using command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.2 "echo 'corleone' > /home2/mary/test_write.txt; cat /home2/mary/test_write.txt" 2>&1
+
+It may take 10 seconds ...
+
+Nice! Press ENTER to continue.
+
+Step 3: Install NFS Client on Vegas
+
+Let's replicate the success of the /etc/fstab approach on Vegas (169.254.251.1)
+Similarly, you need to mount the /nfs_home as /home2
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Act as tony and create test_write.txt in /home2/tony/,  using command: 
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  tony@169.254.251.1 "echo 'family' > /home2/tony/test_write.txt; cat /home2/tony/test_write.txt" 2>&1
+
+It may take 10 seconds ...
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q4. NFS Client
+Total Points Available: 20, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 5 sec, Accumulated Time:  0 
+Earned Points: 20.0 out of 20 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+154%139209234----
+154%139209234----
+EMPTY-------------------------------------------
+	Q5. The Arts of Google
+-------------------------------------------
+Our last step is to reset the home folder of Tony and Mary to /home2/tony and /home2/mary, respectively.
+
+Hints: There are many ways to change LDAP. One of them is the ldapmodifyuser command of the ldapscripts pack. Pay attention that its use is a little bit tricky, you need 3 lines of input during interaction. Google and find it out! To help your Google search, here are some additional keywords you can use: changetype: modify and replace)
+
+After you are successful, if we 'su mary' on the main image, and then 'cd; pwd', we should see '/home2/mary'
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo. 
+ 
+Check the home folder of mary using the following command (run as root):
+    runuser -l 'mary' -c 'cd;pwd' 2>&1
+It may take 10 seconds ...
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q5. The Arts of Google
+Total Points Available: 15, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 154 sec, Accumulated Time:  0 
+Earned Points: 15.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+

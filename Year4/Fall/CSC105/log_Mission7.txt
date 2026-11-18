@@ -1,0 +1,963 @@
+e1r8d7dcc2144c43f252c0bbbf9aaf3f079
+====================================================
+Mission 7: Godfather2 (80 pts)
+Name: ryan c
+Grade: 80.0 pts
+Time Spent: 324 seconds	Accumuated: 8345 seconds
+Timestamp: Thu Nov  5 22:09:29 2026
+
+====================================================
+QID  Title               Pts     Time   QID  Title               Pts     Time   
+----------------------------------------------------
+1    Vegas Headquarter   20.0/20 73     2    Corleone Family     30.0/30 101    3    SSO                 30.0/30 150    
+----------------------------------------------------
+Enter question ID (e.g., 1) to redo a question or hit Q to quit
+%13792012345-------------
+100%139209234----
+73%139209234----
+2328%139209234----
+EMPTY-------------------------------------------
+	Q1. Vegas Headquarter
+-------------------------------------------
+This assignment is created in honor of Godfather Part II
+
+Years after Don passed away, Michael Corleone eventually managed to move the family business to Vegas. The used-to-be gang-empire was now transformed into a modern enterprise in computing!
+
+To return your favor to Michael: you will help set up an open LDAP server on the Vegas headquarter image and allow all family members Single Sign On (SSO).
+
+The following LDAP tutorial is very helpful:
+https://help.ubuntu.com/lts/serverguide/openldap-server.html.en
+
+Finished tutorial and ready? Press ENTER to continue.
+
+Q1. Warm-up
+
+Please notice that all your operations in this assignment are applied to the Vegas image.
+
+As a step of warm up, please make sure that all of the following are ready:
+   (1) The main image is located at 169.254.251.2
+   (2) The Vegas image is located at 169.254.251.1
+   (3) The bind9 (DNS) server is located on the Vegas image
+   (4) president.corleone.org is mapped to 169.254.251.1
+   (5) senator.corleone.org is mapped to 169.254.251.2
+   (6) Both the two servers have Internet access
+Hints: apparently  ping,  nslookup, and  route -n  can help you diagnose network
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+The challenge is completed! Press ENTER to continue.
+
+Q2. LDAP Server
+
+Please follow the tutorial and install the slapd server on the Vegas image.
+
+Please just do the apt command ONLY! The following are some config specs REQUIRED:
+   (1) admin pwd: goodyear
+Do NOT perform dkpg-reconfigure yet. Just make sure that slapd is running. 
+You can verify using command: 
+ sudo lsof -i 
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Done! Press ENTER to continue.
+
+Q3. Reconfig
+
+Now it's time to run sudo dpkg-reconfigure slapd
+Please use the following:
+  (1) omit openLdap server config? --> No
+  (2) DNS domain name --> corleone.org
+  (3) Organization name -> corleone
+  (4) admin pwd --> goodyear
+  (5) db format --> MDB
+  (6) Want DB removed? --> Yes
+  (7) Move old DB? --> Yes
+You can use the following command on the MAIN image to verify:
+	 sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org'
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Done! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q1. Vegas Headquarter
+Total Points Available: 20, Expected Time to Complete: 500 sec
+Completion: 100%, Time Spent: 2255 sec, Accumulated Time:  0 
+Penalty: 50%, Earned Points: 10.0 out of 20 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 500 seconds: 0%
+  < 2* expected time: 1000 seconds: 20%
+  < 3* expected time: 1500 seconds: 30%
+  < 4* expected time: 2000 seconds: 40%
+  >= 4* expected time: 2000 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q1. Vegas Headquarter
+-------------------------------------------
+This assignment is created in honor of Godfather Part II
+
+Years after Don passed away, Michael Corleone eventually managed to move the family business to Vegas. The used-to-be gang-empire was now transformed into a modern enterprise in computing!
+
+To return your favor to Michael: you will help set up an open LDAP server on the Vegas headquarter image and allow all family members Single Sign On (SSO).
+
+The following LDAP tutorial is very helpful:
+https://help.ubuntu.com/lts/serverguide/openldap-server.html.en
+
+Finished tutorial and ready? Press ENTER to continue.
+
+Q1. Warm-up
+
+Please notice that all your operations in this assignment are applied to the Vegas image.
+
+As a step of warm up, please make sure that all of the following are ready:
+   (1) The main image is located at 169.254.251.2
+   (2) The Vegas image is located at 169.254.251.1
+   (3) The bind9 (DNS) server is located on the Vegas image
+   (4) president.corleone.org is mapped to 169.254.251.1
+   (5) senator.corleone.org is mapped to 169.254.251.2
+   (6) Both the two servers have Internet access
+Hints: apparently  ping,  nslookup, and  route -n  can help you diagnose network
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+The challenge is completed! Press ENTER to continue.
+
+Q2. LDAP Server
+
+Please follow the tutorial and install the slapd server on the Vegas image.
+
+Please just do the apt command ONLY! The following are some config specs REQUIRED:
+   (1) admin pwd: goodyear
+Do NOT perform dkpg-reconfigure yet. Just make sure that slapd is running. 
+You can verify using command: 
+ sudo lsof -i 
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Super! Press ENTER to continue.
+
+Q3. Reconfig
+
+Now it's time to run sudo dpkg-reconfigure slapd
+Please use the following:
+  (1) omit openLdap server config? --> No
+  (2) DNS domain name --> corleone.org
+  (3) Organization name -> corleone
+  (4) admin pwd --> goodyear
+  (5) db format --> MDB
+  (6) Want DB removed? --> Yes
+  (7) Move old DB? --> Yes
+You can use the following command on the MAIN image to verify:
+	 sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org'
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q1. Vegas Headquarter
+Total Points Available: 20, Expected Time to Complete: 500 sec
+Completion: 100%, Time Spent: 73 sec, Accumulated Time:  0 
+Earned Points: 20.0 out of 20 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+101%139209234----
+2727%139209234----
+EMPTY-------------------------------------------
+	Q2. Corleone Family
+-------------------------------------------
+Don Corleone once had a dream. That is generations after his death, there will be Corleones as scientists, artists, senators and presidents. Michael has made some progress. His son, Tony Corleone is a singer. His daughter, Mary Corleon, is a philanthropist.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Please read sections 'Populate/modify Database' and 'User and Group Management' before proceeding.
+
+Finished the tutorial and Ready? Press ENTER to continue.
+
+Q1. No Miners!
+
+We strongly suggest that you take a snapshot of the Vegas image right now. Note that the OS can still be running when you take the snapshot, what a nice convenience!
+
+The first step is to create and import a simple .ldif file so that the basic entities: People and Groups are created.
+Please pay attention: 
+  (1) create a file similar to add_content.ldif
+  (2) just include the first two entries (People and Groups) 
+  (3) make sure to replace 'example' etc. correspondingly with base DNS corleone.org
+  (4) import the file using ldapadd. Note: you have to change its arguments correspondingly
+You can use the following command to inspect and verify:
+    sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org' 
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Nice! Press ENTER to continue.
+
+Q2. ldapscripts
+
+We will mainly follow the steps shown in the 'Users and Group Management' section of the tutorial.
+Please consult the tutorial and perform the following actions, exactly as described below.
+  (1) install ldapscripts using apt 
+  (2) open /etc/ldapscripts/ldapscripts.conf, locate keyword DEBIAN and modify the entries shown below:
+     (2.1) SUFFIX change to 'dc=corleone,dc=org' 
+     (2.2) GSUFFIX change to 'Groups' 
+     (2.3) USUFFIX change to 'People' 
+     (2.4) BINDDN change to 'cn=admin,dc=corleone,dc=org' 
+To make sure our grader works fine, please do NOT insert spaces in between the equal signs
+  (3) Do NOT change ldapscripts.passwd yet!
+Once you've finished mods of /etc/ldapscripts/ldapscripts.conf, you can proceed to the next step.
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Good job! Press ENTER to continue.
+
+Q3. Inhuman VIM Editor
+
+Now it's time to enter the password: goodyear into /etc/ldapscripts/ldapscripts.passwd. Please follow the instructions below carefully:
+
+    (1) Enter the password using vim
+    (2) Do exactly 8 letters, no more and no less
+    (3) Try command: sudo ldapaddgroup artists
+I bet you'll find that it fails. Let's read the log file: /var/log/ldapscripts.log
+We have some questions for you. Press ENTER to continue.
+
+Q1. what is the error code in /var/log/ldapscripts.log?
+	(A) 49
+	(B) 22
+	(C) 47
+	(D) 48
+ (attempt 1 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Q2. Apparently, there is something wrong with password. Use ls command to show the size of /etc/ldapscripts/ldapscripts.passwd file. What is the size of it?
+	(A) 9
+	(B) 8
+	(C) 7
+	(D) 6
+ (attempt 1 of 3)
+B
+Incorrect!
+ Q2. Apparently, there is something wrong with password. Use ls command to show the size of /etc/ldapscripts/ldapscripts.passwd file. What is the size of it?
+	(A) 9
+	(B) 8
+	(C) 7
+	(D) 6
+ (attempt 2 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Q3. Use 'xxd /etc/ldapscripts/ldapscripts.passwd' to display the content of the file. What is the last character in hex?
+	(A) 0xff
+	(B) 0xa
+	(C) 0xd
+	(D) 0x11
+ (attempt 1 of 3)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Q4. Find the ASCII translation table. What is the character for 0xa?
+	(A) line feed
+	(B) backspace
+	(C) bell
+	(D) Dr. Evil
+ (attempt 1 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+
+Nice! Press ENTER to continue.
+
+Q4. Next Generations
+
+From the previous analysis, it is clear that VIM could automatically append some characters which screws the password file!
+The fix is very simple: follow the tutorial section: 'User and Group Management' and use the 'echo' command to change the password file.
+
+Once the above is done, please complete the following:
+    (1) Add two groups: artists and philanthropists
+    (2) Add two users: mary and tony
+    (3) Make sure that they belong to the right group
+    (4) Set both password to 'goodyear'
+ You can use the following command to verify on the main image:
+    sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org'
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. Corleone Family
+Total Points Available: 30, Expected Time to Complete: 900 sec
+Completion: 100%, Time Spent: 2626 sec, Accumulated Time:  0 
+Penalty: 30%, Earned Points: 21.0 out of 30 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 900 seconds: 0%
+  < 2* expected time: 1800 seconds: 20%
+  < 3* expected time: 2700 seconds: 30%
+  < 4* expected time: 3600 seconds: 40%
+  >= 4* expected time: 3600 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q2. Corleone Family
+-------------------------------------------
+Don Corleone once had a dream. That is generations after his death, there will be Corleones as scientists, artists, senators and presidents. Michael has made some progress. His son, Tony Corleone is a singer. His daughter, Mary Corleon, is a philanthropist.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Please read sections 'Populate/modify Database' and 'User and Group Management' before proceeding.
+
+Finished the tutorial and Ready? Press ENTER to continue.
+
+Q1. No Miners!
+
+We strongly suggest that you take a snapshot of the Vegas image right now. Note that the OS can still be running when you take the snapshot, what a nice convenience!
+
+The first step is to create and import a simple .ldif file so that the basic entities: People and Groups are created.
+Please pay attention: 
+  (1) create a file similar to add_content.ldif
+  (2) just include the first two entries (People and Groups) 
+  (3) make sure to replace 'example' etc. correspondingly with base DNS corleone.org
+  (4) import the file using ldapadd. Note: you have to change its arguments correspondingly
+You can use the following command to inspect and verify:
+    sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org' 
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Good job! Press ENTER to continue.
+
+Q2. ldapscripts
+
+We will mainly follow the steps shown in the 'Users and Group Management' section of the tutorial.
+Please consult the tutorial and perform the following actions, exactly as described below.
+  (1) install ldapscripts using apt 
+  (2) open /etc/ldapscripts/ldapscripts.conf, locate keyword DEBIAN and modify the entries shown below:
+     (2.1) SUFFIX change to 'dc=corleone,dc=org' 
+     (2.2) GSUFFIX change to 'Groups' 
+     (2.3) USUFFIX change to 'People' 
+     (2.4) BINDDN change to 'cn=admin,dc=corleone,dc=org' 
+To make sure our grader works fine, please do NOT insert spaces in between the equal signs
+  (3) Do NOT change ldapscripts.passwd yet!
+Once you've finished mods of /etc/ldapscripts/ldapscripts.conf, you can proceed to the next step.
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Nice! Press ENTER to continue.
+
+Q3. Inhuman VIM Editor
+
+Now it's time to enter the password: goodyear into /etc/ldapscripts/ldapscripts.passwd. Please follow the instructions below carefully:
+
+    (1) Enter the password using vim
+    (2) Do exactly 8 letters, no more and no less
+    (3) Try command: sudo ldapaddgroup artists
+I bet you'll find that it fails. Let's read the log file: /var/log/ldapscripts.log
+We have some questions for you. Press ENTER to continue.
+
+Q1. what is the error code in /var/log/ldapscripts.log?
+	(A) 49
+	(B) 22
+	(C) 47
+	(D) 48
+ (attempt 1 of 3)
+
+Incorrect!
+ Q1. what is the error code in /var/log/ldapscripts.log?
+	(A) 49
+	(B) 22
+	(C) 47
+	(D) 48
+ (attempt 2 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Q2. Apparently, there is something wrong with password. Use ls command to show the size of /etc/ldapscripts/ldapscripts.passwd file. What is the size of it?
+	(A) 9
+	(B) 8
+	(C) 7
+	(D) 6
+ (attempt 1 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Q3. Use 'xxd /etc/ldapscripts/ldapscripts.passwd' to display the content of the file. What is the last character in hex?
+	(A) 0xff
+	(B) 0xa
+	(C) 0xd
+	(D) 0x11
+ (attempt 1 of 3)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Q4. Find the ASCII translation table. What is the character for 0xa?
+	(A) line feed
+	(B) backspace
+	(C) bell
+	(D) Dr. Evil
+ (attempt 1 of 3)
+D
+Incorrect!
+ Q4. Find the ASCII translation table. What is the character for 0xa?
+	(A) line feed
+	(B) backspace
+	(C) bell
+	(D) Dr. Evil
+ (attempt 2 of 3)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+
+Super! Press ENTER to continue.
+
+Q4. Next Generations
+
+From the previous analysis, it is clear that VIM could automatically append some characters which screws the password file!
+The fix is very simple: follow the tutorial section: 'User and Group Management' and use the 'echo' command to change the password file.
+
+Once the above is done, please complete the following:
+    (1) Add two groups: artists and philanthropists
+    (2) Add two users: mary and tony
+    (3) Make sure that they belong to the right group
+    (4) Set both password to 'goodyear'
+ You can use the following command to verify on the main image:
+    sudo ldapsearch -x -h 169.254.251.1 -b 'dc=corleone,dc=org'
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Done! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. Corleone Family
+Total Points Available: 30, Expected Time to Complete: 900 sec
+Completion: 100%, Time Spent: 101 sec, Accumulated Time:  0 
+Earned Points: 30.0 out of 30 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+150%139209234----
+3290%139209234----
+EMPTY-------------------------------------------
+	Q3. SSO
+-------------------------------------------
+Our last job today is to install LDAP client on the Vegas image. So that it provides SSO by communicating with the LDAP directory. This involves installing the Name Switch Service (NSS) and configuring PAM (Pluggable Authentication Module).
+
+We could certainly install it on the main image. But to avoid interrupt the running of EvTrainer, we'll focus the installation on the Vegas image only.
+
+Please read the 'LDAP Authentication' section of the tutorial first.
+
+Please also take a snapshot of the Vegas image. 
+
+Finished the tutorial and snapshot? Press ENTER to continue.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Q1. Name Switch Service
+
+We'll install NSS and configure PAM.  Please run the following as shown in tutorial:
+    sudo apt-get install libnss-ldap
+Please use the spec EXACTLY as specified below (even if later you might find them wrong: 
+    (1) LDAP server: ldapi://169.254.251.1
+      Note the number of slashes is 2  and the 'i' in protocol: ldapi
+    (2) Search base: dc=corleone,dc=org
+    (3) LDAP version: 3
+    (4) Make local root db admin: Yes
+    (5) Does DB needs login? No
+    (6) LDAP admin account: cn=admin,dc=corleone,dc=org
+    (7) LDAP server passwd: goodyear
+Once the above is completed, do the following two commands listed the tutorial (note: we'll skip dpkg-configure, it's not needed):
+    sudo auth-client-config -t nss -p lac_ldap
+    sudo pam-auth-update
+Press ENTER when you are ready to demo
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Base value as dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Root Account value as cn=admin,dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Base value as dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Root Account value as cn=admin,dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+
+Attempt 3 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Base value as dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Root Account value as cn=admin,dc=corleone,dc=org
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+You can try it again later. Press ENTER to continue.
+
+Q2. Diagnosis
+
+There is a mis-configuration in the set up of libnss. We will try to find it out using a variety of debugging approaches.
+
+Ready? Press ENTER to continue.
+
+Step 1. Run the following command in the Vegas image: 'su mary'. What is the output?
+	(A) No passwd entry
+	(B) Passwd invalid
+	(C) su is not the last name of Dr. Evil
+	(D) You should run 'fu mary'
+ (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 2. Intuitively, the 'su' command (switch user) needs to check the existence of user from multiple sources: (1) the local passwd file, and (2) the LDAP directory. This is configured in PAM and NSS. To verify if PAM did the job, run the following command: 
+	'strace su mary 2>dump.txt'
+Examine dump.txt. Which of the following is true? (Hint: search for passwd and 169.254.251.1 in dump.txt)
+	(A) PAM did check/read the local /etc/passwd
+	(B) PAM did try to submit request to 169.254.251.1
+	(C) Both A and B
+	(D) None
+ (attempt 1 of 2)
+C
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 3. In dump.txt, if you read the line 'connect(...169.254.251)'. Is it successful or not?
+	(A) No, it returns -1 
+	(B) Yes, the connection is established.
+	(C) PAM never sends out the connection request
+	(D) Dr. Evil cut off the connection (attempt 1 of 2)
+
+Incorrect!
+ Step 3. In dump.txt, if you read the line 'connect(...169.254.251)'. Is it successful or not?
+	(A) No, it returns -1 
+	(B) Yes, the connection is established.
+	(C) PAM never sends out the connection request
+	(D) Dr. Evil cut off the connection (attempt 2 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 4. There MUST be something wrong in communicating with the LDAP server then.
+    However, in our earlier efforts, we have verified that LDAP server is working. Because 'sudo ldapsearch -x -h 169.254.251.1' (attention: need to perform sudo) did dump all database entries!
+    In this case, please use strace to trace the ldapsearch command similarly and dump the stderr channel (2) into another file 'd2.txt'.
+    Now, observe d2.txt, is the connection to 169.254.251.1 successful?
+	(A) No. It failed
+	(B) Yes, the connection is established
+	(C)Yes, because Dr. Evil is a magic man
+	(D) Yes, because compared with the prior attempt of 'su', the root privilege is used (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 5. Observe what is the type of the connection in d2.txt (which ldapsearch tries to establish)?
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 6. Now observe dump.txt (of the 'su mary' command). What is the type of the connection to be established by 'su mary'? 
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 7. Read about ldap, ldapi, ldaps protocols. Which will establish Unix Socket (AF_UNIX)?
+	(A) ldap
+	(B) ldapi
+	(C) ldaps
+	(D) None of above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 8. Read about UNIX Socket. Can be it be used for remote communication?
+	(A) Yes
+	(B) No
+	 (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+
+Well done. Press ENTER to continue.
+
+Q3. Make it Work
+
+We have successfully identified the problem: the protocol used in server address 'ldapi://169.254.251.1' is wrong! We should use 'ldap://' instead!
+	Now it's your job to reconfigure libnss using dpkg-reconfigure to fix it.
+We will use the following command on the main image to verify if your set up of SSO is successful:
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.1 whoami
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Good job! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. SSO
+Total Points Available: 30, Expected Time to Complete: 900 sec
+Completion: 70%, Time Spent: 3095 sec, Accumulated Time:  0 
+Penalty: 40%, Earned Points: 12.60 out of 30 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 900 seconds: 0%
+  < 2* expected time: 1800 seconds: 20%
+  < 3* expected time: 2700 seconds: 30%
+  < 4* expected time: 3600 seconds: 40%
+  >= 4* expected time: 3600 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q3. SSO
+-------------------------------------------
+Our last job today is to install LDAP client on the Vegas image. So that it provides SSO by communicating with the LDAP directory. This involves installing the Name Switch Service (NSS) and configuring PAM (Pluggable Authentication Module).
+
+We could certainly install it on the main image. But to avoid interrupt the running of EvTrainer, we'll focus the installation on the Vegas image only.
+
+Please read the 'LDAP Authentication' section of the tutorial first.
+
+Please also take a snapshot of the Vegas image. 
+
+Finished the tutorial and snapshot? Press ENTER to continue.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Q1. Name Switch Service
+
+We'll install NSS and configure PAM.  Please run the following as shown in tutorial:
+    sudo apt-get install libnss-ldap
+Please use the spec EXACTLY as specified below (even if later you might find them wrong: 
+    (1) LDAP server: ldapi://169.254.251.1
+      Note the number of slashes is 2  and the 'i' in protocol: ldapi
+    (2) Search base: dc=corleone,dc=org
+    (3) LDAP version: 3
+    (4) Make local root db admin: Yes
+    (5) Does DB needs login? No
+    (6) LDAP admin account: cn=admin,dc=corleone,dc=org
+    (7) LDAP server passwd: goodyear
+Once the above is completed, do the following two commands listed the tutorial (note: we'll skip dpkg-configure, it's not needed):
+    sudo auth-client-config -t nss -p lac_ldap
+    sudo pam-auth-update
+Press ENTER when you are ready to demo
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+
+Attempt 3 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+You can try it again later. Press ENTER to continue.
+
+Q2. Diagnosis
+
+There is a mis-configuration in the set up of libnss. We will try to find it out using a variety of debugging approaches.
+
+Ready? Press ENTER to continue.
+
+Step 1. Run the following command in the Vegas image: 'su mary'. What is the output?
+	(A) No passwd entry
+	(B) Passwd invalid
+	(C) su is not the last name of Dr. Evil
+	(D) You should run 'fu mary'
+ (attempt 1 of 2)
+C
+Incorrect!
+ Step 1. Run the following command in the Vegas image: 'su mary'. What is the output?
+	(A) No passwd entry
+	(B) Passwd invalid
+	(C) su is not the last name of Dr. Evil
+	(D) You should run 'fu mary'
+ (attempt 2 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 2. Intuitively, the 'su' command (switch user) needs to check the existence of user from multiple sources: (1) the local passwd file, and (2) the LDAP directory. This is configured in PAM and NSS. To verify if PAM did the job, run the following command: 
+	'strace su mary 2>dump.txt'
+Examine dump.txt. Which of the following is true? (Hint: search for passwd and 169.254.251.1 in dump.txt)
+	(A) PAM did check/read the local /etc/passwd
+	(B) PAM did try to submit request to 169.254.251.1
+	(C) Both A and B
+	(D) None
+ (attempt 1 of 2)
+C
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 3. In dump.txt, if you read the line 'connect(...169.254.251)'. Is it successful or not?
+	(A) No, it returns -1 
+	(B) Yes, the connection is established.
+	(C) PAM never sends out the connection request
+	(D) Dr. Evil cut off the connection (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 4. There MUST be something wrong in communicating with the LDAP server then.
+    However, in our earlier efforts, we have verified that LDAP server is working. Because 'sudo ldapsearch -x -h 169.254.251.1' (attention: need to perform sudo) did dump all database entries!
+    In this case, please use strace to trace the ldapsearch command similarly and dump the stderr channel (2) into another file 'd2.txt'.
+    Now, observe d2.txt, is the connection to 169.254.251.1 successful?
+	(A) No. It failed
+	(B) Yes, the connection is established
+	(C)Yes, because Dr. Evil is a magic man
+	(D) Yes, because compared with the prior attempt of 'su', the root privilege is used (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 5. Observe what is the type of the connection in d2.txt (which ldapsearch tries to establish)?
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 6. Now observe dump.txt (of the 'su mary' command). What is the type of the connection to be established by 'su mary'? 
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 7. Read about ldap, ldapi, ldaps protocols. Which will establish Unix Socket (AF_UNIX)?
+	(A) ldap
+	(B) ldapi
+	(C) ldaps
+	(D) None of above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 8. Read about UNIX Socket. Can be it be used for remote communication?
+	(A) Yes
+	(B) No
+	 (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+
+The challenge is completed! Press ENTER to continue.
+
+Q3. Make it Work
+
+We have successfully identified the problem: the protocol used in server address 'ldapi://169.254.251.1' is wrong! We should use 'ldap://' instead!
+	Now it's your job to reconfigure libnss using dpkg-reconfigure to fix it.
+We will use the following command on the main image to verify if your set up of SSO is successful:
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.1 whoami
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Nice! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. SSO
+Total Points Available: 30, Expected Time to Complete: 900 sec
+Completion: 70%, Time Spent: 45 sec, Accumulated Time:  0 
+Earned Points: 21.0 out of 30 
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q3. SSO
+-------------------------------------------
+Our last job today is to install LDAP client on the Vegas image. So that it provides SSO by communicating with the LDAP directory. This involves installing the Name Switch Service (NSS) and configuring PAM (Pluggable Authentication Module).
+
+We could certainly install it on the main image. But to avoid interrupt the running of EvTrainer, we'll focus the installation on the Vegas image only.
+
+Please read the 'LDAP Authentication' section of the tutorial first.
+
+Please also take a snapshot of the Vegas image. 
+
+Finished the tutorial and snapshot? Press ENTER to continue.
+
+In this challenge, our goal is to create SSO groups: artists and philanthropists, and place Tony and Mary into the right groups.
+
+Q1. Name Switch Service
+
+We'll install NSS and configure PAM.  Please run the following as shown in tutorial:
+    sudo apt-get install libnss-ldap
+Please use the spec EXACTLY as specified below (even if later you might find them wrong: 
+    (1) LDAP server: ldapi://169.254.251.1
+      Note the number of slashes is 2  and the 'i' in protocol: ldapi
+    (2) Search base: dc=corleone,dc=org
+    (3) LDAP version: 3
+    (4) Make local root db admin: Yes
+    (5) Does DB needs login? No
+    (6) LDAP admin account: cn=admin,dc=corleone,dc=org
+    (7) LDAP server passwd: goodyear
+Once the above is completed, do the following two commands listed the tutorial (note: we'll skip dpkg-configure, it's not needed):
+    sudo auth-client-config -t nss -p lac_ldap
+    sudo pam-auth-update
+Press ENTER when you are ready to demo
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+Use the dkpg-configure (2nd command in tutorial) to reset lib-nss! We could not find Server URI value as ldapi://169.254.251.1
+
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+ 
+Checking ... can take 10 seconds ...
+
+Super! Press ENTER to continue.
+
+Q2. Diagnosis
+
+There is a mis-configuration in the set up of libnss. We will try to find it out using a variety of debugging approaches.
+
+Ready? Press ENTER to continue.
+
+Step 1. Run the following command in the Vegas image: 'su mary'. What is the output?
+	(A) No passwd entry
+	(B) Passwd invalid
+	(C) su is not the last name of Dr. Evil
+	(D) You should run 'fu mary'
+ (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 2. Intuitively, the 'su' command (switch user) needs to check the existence of user from multiple sources: (1) the local passwd file, and (2) the LDAP directory. This is configured in PAM and NSS. To verify if PAM did the job, run the following command: 
+	'strace su mary 2>dump.txt'
+Examine dump.txt. Which of the following is true? (Hint: search for passwd and 169.254.251.1 in dump.txt)
+	(A) PAM did check/read the local /etc/passwd
+	(B) PAM did try to submit request to 169.254.251.1
+	(C) Both A and B
+	(D) None
+ (attempt 1 of 2)
+C
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 3. In dump.txt, if you read the line 'connect(...169.254.251)'. Is it successful or not?
+	(A) No, it returns -1 
+	(B) Yes, the connection is established.
+	(C) PAM never sends out the connection request
+	(D) Dr. Evil cut off the connection (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 4. There MUST be something wrong in communicating with the LDAP server then.
+    However, in our earlier efforts, we have verified that LDAP server is working. Because 'sudo ldapsearch -x -h 169.254.251.1' (attention: need to perform sudo) did dump all database entries!
+    In this case, please use strace to trace the ldapsearch command similarly and dump the stderr channel (2) into another file 'd2.txt'.
+    Now, observe d2.txt, is the connection to 169.254.251.1 successful?
+	(A) No. It failed
+	(B) Yes, the connection is established
+	(C)Yes, because Dr. Evil is a magic man
+	(D) Yes, because compared with the prior attempt of 'su', the root privilege is used (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 5. Observe what is the type of the connection in d2.txt (which ldapsearch tries to establish)?
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+A
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 6. Now observe dump.txt (of the 'su mary' command). What is the type of the connection to be established by 'su mary'? 
+	(A)AF_INET
+	(B)AF_UNIX
+	(C)AF_EVIL
+	(D)None of the above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 7. Read about ldap, ldapi, ldaps protocols. Which will establish Unix Socket (AF_UNIX)?
+	(A) ldap
+	(B) ldapi
+	(C) ldaps
+	(D) None of above
+ (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+Step 8. Read about UNIX Socket. Can be it be used for remote communication?
+	(A) Yes
+	(B) No
+	 (attempt 1 of 2)
+B
+Correct! Now move to next ... Hit ENTER to continue
+
+
+Nice! Press ENTER to continue.
+
+Q3. Make it Work
+
+We have successfully identified the problem: the protocol used in server address 'ldapi://169.254.251.1' is wrong! We should use 'ldap://' instead!
+	Now it's your job to reconfigure libnss using dpkg-reconfigure to fix it.
+We will use the following command on the main image to verify if your set up of SSO is successful:
+    sshpass -pgoodyear ssh -oStrictHostKeyChecking=no  mary@169.254.251.1 whoami
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+Wrong: the 'sshpass ...' command output is Permission denied, please try again.
+
+
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+ 
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. SSO
+Total Points Available: 30, Expected Time to Complete: 900 sec
+Completion: 100%, Time Spent: 150 sec, Accumulated Time:  0 
+Earned Points: 30.0 out of 30 
+-----------------------------------
+Press ENTER to continue
+\

@@ -1,0 +1,704 @@
+2er81ba8d689474b2d86424eb146f7840d5
+====================================================
+Mission 6: Godfather (80 pts)
+Name: ryan c
+Grade: 80.0 pts
+Time Spent: 596 seconds	Accumuated: 1219 seconds
+Timestamp: Thu Nov  5 23:55:38 2026
+
+====================================================
+QID  Title               Pts     Time   QID  Title               Pts     Time   
+----------------------------------------------------
+1    Rise of New Empire  30.0/30 145    2    Frequent Flyer      15.0/15 126    3    Papa in Danger      15.0/15 252    4    Senator Corleone    20.0/20 73     
+----------------------------------------------------
+Enter question ID (e.g., 1) to redo a question or hit Q to quit
+%13792012345-------------
+100%139209234----
+145%139209234----
+145%139209234----
+EMPTY-------------------------------------------
+	Q1. Rise of New Empire
+-------------------------------------------
+This assignment is created in honor of the Godfather, Dr. Evil's forever favorite!
+
+Let's read some life lessons from the Godfather before we move to technical details:
+
+ (1) Great man are not born great. They grow great.
+ (2) Never hate your enemies. They affect your judgement.
+ (3) Forgive. Forget. Life is full of misfortunes.
+
+
+
+Ready? Press ENTER to continue
+Q1. Assets
+
+Regard network adaptors (NICs) as the assets of Vito Coleone's empire. We now have some questions for you.
+
+(1) What is the MAC address of enp0s3? (attempt 1 of 3)
+08:00:27:bc:e8:27
+Correct! Now move to next ... Hit ENTER to continue
+
+ (2) What is the IPv4 address of enp0s3? (attempt 1 of 3)
+10.0.2.15
+Correct! Now move to next ... Hit ENTER to continue
+
+
+Super! Press ENTER to continue.
+
+Q2. Relocation 
+
+Vito decides to relocate the entire family business to Vegas. As he helped kicking away the street hooligans who bothered you when you were a toddler, you now have some little favor to return -- all technical ...
+
+Your job is to set up the Vegas website for the family by replicating the current OS/website of the NewYork site: 
+	 (1) Replicate the CSC15S image and name the new image as Vegas.
+	 (2) Configure 'enp0s8' of Vegas using static IPv4: 169.254.251.1
+This challenge can take some time. When you finish, you should ping Vegas from the main image before demo.
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo the Vegas image.
+
+Ping the Vevas image ...
+
+Nice! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q1. Rise of New Empire
+Total Points Available: 30, Expected Time to Complete: 600 sec
+Completion: 100%, Time Spent: 145 sec, Accumulated Time:  0 
+Earned Points: 30.0 out of 30 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+126%139209234----
+126%139209234----
+EMPTY-------------------------------------------
+	Q2. Frequent Flyer
+-------------------------------------------
+Michael Coleone is tired of flying between NewYork and Vegas. He wants to set up a remote openssh server on the NewYork site (the main image) so that he could remotely log into the NewYork image from the Vegas image.
+
+
+Ready? Press ENTER to continue
+Q1. Openssh Server
+
+Use the apt-get command to install the openssh server on the NewYork main image: 169.254.251.2, and make sure that the openssh server service/daemon is started.
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+
+Well done. Press ENTER to continue.
+
+Q2. Remote Connection
+
+Now we need you to launch a SSH client in the Vegas image to the main image.
+Pay special attention: your job is to log into the main image as stu101 (password: abc123).Hint: you will have to figure out how to specify the user account using the 'ssh' command
+
+
+Attempt 1 of 3. Press ENTER when you have established the ssh session from Vegas to NewYork.
+
+  Evaluating ...
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q2. Frequent Flyer
+Total Points Available: 15, Expected Time to Complete: 300 sec
+Completion: 100%, Time Spent: 126 sec, Accumulated Time:  0 
+Earned Points: 15.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+252%139209234----
+875%139209234----
+EMPTY-------------------------------------------
+	Q3. Papa in Danger
+-------------------------------------------
+Although Sollozo's assasination did not entirely succeed, the Papa was injured badly and he is in hospital. To defend the reputation of the family in this crisis, Michael asked you to do him a favor:  
+    Publish Vito's mottos frequently on the website to prove that he's alive!
+
+Please navigate to the following directory first.
+	 cd /home/csc15s/mis6/crisis 
+
+
+Ready? Press ENTER to continue
+
+Q1. Vito's Motto
+
+In the current folder: /home/csc15s/mis6/crisis, you will find a file: vito.htmlYour job is to transfer this file to the Vegas image and save the file into folder: /var/www/html, so that people can view it using:
+	 http://169.254.251.1/vito.html
+This challenge can take some time. Please follow the steps listed below:
+  (1) install openssh server on the Vegas image
+  (2) sftp from the main image (as csc15s) to the Vegas image so that vito.html is uploaded (hint: use the put command in sftp) 
+  (3) ssh from the main image (as csc15s) to the Vegas image and copy the uploaded file to /var/www/html
+  (4) Make sure that the apache2 server is started on the Vegas image
+  (5) Verify if it works using a browser or the following wget command:
+        wget http://169.254.251.1/vito.html -O vito.txt
+        diff vito.html vito.txt
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+
+The challenge is completed! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. Papa in Danger
+Total Points Available: 15, Expected Time to Complete: 500 sec
+Completion: 100%, Time Spent: 620 sec, Accumulated Time:  0 
+Penalty: 20%, Earned Points: 12.0 out of 15 
+-----------------------------------
+Time penalty is defined as below:
+  <= expected time: 500 seconds: 0%
+  < 2* expected time: 1000 seconds: 20%
+  < 3* expected time: 1500 seconds: 30%
+  < 4* expected time: 2000 seconds: 40%
+  >= 4* expected time: 2000 seconds: 50%
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q3. Papa in Danger
+-------------------------------------------
+Although Sollozo's assasination did not entirely succeed, the Papa was injured badly and he is in hospital. To defend the reputation of the family in this crisis, Michael asked you to do him a favor:  
+    Publish Vito's mottos frequently on the website to prove that he's alive!
+
+Please navigate to the following directory first.
+	 cd /home/csc15s/mis6/crisis 
+
+
+Ready? Press ENTER to continue
+
+Q1. Vito's Motto
+
+In the current folder: /home/csc15s/mis6/crisis, you will find a file: vito.htmlYour job is to transfer this file to the Vegas image and save the file into folder: /var/www/html, so that people can view it using:
+	 http://169.254.251.1/vito.html
+This challenge can take some time. Please follow the steps listed below:
+  (1) install openssh server on the Vegas image
+  (2) sftp from the main image (as csc15s) to the Vegas image so that vito.html is uploaded (hint: use the put command in sftp) 
+  (3) ssh from the main image (as csc15s) to the Vegas image and copy the uploaded file to /var/www/html
+  (4) Make sure that the apache2 server is started on the Vegas image
+  (5) Verify if it works using a browser or the following wget command:
+        wget http://169.254.251.1/vito.html -O vito.txt
+        diff vito.html vito.txt
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+undinner
+< moonlunchdrevilwarcraftstone
+< drevilminimecatrednumbertwo
+< goodalertwarcraftsunempire
+< callstarcatgoodmedal
+< airrocketcatempirelunch
+< planegreethonorgoodsuper
+< funsunsunhellorocket
+< partlunchcityempireschool
+< dogempirecatcatdrevil
+< honorsunmoongreetcat
+< sunbadagentdinnerstar
+< catmedaldutygreetmedal
+< supermedalminimegoodminime
+< citypartalertschoolcat
+< minimeageevillunchgood
+< agentstoneminimealertdog
+< dinnerrocketschoolhellostone
+< dutysundutycatstar
+< dogpartwarcraftfunpart
+< sundrevilevilhonorgood
+< dogcityplaneschoolminime
+< planeredhelloevilcity
+< dinnerlunchbadstonesun
+< evilstonemedalevilcat
+< stonerocketempirestarevil
+< cathonorgreetmedalpart
+< rocketagentsupershinered
+< assignmentagentshinecitypart
+< lunchhellobadagewarcraft
+< cityplanealertagestar
+< rocketcitygoodwarcraftlunch
+< evilhellocityrocketminime
+< moondinnercallgreetassignment
+< empireredwarcraftcityplane
+< agentdogagepartevil
+< shinemoonsunredhello
+< schoolcallshinerocketsuper
+< sunmoonschoolhellofun
+< stoneagentsuperstonebad
+< cityageshinestarassignment
+< assignmentcatempiremoonplane
+< redrocketgoodnumbertwocall
+< callredsuperalerthello
+< honorschoolassignmentpartnumbertwo
+< badsunmedaldutymoon
+< nicestonewarcraftbaddinner
+---
+> <html><body><h1>Vito's Motto Today</h1><body><h4> Revenve is a dish best served code </h4> sunsunwarcraftmoonred
+> sunniceplanenicedog
+> partdogbadsunhonor
+> stoneminimeplaneassignmentdog
+> honorrocketwarcraftcityage
+> evilevilplaneairbad
+> dinnercatdogairassignment
+> nicestonefunstonebad
+> stonemoonassignmentevilgood
+> dinnergoodminimemedalmoon
+> lunchschoolfunsunnice
+> greetstarsupernicedog
+> dutycitylunchdrevilmoon
+> badpartrocketageassignment
+> minimeagentfunageair
+> numbertwominimepartstonefun
+> stonedinnerevildrevilhonor
+> superstonegoodhonoralert
+> doggreetsunstoneage
+> goodevilsunmoonplane
+> cityairsuperdogmoon
+> shinestoneairrocketfun
+> honornicesunmoonair
+> drevilgreetassignmentdrevilplane
+> drev
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+undinner
+< moonlunchdrevilwarcraftstone
+< drevilminimecatrednumbertwo
+< goodalertwarcraftsunempire
+< callstarcatgoodmedal
+< airrocketcatempirelunch
+< planegreethonorgoodsuper
+< funsunsunhellorocket
+< partlunchcityempireschool
+< dogempirecatcatdrevil
+< honorsunmoongreetcat
+< sunbadagentdinnerstar
+< catmedaldutygreetmedal
+< supermedalminimegoodminime
+< citypartalertschoolcat
+< minimeageevillunchgood
+< agentstoneminimealertdog
+< dinnerrocketschoolhellostone
+< dutysundutycatstar
+< dogpartwarcraftfunpart
+< sundrevilevilhonorgood
+< dogcityplaneschoolminime
+< planeredhelloevilcity
+< dinnerlunchbadstonesun
+< evilstonemedalevilcat
+< stonerocketempirestarevil
+< cathonorgreetmedalpart
+< rocketagentsupershinered
+< assignmentagentshinecitypart
+< lunchhellobadagewarcraft
+< cityplanealertagestar
+< rocketcitygoodwarcraftlunch
+< evilhellocityrocketminime
+< moondinnercallgreetassignment
+< empireredwarcraftcityplane
+< agentdogagepartevil
+< shinemoonsunredhello
+< schoolcallshinerocketsuper
+< sunmoonschoolhellofun
+< stoneagentsuperstonebad
+< cityageshinestarassignment
+< assignmentcatempiremoonplane
+< redrocketgoodnumbertwocall
+< callredsuperalerthello
+< honorschoolassignmentpartnumbertwo
+< badsunmedaldutymoon
+< nicestonewarcraftbaddinner
+---
+> <html><body><h1>Vito's Motto Today</h1><body><h4> Revenve is a dish best served code </h4> sunsunwarcraftmoonred
+> sunniceplanenicedog
+> partdogbadsunhonor
+> stoneminimeplaneassignmentdog
+> honorrocketwarcraftcityage
+> evilevilplaneairbad
+> dinnercatdogairassignment
+> nicestonefunstonebad
+> stonemoonassignmentevilgood
+> dinnergoodminimemedalmoon
+> lunchschoolfunsunnice
+> greetstarsupernicedog
+> dutycitylunchdrevilmoon
+> badpartrocketageassignment
+> minimeagentfunageair
+> numbertwominimepartstonefun
+> stonedinnerevildrevilhonor
+> superstonegoodhonoralert
+> doggreetsunstoneage
+> goodevilsunmoonplane
+> cityairsuperdogmoon
+> shinestoneairrocketfun
+> honornicesunmoonair
+> drevilgreetassignmentdrevilplane
+> drev
+
+Attempt 3 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+undinner
+< moonlunchdrevilwarcraftstone
+< drevilminimecatrednumbertwo
+< goodalertwarcraftsunempire
+< callstarcatgoodmedal
+< airrocketcatempirelunch
+< planegreethonorgoodsuper
+< funsunsunhellorocket
+< partlunchcityempireschool
+< dogempirecatcatdrevil
+< honorsunmoongreetcat
+< sunbadagentdinnerstar
+< catmedaldutygreetmedal
+< supermedalminimegoodminime
+< citypartalertschoolcat
+< minimeageevillunchgood
+< agentstoneminimealertdog
+< dinnerrocketschoolhellostone
+< dutysundutycatstar
+< dogpartwarcraftfunpart
+< sundrevilevilhonorgood
+< dogcityplaneschoolminime
+< planeredhelloevilcity
+< dinnerlunchbadstonesun
+< evilstonemedalevilcat
+< stonerocketempirestarevil
+< cathonorgreetmedalpart
+< rocketagentsupershinered
+< assignmentagentshinecitypart
+< lunchhellobadagewarcraft
+< cityplanealertagestar
+< rocketcitygoodwarcraftlunch
+< evilhellocityrocketminime
+< moondinnercallgreetassignment
+< empireredwarcraftcityplane
+< agentdogagepartevil
+< shinemoonsunredhello
+< schoolcallshinerocketsuper
+< sunmoonschoolhellofun
+< stoneagentsuperstonebad
+< cityageshinestarassignment
+< assignmentcatempiremoonplane
+< redrocketgoodnumbertwocall
+< callredsuperalerthello
+< honorschoolassignmentpartnumbertwo
+< badsunmedaldutymoon
+< nicestonewarcraftbaddinner
+---
+> <html><body><h1>Vito's Motto Today</h1><body><h4> Revenve is a dish best served code </h4> sunsunwarcraftmoonred
+> sunniceplanenicedog
+> partdogbadsunhonor
+> stoneminimeplaneassignmentdog
+> honorrocketwarcraftcityage
+> evilevilplaneairbad
+> dinnercatdogairassignment
+> nicestonefunstonebad
+> stonemoonassignmentevilgood
+> dinnergoodminimemedalmoon
+> lunchschoolfunsunnice
+> greetstarsupernicedog
+> dutycitylunchdrevilmoon
+> badpartrocketageassignment
+> minimeagentfunageair
+> numbertwominimepartstonefun
+> stonedinnerevildrevilhonor
+> superstonegoodhonoralert
+> doggreetsunstoneage
+> goodevilsunmoonplane
+> cityairsuperdogmoon
+> shinestoneairrocketfun
+> honornicesunmoonair
+> drevilgreetassignmentdrevilplane
+> drev
+Failed the challenge ... Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. Papa in Danger
+Total Points Available: 15, Expected Time to Complete: 500 sec
+Completion: 0%, Time Spent: 3 sec, Accumulated Time:  0 
+Earned Points: 0.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+-------------------------------------------
+	Q3. Papa in Danger
+-------------------------------------------
+Although Sollozo's assasination did not entirely succeed, the Papa was injured badly and he is in hospital. To defend the reputation of the family in this crisis, Michael asked you to do him a favor:  
+    Publish Vito's mottos frequently on the website to prove that he's alive!
+
+Please navigate to the following directory first.
+	 cd /home/csc15s/mis6/crisis 
+
+
+Ready? Press ENTER to continue
+
+Q1. Vito's Motto
+
+In the current folder: /home/csc15s/mis6/crisis, you will find a file: vito.htmlYour job is to transfer this file to the Vegas image and save the file into folder: /var/www/html, so that people can view it using:
+	 http://169.254.251.1/vito.html
+This challenge can take some time. Please follow the steps listed below:
+  (1) install openssh server on the Vegas image
+  (2) sftp from the main image (as csc15s) to the Vegas image so that vito.html is uploaded (hint: use the put command in sftp) 
+  (3) ssh from the main image (as csc15s) to the Vegas image and copy the uploaded file to /var/www/html
+  (4) Make sure that the apache2 server is started on the Vegas image
+  (5) Verify if it works using a browser or the following wget command:
+        wget http://169.254.251.1/vito.html -O vito.txt
+        diff vito.html vito.txt
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+tonesunstone
+< moondrevildutynumbertwoassignment
+< stoneminimeminimedinnerstone
+< redhonorbadstarair
+< badairbadairlunch
+< agentshinefunwarcraftdog
+< evilplanehellogoodevil
+< warcraftsupergreetsupersun
+< sunwarcraftrocketrocketassignment
+< badhellosunsuperred
+< dogcatlunchschoolage
+< superalertfunredempire
+< goodstarminimehelloshine
+< dogniceredcityhonor
+< agentdinnercatsuncity
+< ageshinewarcraftminimebad
+< empirestarrocketgreetmedal
+< alertdinnersuperdinnergreet
+< stonedinnerhellosunplane
+< alertstarshinegoodminime
+< dutyagentredcathello
+< planedutyniceagedrevil
+< callpartmoonhonoralert
+< partcatschoolagentred
+< empiregreetgreetdutyshine
+< nicesuperpartempiresuper
+< evilredlunchwarcrafthonor
+< redcityschoolstoneschool
+< agewarcraftwarcraftsuperdog
+< empireairdrevilmoonnice
+< schoolhellodinnerempireminime
+< assignmentshineassignmentstonecity
+< numbertwogoodparthelloshine
+< shineevilnumbertwomedalage
+< empireevilshineagehello
+< callplanecitydinnerduty
+< alertstonehelloagentage
+< planealertnumbertwohellored
+< greetlunchsunalertred
+< partplanestaralertred
+< lunchshinealertminimefun
+< nicepartassignmentsunbad
+< assignmentcityevilcityhonor
+< sunsuncallmoonair
+< evildinnergreetfunassignment
+< supernicehelloredduty
+< honorschoolwarcraftcallstone
+---
+> <html><body><h1>Vito's Motto Today</h1><body><h4> Revenve is a dish best served code </h4> sunsunwarcraftmoonred
+> sunniceplanenicedog
+> partdogbadsunhonor
+> stoneminimeplaneassignmentdog
+> honorrocketwarcraftcityage
+> evilevilplaneairbad
+> dinnercatdogairassignment
+> nicestonefunstonebad
+> stonemoonassignmentevilgood
+> dinnergoodminimemedalmoon
+> lunchschoolfunsunnice
+> greetstarsupernicedog
+> dutycitylunchdrevilmoon
+> badpartrocketageassignment
+> minimeagentfunageair
+> numbertwominimepartstonefun
+> stonedinnerevildrevilhonor
+> superstonegoodhonoralert
+> doggreetsunstoneage
+> goodevilsunmoonplane
+> cityairsuperdogmoon
+> shinestoneairrocketfun
+> honornicesunmoonair
+> drevilgreetassign
+
+Attempt 2 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+esunstone
+< moondrevildutynumbertwoassignment
+< stoneminimeminimedinnerstone
+< redhonorbadstarair
+< badairbadairlunch
+< agentshinefunwarcraftdog
+< evilplanehellogoodevil
+< warcraftsupergreetsupersun
+< sunwarcraftrocketrocketassignment
+< badhellosunsuperred
+< dogcatlunchschoolage
+< superalertfunredempire
+< goodstarminimehelloshine
+< dogniceredcityhonor
+< agentdinnercatsuncity
+< ageshinewarcraftminimebad
+< empirestarrocketgreetmedal
+< alertdinnersuperdinnergreet
+< stonedinnerhellosunplane
+< alertstarshinegoodminime
+< dutyagentredcathello
+< planedutyniceagedrevil
+< callpartmoonhonoralert
+< partcatschoolagentred
+< empiregreetgreetdutyshine
+< nicesuperpartempiresuper
+< evilredlunchwarcrafthonor
+< redcityschoolstoneschool
+< agewarcraftwarcraftsuperdog
+< empireairdrevilmoonnice
+< schoolhellodinnerempireminime
+< assignmentshineassignmentstonecity
+< numbertwogoodparthelloshine
+< shineevilnumbertwomedalage
+< empireevilshineagehello
+< callplanecitydinnerduty
+< alertstonehelloagentage
+< planealertnumbertwohellored
+< greetlunchsunalertred
+< partplanestaralertred
+< lunchshinealertminimefun
+< nicepartassignmentsunbad
+< assignmentcityevilcityhonor
+< sunsuncallmoonair
+< evildinnergreetfunassignment
+< supernicehelloredduty
+< honorschoolwarcraftcallstone
+< </body></html>
+\ No newline at end of file
+
+
+
+Attempt 3 of 3. Press ENTER when you are ready to demo.
+
+  Evaluating ...
+The file you've uploaded to Vegas image does not have the exact motto! Details of diff: 
+esunstone
+< moondrevildutynumbertwoassignment
+< stoneminimeminimedinnerstone
+< redhonorbadstarair
+< badairbadairlunch
+< agentshinefunwarcraftdog
+< evilplanehellogoodevil
+< warcraftsupergreetsupersun
+< sunwarcraftrocketrocketassignment
+< badhellosunsuperred
+< dogcatlunchschoolage
+< superalertfunredempire
+< goodstarminimehelloshine
+< dogniceredcityhonor
+< agentdinnercatsuncity
+< ageshinewarcraftminimebad
+< empirestarrocketgreetmedal
+< alertdinnersuperdinnergreet
+< stonedinnerhellosunplane
+< alertstarshinegoodminime
+< dutyagentredcathello
+< planedutyniceagedrevil
+< callpartmoonhonoralert
+< partcatschoolagentred
+< empiregreetgreetdutyshine
+< nicesuperpartempiresuper
+< evilredlunchwarcrafthonor
+< redcityschoolstoneschool
+< agewarcraftwarcraftsuperdog
+< empireairdrevilmoonnice
+< schoolhellodinnerempireminime
+< assignmentshineassignmentstonecity
+< numbertwogoodparthelloshine
+< shineevilnumbertwomedalage
+< empireevilshineagehello
+< callplanecitydinnerduty
+< alertstonehelloagentage
+< planealertnumbertwohellored
+< greetlunchsunalertred
+< partplanestaralertred
+< lunchshinealertminimefun
+< nicepartassignmentsunbad
+< assignmentcityevilcityhonor
+< sunsuncallmoonair
+< evildinnergreetfunassignment
+< supernicehelloredduty
+< honorschoolwarcraftcallstone
+< </body></html>
+\ No newline at end of file
+
+
+Failed ... Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q3. Papa in Danger
+Total Points Available: 15, Expected Time to Complete: 500 sec
+Completion: 0%, Time Spent: 252 sec, Accumulated Time:  0 
+Earned Points: 0.0 out of 15 
+-----------------------------------
+Press ENTER to continue
+
+%13792012345-------------
+100%139209234----
+73%139209234----
+73%139209234----
+EMPTY-------------------------------------------
+	Q4. Senator Corleone
+-------------------------------------------
+Dr. Evil likes the Godfather in the way that even it is a movie on a Mafia family, it still reflects the bright side of the American dream. Look at what Vito tells Michael, and what Michael tells his children: they want to see, maybe several generations later, Corleones as scientists, artists, senators, governors, and presidents!
+
+A person/family aims high should receive applause...
+
+In this challenge, we will set up domain name service in memory of these ambitious dreams. We will use a software called bind9. It runs as a service, just like apache server, and provides the translation from server names to IP addresses. We strongly recommend that you spend 10 minutes reading the following tutorial first before procedding:
+https://www.hiroom2.com/2018/05/06/ubuntu-1804-bind-en/
+
+ Finished tutorial and Ready? Press ENTER to continue
+
+Q1. Senator Coleone
+
+Our job is to set up two server names: president.corleone.org and senator.corleone.org, and map them to 169.254.251.1 and 169.254.251.2, respectively. In another word, the main image will have the name senator and the Vegas image wil have the name president, and both of them belong to DNS zone corleone.org
+  The DNS server (bind9) will be set up at 169.254.251.1 (the Vegas image). We suggest that you follow the steps below (as illustrated in the tutorial):
+    (1) No need to modify the named.conf.options file. This step is actually extra
+    (2) Modify named.conf.local to add a zone named 'corleone.org', specify that the zone details is contained in a file 'db.corleone' 
+    (3) Create the db.corleone file as shown in the tutorial, and add at least two A records (the entries for senator and president) into it.
+    (4) validate, and run as suggested. You can verify on the main image using the following command:
+	 nslookup president.corleone.org 169.254.251.1
+Here the 2nd parameter specifies the location of the DNS server
+
+
+
+Attempt 1 of 3. Press ENTER when you are ready to demo.
+ 
+
+Nice! Press ENTER to continue.
+
+-----------------------------------
+Grades Report: Q4. Senator Corleone
+Total Points Available: 20, Expected Time to Complete: 900 sec
+Completion: 100%, Time Spent: 73 sec, Accumulated Time:  0 
+Earned Points: 20.0 out of 20 
+-----------------------------------
+Press ENTER to continue
+
