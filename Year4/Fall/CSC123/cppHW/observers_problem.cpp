@@ -166,8 +166,15 @@ void stock::detach(string investor_name) {
 }
 
 void stock::notify() {
-  //for (auto& entry:investors) entry.second.lock()->update(*this); //c++14
-  for(auto& [name,wptr] : investors) wptr.lock()->update(*this); //c++17
+  auto it = investors.begin();
+  while (it != investors.end()) {
+    auto observer = it->second.lock();
+    // Advance before update() can erase the current entry.
+    ++it;
+    if (observer) {
+      observer->update(*this);
+    }
+  }
 }
 
 ////// Implmementation of specific investors (concrete observers)
