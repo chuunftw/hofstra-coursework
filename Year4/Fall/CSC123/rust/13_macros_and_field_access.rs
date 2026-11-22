@@ -1,8 +1,6 @@
 // Macros and field-level mutation
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 13_macros_and_field_access.rs
 // Run on Windows PowerShell: .\13_macros_and_field_access.exe
-// Run on Linux/macOS: ./13_macros_and_field_access
 //
 // The ! marks a macro invocation. macro_rules! matches Rust tokens and expands
 // where you call it. Read the invocation as the assignment it expands into.

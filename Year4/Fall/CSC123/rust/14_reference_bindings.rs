@@ -1,8 +1,6 @@
 // What can change in a reference binding?
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 14_reference_bindings.rs
 // Run on Windows PowerShell: .\14_reference_bindings.exe
-// Run on Linux/macOS: ./14_reference_bindings
 //
 // The two places you can write mut answer different questions. In "let mut r = &x",
 // you can reassign r. In "let r = &mut x", you can write through r with *r.

@@ -1,8 +1,6 @@
 // String, &str, and UTF-8
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 06_strings_and_utf8.rs
 // Run on Windows PowerShell: .\06_strings_and_utf8.exe
-// Run on Linux/macOS: ./06_strings_and_utf8
 //
 // A String owns UTF-8 bytes. An &str borrows a range of valid UTF-8 text.
 // len() counts bytes. A character such as é spans two bytes, so slicing through

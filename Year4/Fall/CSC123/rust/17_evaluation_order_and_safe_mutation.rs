@@ -1,8 +1,6 @@
 // What Kind of Mutations are Safe? (packet section)
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 17_evaluation_order_and_safe_mutation.rs
 // Run on Windows PowerShell: .\17_evaluation_order_and_safe_mutation.exe
-// Run on Linux/macOS: ./17_evaluation_order_and_safe_mutation
 //
 // Church-Rosser says that two reductions from the same lambda term can be joined.
 // If a normal form exists, it is unique. Shared mutable state can make the final

@@ -1,8 +1,6 @@
 // Scope and automatic cleanup
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 02_scope_and_drop.rs
 // Run on Windows PowerShell: .\02_scope_and_drop.exe
-// Run on Linux/macOS: ./02_scope_and_drop
 //
 // A block introduces a scope. Follow the value named "inner" across the move.
 // When its final owner leaves the block, Rust runs its destructor (Drop).
@@ -18,7 +16,7 @@ struct Tracked(&'static str);
 
 impl Drop for Tracked {
     fn drop(&mut self) {
-        println!("Cleaning up {}", self.0);
+        println!("3Cleaning up {}", self.0);
     }
 }
 
@@ -27,11 +25,12 @@ fn main() {
     let outer = Tracked("outer");
     {
         let inner = Tracked("inner");
-        let moved = inner;
-        println!("Inside: {}", moved.0);
+        let moved = inner; // inner now has no usable value 
+        println!("1Inside: {}", moved.0);
     } // moved owns the inner value at this point.
-    drop(early); // Give ownership to drop for immediate cleanup.
-    println!("Still alive: {}", outer.0);
-}
+    drop(early); // garbage collected early 
+    println!("2Still alive: {}", outer.0);
+} // this line drops outer, hence cleaning up outer.
+// all variables are freed 
 
 // Pause here. Why is there only one cleanup message for the value moved from inner?

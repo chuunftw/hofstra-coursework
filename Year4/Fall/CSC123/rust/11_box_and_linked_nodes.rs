@@ -1,8 +1,6 @@
 // Box and recursive nodes
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 11_box_and_linked_nodes.rs
 // Run on Windows PowerShell: .\11_box_and_linked_nodes.exe
-// Run on Linux/macOS: ./11_box_and_linked_nodes
 //
 // Box<T> uniquely owns a T on the heap, like C++ unique_ptr<T>. Box::new plays
 // the role of make_unique. A node containing another Node directly would need

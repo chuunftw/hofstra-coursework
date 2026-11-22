@@ -1,8 +1,6 @@
 // Who owns a node when two links point to it?
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 16_rc_weak_refcell.rs
 // Run on Windows PowerShell: .\16_rc_weak_refcell.exe
-// Run on Linux/macOS: ./16_rc_weak_refcell
 //
 // Rc<T> shares ownership on one thread. Rc::clone increments the strong count in
 // constant time. The value is dropped when its last strong owner goes away.

@@ -1,8 +1,6 @@
 // Shared borrows, mutable borrows, and function parameters
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 03_borrowing_and_functions.rs
 // Run on Windows PowerShell: .\03_borrowing_and_functions.exe
-// Run on Linux/macOS: ./03_borrowing_and_functions
 //
 // Read each function's parameter before reading its body. A String parameter takes
 // ownership. A shared &str lets a function read text. An &mut String also lets it
@@ -11,7 +9,7 @@
 //
 // Predict: Replace length(&text) with consume(text) before add_mark. Which line fails?
 
-fn length(text: &str) -> usize {
+fn length(text: &str) -> usize { //takes an input named text, text is of type reference str then returns type usize
     text.len()
 }
 
@@ -36,7 +34,7 @@ fn append_borrowed(text: &str) -> String {
 
 fn main() {
     let mut text = String::from("hello");
-    assert_eq!(length(&text), 5); // Borrow through a string slice.
+    assert_eq!(length(&text), 5); // Borrow the text as "&text", text is a string
     add_mark(&mut text); // Mutate through an exclusive borrow.
     println!("{text}");
     assert_eq!(consume(text), 6); // Transfer ownership into consume.

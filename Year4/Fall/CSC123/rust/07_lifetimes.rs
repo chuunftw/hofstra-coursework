@@ -1,8 +1,6 @@
 // Returning references and lifetime annotations
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 07_lifetimes.rs
 // Run on Windows PowerShell: .\07_lifetimes.exe
-// Run on Linux/macOS: ./07_lifetimes
 //
 // A returned reference needs an owner that will still be alive when you use it.
 // Lifetime annotations describe relationships the compiler checks. Rust can infer

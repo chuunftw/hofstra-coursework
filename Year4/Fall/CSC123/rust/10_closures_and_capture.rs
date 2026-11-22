@@ -1,8 +1,6 @@
 // Closures, lexical scope, and move capture
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 10_closures_and_capture.rs
 // Run on Windows PowerShell: .\10_closures_and_capture.exe
-// Run on Linux/macOS: ./10_closures_and_capture
 //
 // A closure can use a variable from its surrounding scope. Identify each capture,
 // then ask whether the closure borrows it or owns it. With move, an integer

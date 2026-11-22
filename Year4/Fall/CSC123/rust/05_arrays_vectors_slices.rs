@@ -1,8 +1,6 @@
 // Arrays, vectors, and slices
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 05_arrays_vectors_slices.rs
 // Run on Windows PowerShell: .\05_arrays_vectors_slices.exe
-// Run on Linux/macOS: ./05_arrays_vectors_slices
 //
 // [i32; 3] includes the length in its type. Vec<i32> can grow at runtime.
 // A slice reference (&[i32]) holds an address and a length and borrows the elements.

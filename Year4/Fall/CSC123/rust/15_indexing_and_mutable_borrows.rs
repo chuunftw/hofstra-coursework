@@ -1,8 +1,6 @@
 // Why does reversing an assignment change whether it compiles?
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 15_indexing_and_mutable_borrows.rs
 // Run on Windows PowerShell: .\15_indexing_and_mutable_borrows.exe
-// Run on Linux/macOS: ./15_indexing_and_mutable_borrows
 //
 // Indexing hides borrows. On the right, v[i] reads an element. On the left,
 // indexing a Vec to write an element needs a mutable borrow. In this example

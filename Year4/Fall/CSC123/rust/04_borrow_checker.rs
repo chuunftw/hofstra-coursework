@@ -1,8 +1,6 @@
 // Borrow conflicts and last use
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 04_borrow_checker.rs
 // Run on Windows PowerShell: .\04_borrow_checker.exe
-// Run on Linux/macOS: ./04_borrow_checker
 //
 // Shared references can coexist. A mutable borrow requires exclusive access to
 // the part being borrowed. Trace from each borrow to its last use in this code.

@@ -1,8 +1,6 @@
 // Structs, derived traits, and disjoint field borrows
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 08_structs_traits_field_borrows.rs
 // Run on Windows PowerShell: .\08_structs_traits_field_borrows.exe
-// Run on Linux/macOS: ./08_structs_traits_field_borrows
 //
 // A trait describes behavior a type supports. derive asks Rust to generate an
 // implementation from the fields. Eq compares for equality, Ord orders dates by

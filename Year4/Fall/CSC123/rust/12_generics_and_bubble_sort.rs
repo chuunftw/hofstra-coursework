@@ -1,8 +1,6 @@
 // Generic bounds and mutable slices
-// Based on Chuck Liang's CSC123 Rust transition guide.
 // Compile in the VS Code terminal: rustc --edition=2021 12_generics_and_bubble_sort.rs
 // Run on Windows PowerShell: .\12_generics_and_bubble_sort.exe
-// Run on Linux/macOS: ./12_generics_and_bubble_sort
 //
 // T: Ord promises comparison. The compiler checks the generic body with that
 // promise and generates code for the concrete types used. String supports Ord
