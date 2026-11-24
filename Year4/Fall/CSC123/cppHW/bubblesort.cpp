@@ -48,7 +48,7 @@ void bubblesort(T A[], int length) {
     for(int k=0;k<length-i-1;k++)
       {
         if (A[k+1] < A[k]) { //swap
-          std::swap(A[k], A[k+1]);
+          swap(A[k], A[k+1]);
         }
       }
 }//bubblesort

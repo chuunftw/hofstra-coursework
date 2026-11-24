@@ -84,8 +84,8 @@ using namespace std;
 //   past a row. operator*, operator+, operator-, and subs() also lacked
 //   dimension checks and could read outside an operand.
 
-typedef std::unique_ptr<double[]> double1d;
-typedef std::unique_ptr<double1d[]> double2d;
+typedef unique_ptr<double[]> double1d;
+typedef unique_ptr<double1d[]> double2d;
 
 ///// header for matrix
 struct matrix {
@@ -166,7 +166,7 @@ void matrix::trans(){
 		
 	}
 	
-	the_matrix=std::move(transpose);
+	the_matrix=move(transpose);
 	
 	int new_cols;
 	new_cols=x;
@@ -354,7 +354,7 @@ void matrix::multiply(matrix& m){
 		
 	}
 	
-	the_matrix=std::move(producto);
+	the_matrix=move(producto);
 	y=m.ncolumns();
 	
 	
