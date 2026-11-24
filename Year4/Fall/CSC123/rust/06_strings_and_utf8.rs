@@ -13,7 +13,7 @@ use std::str::from_utf8;
 
 fn main() {
     let mut text = String::from("éclair");
-    let first_letter: &str = &text[..2]; // é occupies two UTF-8 bytes.
+    let first_letter: &str = &text[..1]; // é occupies two UTF-8 bytes.
     assert_eq!(first_letter, "é");
     assert_eq!(text.len(), 7); // Bytes.
     assert_eq!(text.chars().count(), 6); // Unicode scalar values.
