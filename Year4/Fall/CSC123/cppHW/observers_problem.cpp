@@ -1,5 +1,33 @@
 // g++ -std=c++17 observers_problem.cpp -o observers_problem.exe
 // .\observers_problem.exe
+/*   CSC123/252 Assignment: Finding and Correcting Another Memory Error 
+
+This program, designed to appear more like a real-world program, contains
+a memory error (segmentation fault).  
+
+1. Pinpoint the error.  Explain precisely which lines of code caused the
+   error and what kind of error it is.  This is the MAIN part of the 
+   assignment.  
+
+2. Correct the error.  Once you understand what's the cause of the error, 
+   only few more lines of code is required to correct it. Your code must
+   stay efficient (no cloning!). And you may NOT change main.
+
+3. After identifying and fixing the error, can you give a smaller example
+   of the same type of error, but with just a few lines of code?
+
+HINTS: 
+   1. Run the program several times.
+   2. There is an equivalent version of this program in Java:
+
+         https://cs.hofstra.edu/~cscccl/csc123/observers_problem.java
+
+WARNING: this assignment has nothing to do with stock investments, it's
+  about correct memory usage. Do not give me some AI-generated garbage
+  where the stocks and investors interact in a different way.  
+  You must understand what's causing the error here and write code that 
+  addresses ONLY that error.  Changing main will result in a grade of -10000.
+*/
 
 #include<iostream>
 #include<vector>
@@ -169,8 +197,7 @@ void stock::notify() {
   auto it = investors.begin();
   while (it != investors.end()) {
     auto observer = it->second.lock();
-    // Advance before update() can erase the current entry.
-    ++it;
+    ++it;  // update() can remove the investor's own entry
     if (observer) {
       observer->update(*this);
     }

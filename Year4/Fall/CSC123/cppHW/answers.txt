@@ -1,55 +1,53 @@
-Part 1 - Bubblesort
+Bubblesort.cpp
 
-A[k+1] = temp; makes both rosters point to the same csc123 array.
-When temp frees the array at the end of the swap, A[k+1].students
-becomes a dangling pointer. Printing r.students[i] then causes a
-use-after-free. If roster destructor runs later, a double free leak will occur. 
+1. In the original code, lines 48-50 copied the students pointer during
+   the swap. After A[k+1] = temp, both rosters pointed to the same array.
+   When temp went out of scope, its destructor freed the array. That left
+   A[k+1].students dangling. Printing the roster then read freed memory,
+   and destroying the roster could try to free the same array again.
 
-Changes to code: 
-1. Replace "string* students" with "unique_ptr<string[]> students"
-2. Replace "students = new string[count]" with "students = make_unique<string[]>(count)"
-3. Remove the roster destructor. The unique_ptr frees the array.
+2. I changed students to unique_ptr<string[]>, used make_unique<string[]>
+   to allocate the array, and removed the roster destructor. The unique_ptr
+   frees the array automatically.
 
-The changes would not compile however, even after fixing the memory errors,
-b/c of unique pointers not allowing copies to be made, you would need to use the swap function. 
+3. The original swap no longer compiled because it tried to copy rosters.
+   A roster that owns a unique_ptr cannot be copied because the pointer
+   has a single owner.
 
-Part 2 - Matrix
+4. I replaced the three copy statements with std::swap(A[k], A[k+1]).
+   This moves the rosters and transfers ownership of their arrays.
 
-The clean() calls in main free the matrix arrays. When main ends,
-the destructors try to free the same memory again (double free).
-In C = A * B, C loses its old allocation and copies the temporary's
-pointer. The temporary frees that array, so C.printm() reads freed
-memory. multiply() can also read past a row if the dimensions don't match.
+Matrixerror.cpp
 
-Changes to code:
-1. Replace double* and double** storage with double1d and double2d
-   unique_ptr types. Allocate the arrays with make_unique.
-2. Pass arrays by reference when only borrowing them. Move ownership
-   when replacing the matrix storage.
-3. Remove clean(), the destructor, and the manual delete[] calls.
-   The smart pointers free the arrays automatically (Rule of Zero).
-4. In multiply(), return if y != m.nrows() before the loop runs.
-   This prevents reading past the end of a row.
+1. In the original code, clean() freed the rows and row-pointer array.
+   When the matrix went out of scope, its destructor read the freed
+   row pointers and tried to free the same storage again. In C=A*B,
+   the default assignment copied the temporary's pointer into C,
+   leaking C's previous allocation. The temporary then freed the
+   shared array, so C.printm() read freed memory. Incompatible matrix
+   dimensions could also cause out-of-bounds reads. For example,
+   multiply() reported the mismatch but continued into the loop.
+
+2. I replaced the raw arrays with double1d and double2d and used
+   make_unique to allocate them. Functions borrow storage by reference,
+   and ownership moves when the storage is replaced. I removed clean()
+   and the destructor so the smart pointers handle cleanup automatically.
+   I added dimension checks to the arithmetic operations and enabled
+   operator_testing() in main.
 
 
-Part 3 - Observers
+Observers_problem.cpp
 
-1. In notify() (line 171), update() can call dump(), which calls
-   detach(). The erase on line 166 removes the entry the loop is
-   visiting. This invalidates the iterator, and advancing it after
-   update() returns is undefined behavior.
+1. In the original notify() loop (line 198), a panicky investor's
+   update() can call dump(), which calls detach(). The erase on
+   line 193 removes the entry the loop is visiting. This invalidates
+   the iterator, so advancing it after update() returns is undefined
+   behavior and can cause a segmentation fault.
 
-2. Replace the loop in notify() with:
-
-   auto it = investors.begin();
-   while (it != investors.end()) {
-       auto observer = it->second.lock();
-       ++it;
-       if (observer)
-           observer->update(*this);
-   }
-
-   The iterator advances before the investor can erase its own entry.
+2. I replaced the range-based loop in notify() with an explicit
+   iterator. I lock the current investor's weak_ptr, advance the
+   iterator, and call update() if the lock succeeded. If the investor
+   removes its own entry, the iterator already points to the next one.
 
 3. Small example of the same error:
 

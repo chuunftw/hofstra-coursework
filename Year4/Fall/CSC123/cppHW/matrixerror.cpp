@@ -1,31 +1,104 @@
 // g++ -std=c++17 matrixerror.cpp -o matrixerror.exe
 // .\matrixerror.exe
+/// Program adopted from https://cplusplus.com/forum/general/220937/
+
+/*
+"Hello, I was recently running a self-made programm in C++ and I got
+the following message during execution in the command window:
+
+terminate called after throwing an instance of 'std::bad_alloc'
+what(): std::bad_alloc
+
+Afterwards I receive a Windows message saying that the programm
+stopped because I have not enough memory. Thing is I am using dynamic
+memory for the program and I am afraid I have done something wrong
+with it... Is there any change to fix this? thanks in advance "
+*/
+/*  
+On linux, the program crashed:
+"
+Welcome to the C++ program for Molecular Dynamics simulation. Introduce how many particles you want to work with: 10000
+Now choose the value of the parameter a>0 , associated to the temperature: 2.5
+
+Include now the total number of time steps you want to take for the simulation: 100
+The initial velocities have been allocated in a matrix. 
+
+End of the program 
+double free or corruption (!prev)
+Aborted (core dumped)
+"
+
+
+           ============= YOUR ASSIGNMENT: ==============
+
+1. Identify the cause(s) of the memory error (place your answer in comments)
+2. Rewrite the program in modern C++ ("clean c++").
+
+Instead of double**, use the following types for dynamically allocated
+2D array:
+
+#include<memory>
+...
+
+typedef std::unique_ptr<double[]> double1d;    // replaces double*
+typedef std::unique_ptr<double1d[]> double2d;  // replaces double**
+
+Follow the "RULE OF ZERO".  Remove all uses of raw pointers and replace them
+with smart pointers and references.  You must be careful to use a reference
+(matrix& or matrix&&) where appropriate.  The resulting program cannot be
+less efficient than the original program was intended to be.
+
+This is the length of a "real world" program, though it's actually not
+that long.  Most of what you need to replace is relatively straightforward.
+But be careful.  For example, consider the void populate(double** m)
+function.  Do not just change this to void populate(double2d m): because
+double2d is a unique_ptr, which means there must be a transfer of ownership
+(move) to the local m when the function is called. This means that whatever 
+double2d you passed to it would be destroyed after the call!  Instead, 
+change the signature of this function to void populate(double2d& m); 
+Mixing smart pointers with references is OK.
+
+Also uncomment the call to operator_testing() inside main when you've fixed
+the program.
+*/
 
 #include <iostream>
-#include <memory>
-#include <utility>
 #include <cmath>
 #include <stdlib.h>
 #include <time.h>
 #include <fstream>
+#include <memory>
+#include <stdexcept>
+#include <utility>
 #define pi 3.14159265359897
 using namespace std;
 
-///// header for matrix
-using double1d = std::unique_ptr<double[]>;
-using double2d = std::unique_ptr<double1d[]>;
+// Original memory errors:
+// - clean() freed the rows and row-pointer array without clearing the pointer.
+//   The destructor then accessed the freed row pointers and tried to delete
+//   the same storage again when the object went out of scope.
+// - C=A*B copied the temporary's raw pointer over C's old pointer, leaking
+//   C's previous allocation. The temporary then freed the shared storage,
+//   leaving C.printm() to read freed memory.
+// - multiply() printed a dimension error but kept looping and could read
+//   past a row. operator*, operator+, operator-, and subs() also lacked
+//   dimension checks and could read outside an operand.
 
+typedef std::unique_ptr<double[]> double1d;
+typedef std::unique_ptr<double1d[]> double2d;
+
+///// header for matrix
 struct matrix {
 private:
   double2d the_matrix;
   int x;  // rows
   int y;  // columns
+  static double2d alloc(int rows,int cols);
 public:  
   matrix();
   matrix(int rows,int cols);
-  double2d alloc(int rows,int cols);
   void printm();
-  const double2d& getmatrix() const;
+  double2d& getmatrix();
   void trans();
   int nrows();
   int ncolumns();
@@ -43,30 +116,20 @@ public:
   void double_rand(double min,double max);
 }; // matrix header, implementations below
 
-// Allocate the row pointers and each row.
-double2d matrix::alloc(int rows, int cols) {
-    auto storage = make_unique<double1d[]>(rows);
-    for (int i = 0; i < rows; ++i) {
-        storage[i] = make_unique<double[]>(cols);
-    }
-    x = rows;
-    y = cols;
-    return storage;
+//allocation of memory
+double2d matrix::alloc(int rows,int cols){
+	double2d new_matrix=make_unique<double1d[]>(rows);
+	for(int i=0;i<rows;i++){
+		new_matrix[i]=make_unique<double[]>(cols);
+	}
+	return new_matrix;
 }
 
 //CONSTRUCTORS
-//allocate memory
-matrix::matrix(){
-	
-	the_matrix=alloc(0,0);
-	
-};
-//constructor of the matrix as object
-matrix::matrix(int rows,int cols){
-	
-	the_matrix=alloc(rows,cols);
-	
-}
+matrix::matrix() : matrix(0,0) {}
+
+matrix::matrix(int rows,int cols)
+	: the_matrix(alloc(rows,cols)), x(rows), y(cols) {}
 
 /// FUNCTIONS
 //Print matrix in the command window
@@ -84,19 +147,16 @@ void matrix::printm(){
 	
 }
 
-//get matrix elements as double pointer adress
+//Borrow the matrix storage
 
-const double2d& matrix::getmatrix() const {
+double2d& matrix::getmatrix(){
 	
 	return the_matrix;
 }
 //transpose matrix
 void matrix::trans(){
 	
-	auto transpose = make_unique<double1d[]>(y);
-	for(int i=0;i<y;i++){
-		transpose[i] = make_unique<double[]>(x);
-	}
+	double2d transpose=alloc(y,x);
 		
 	for(int i=0;i<y;i++){
 		for(int j=0;j<x;j++){
@@ -106,8 +166,7 @@ void matrix::trans(){
 		
 	}
 	
-	
-	the_matrix = std::move(transpose);
+	the_matrix=std::move(transpose);
 	
 	int new_cols;
 	new_cols=x;
@@ -255,6 +314,9 @@ void matrix::add(matrix& m){
 }
 //substraction of matrices
 void matrix::subs(matrix& m){
+	if(x!=m.nrows() || y!=m.ncolumns()){
+		throw invalid_argument("Matrix dimensions must agree");
+	}
 	
 	for(int i=0;i<x;i++){
 		for(int j=0;j<y;j++){
@@ -269,16 +331,11 @@ void matrix::subs(matrix& m){
 void matrix::multiply(matrix& m){
 	
 	
-	auto producto = make_unique<double1d[]>(x);
-	
-	for(int i=0;i<x;i++){
-		producto[i] = make_unique<double[]>(m.ncolumns());
-	}
-	
-		
 	if(y!=m.nrows()){
-		cout<<" Matrix multiplication fails"<<endl;
+		throw invalid_argument("Matrix dimensions are incompatible for multiplication");
 	}
+
+	double2d producto=alloc(x,m.ncolumns());
 	double suma;
 	
 	for(int i=0;i<x;i++){
@@ -297,8 +354,7 @@ void matrix::multiply(matrix& m){
 		
 	}
 	
-	
-	the_matrix = std::move(producto);
+	the_matrix=std::move(producto);
 	y=m.ncolumns();
 	
 	
@@ -336,6 +392,9 @@ matrix operator+(matrix& M1,matrix& M2){
 	m1=M1.ncolumns();
 	n2=M2.nrows();
 	m2=M2.ncolumns();
+	if(n1!=n2 || m1!=m2){
+		throw invalid_argument("Matrix dimensions must agree");
+	}
 	
 	matrix result(n1,m1);
 	
@@ -360,6 +419,9 @@ matrix operator-(matrix& M1,matrix& M2){
 	m1=M1.ncolumns();
 	n2=M2.nrows();
 	m2=M2.ncolumns();
+	if(n1!=n2 || m1!=m2){
+		throw invalid_argument("Matrix dimensions must agree");
+	}
 	
 		
 	matrix result(n1,m1);
@@ -385,6 +447,9 @@ matrix operator*(matrix& M1,matrix& M2){
 	m1=M1.ncolumns();
 	n2=M2.nrows();
 	m2=M2.ncolumns();
+	if(m1!=n2){
+		throw invalid_argument("Matrix dimensions are incompatible for multiplication");
+	}
 	matrix result(n1,m2);
 	double pp;
 	
@@ -421,6 +486,7 @@ void operator_testing(){
     C=A*B;
      
      C.printm();
+
 }
 
 
@@ -431,7 +497,6 @@ void operator_testing(){
 double1d v_rand_MB(int npart, double a){ //arguments are # of particles and parameter "a", related to temperature of the gas
  int count;//counts the total number of accepted random numbers from the distribution
  count=0;
-//Pointer to the array of velocities
  double interval,bb,vmax,Pd,Ptest,num,den,alp;
  
  vmax=5.0*a;
@@ -439,7 +504,7 @@ double1d v_rand_MB(int npart, double a){ //arguments are # of particles and para
  interval=abs(vmax);
  
  
- auto myp = make_unique<double[]>(npart);
+ double1d myp=make_unique<double[]>(npart);
   
   //loop for generation of random numbers
   while(count<npart){
@@ -596,7 +661,7 @@ void forces_matrix(matrix& r0,matrix& forces,double gamma,double beta,int Npart)
 
 /////////////// main
 int main(){
-  operator_testing(); // UNCOMMENT AFTER FIXING PROGRAM
+  operator_testing();
 	
 	srand(time(NULL));//Initialize seed for random numbers
 	//Definition of variables/objects    
@@ -635,7 +700,7 @@ int main(){
 	
 	matrix r0(Npart,3),rt(Npart,3),v0(Npart,3),vt(Npart,3); //,forces(Npart,Npart);	
 	//Generate the array of random velocities
-	auto vpoint = v_rand_MB(Npart,a);
+	double1d vpoint=v_rand_MB(Npart,a);
 	//Generate matrix of random velocities components
 	initiate_velocities(v0,vpoint);
 	cout<<"The initial velocities have been allocated in a matrix. "<<endl<<endl;
@@ -646,7 +711,6 @@ int main(){
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
 	
 	
 	cout<<"End of the program "<<endl;
